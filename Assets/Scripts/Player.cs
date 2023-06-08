@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -34,10 +35,17 @@ public class Player : MonoBehaviour
     public float knockbackTime;
     private float knockbackCounter;
 
+    public InputAction playeControls;
+
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
+    }
+
+    private void OnEnable()
+    {
+        
     }
 
     private void Update()
