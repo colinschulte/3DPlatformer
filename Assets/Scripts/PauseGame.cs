@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PauseGame : MonoBehaviour
@@ -12,10 +13,17 @@ public class PauseGame : MonoBehaviour
     public AudioSource pauseOpen;
     public AudioSource pauseClose;
 
+    PlayerControls playerControls;
+
+    private InputAction cancel;
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        playerControls = new PlayerControls();
+        cancel = playerControls.UI.Cancel;
+
+        if (cancel.IsPressed() == true)
         {
             if(gamePaused == false)
             {

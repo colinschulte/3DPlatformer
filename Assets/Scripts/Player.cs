@@ -35,7 +35,15 @@ public class Player : MonoBehaviour
     public float knockbackTime;
     private float knockbackCounter;
 
-    public InputAction playeControls;
+    public PlayerControls playerControls;
+
+    private InputAction move;
+    private InputAction jump;
+
+    private void Awake()
+    {
+        playerControls = new PlayerControls();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -45,21 +53,33 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        move = playerControls.Player.Move;
+        move.Enable();
+        jump = playerControls.Player.Jump;
+        jump.Enable();
+    }
+
+    private void OnDisable()
+    {
+        move.Disable();
+        jump.Disable();
     }
 
     private void Update()
     {
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        //float verticalInput = Input.GetAxisRaw("Vertical");
+        //float horizontalInput = Input.GetAxisRaw("Horizontal");
 
         if (knockbackCounter <= 0)
         {
 
             float yStore = moveDirection.y;
 
-            moveDirection = (transform.forward * verticalInput) + (transform.right * horizontalInput);
+            moveDirection = move.ReadValue<Vector2>();
+            moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+            //moveDirection.z = moveDirection.y;
             moveDirection = moveDirection.normalized * moveSpeed;
+            
             moveDirection.y = yStore;
 
             //if on the ground, reset y movement and coyote counter
@@ -73,7 +93,7 @@ public class Player : MonoBehaviour
                 coyoteCounter -= Time.deltaTime;
             }
             //check if Jump is pressed
-            if (Input.GetButtonDown("Jump") && coyoteCounter > 0f)
+            if (jump.triggered && coyoteCounter > 0f)
             {
                 if (jumpCounter == 1)
                 {
@@ -130,7 +150,7 @@ public class Player : MonoBehaviour
             }
                 
             //if Jump is let go then start falling
-            if (Input.GetButtonUp("Jump") && moveDirection.y > 0)
+            if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
             {
                 moveDirection.y = -0.2f;
             }
@@ -144,7 +164,7 @@ public class Player : MonoBehaviour
         controller.Move(moveDirection * Time.deltaTime);
 
         //Move player direction
-        if (verticalInput != 0 || horizontalInput != 0)
+        if (moveDirection.x != 0 || moveDirection.z != 0)
         {
             transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
@@ -152,7 +172,7 @@ public class Player : MonoBehaviour
         }
 
         animator.SetBool("IsGrounded", controller.isGrounded);
-        animator.SetBool("IsRunning", (Mathf.Abs(verticalInput) + Mathf.Abs(horizontalInput)) > 0);
+        animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
     }
     public void Knockback(Vector3 direction)
     {
