@@ -15,15 +15,29 @@ public class PauseGame : MonoBehaviour
 
     PlayerControls playerControls;
 
-    private InputAction cancel;
+    private InputAction pause;
+
+    private void Awake()
+    {
+        playerControls = new PlayerControls();
+    }
+
+    private void OnEnable()
+    {
+        pause = playerControls.Player.Pause;
+        pause.Enable();
+    }
+
+    private void OnDisable()
+    {
+        pause.Disable();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        playerControls = new PlayerControls();
-        cancel = playerControls.UI.Cancel;
 
-        if (cancel.IsPressed() == true)
+        if (pause.triggered)
         {
             if(gamePaused == false)
             {

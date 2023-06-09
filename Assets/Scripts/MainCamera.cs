@@ -63,8 +63,6 @@ public class MainCamera : MonoBehaviour
         {
             lookDirection = look.ReadValue<Vector2>();
 
-            Debug.Log(lookDirection);
-
             float horizontal = lookDirection.x * xRotateSpeed;
             if (invertX)
             {
