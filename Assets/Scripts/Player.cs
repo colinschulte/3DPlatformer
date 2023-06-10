@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float gravityScale;
 
     [SerializeField] private float coyoteTime;
-    private float coyoteCounter;
+    [SerializeField] private float coyoteCounter;
 
     [SerializeField] private float jumpTime;
     [SerializeField] private float jumpFactor = 1f;
@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
 
     private InputAction move;
     private InputAction jump;
+    private InputAction crouch;
 
     private void Awake()
     {
@@ -57,27 +58,28 @@ public class Player : MonoBehaviour
         move.Enable();
         jump = playerControls.Player.Jump;
         jump.Enable();
+        crouch = playerControls.Player.Crouch;
+        crouch.Enable();
     }
 
     private void OnDisable()
     {
         move.Disable();
         jump.Disable();
+        crouch.Disable();
     }
 
     private void Update()
     {
-        //float verticalInput = Input.GetAxisRaw("Vertical");
-        //float horizontalInput = Input.GetAxisRaw("Horizontal");
-
         if (knockbackCounter <= 0)
         {
-
+            //TODO implement inertia
+            float xStore = moveDirection.x;
             float yStore = moveDirection.y;
+            float zStore = moveDirection.z;
 
             moveDirection = move.ReadValue<Vector2>();
             moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
-            //moveDirection.z = moveDirection.y;
             moveDirection = moveDirection.normalized * moveSpeed;
             
             moveDirection.y = yStore;
@@ -92,30 +94,39 @@ public class Player : MonoBehaviour
             {
                 coyoteCounter -= Time.deltaTime;
             }
+
             //check if Jump is pressed
             if (jump.triggered && coyoteCounter > 0f)
             {
-                if (jumpCounter == 1)
+                //Backflip
+                if (crouch.IsPressed())
                 {
-                    jumpFactor = 1f;
-                    jumpCounter++;
-                    firstJumpActive = true;
+                    jumpFactor = 1.4f;
                 }
-                if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                else
                 {
-                    jumpFactor = 1f;
-                    jumpCounter++;
-                    secondJumpTimer = 0f;
-                    firstJumpActive = false;
-                    secondJumpActive = true;
-                }
-                if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                {
-                    jumpFactor = 1.3f;
-                    jumpCounter++;
-                    thirdJumpTimer = 0f;
-                    firstJumpActive = false;
-                    secondJumpActive = false;
+                    if (jumpCounter == 1)
+                    {
+                        jumpFactor = 1f;
+                        jumpCounter++;
+                        firstJumpActive = true;
+                    }
+                    else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                    {
+                        jumpFactor = 1f;
+                        jumpCounter++;
+                        secondJumpTimer = 0f;
+                        firstJumpActive = false;
+                        secondJumpActive = true;
+                    }
+                    else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                    {
+                        jumpFactor = 1.3f;
+                        jumpCounter++;
+                        thirdJumpTimer = 0f;
+                        firstJumpActive = false;
+                        secondJumpActive = false;
+                    }
                 }
                 moveDirection.y = JumpForce * jumpFactor;
                 coyoteCounter = 0f;
@@ -148,7 +159,12 @@ public class Player : MonoBehaviour
             {
                 thirdJumpTimer += Time.deltaTime;
             }
-                
+
+            if(crouch.WasReleasedThisFrame())
+            {
+                jumpFactor = 1f;
+            }
+
             //if Jump is let go then start falling
             if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
             {
@@ -173,6 +189,7 @@ public class Player : MonoBehaviour
 
         animator.SetBool("IsGrounded", controller.isGrounded);
         animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
+        //TODO: animator.SetBool("IsCrouched")
     }
     public void Knockback(Vector3 direction)
     {

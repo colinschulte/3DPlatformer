@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.42223784, g: 0.602259, b: 0.7092216, a: 1}
+  m_IndirectSpecularColor: {r: 0.37436488, g: 0.5339, b: 0.6306451, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2677,7 +2677,8 @@ MonoBehaviour:
   JumpForce: 20
   gravityScale: 6
   coyoteTime: 0.3
-  jumpTime: 0.1
+  coyoteCounter: 0
+  jumpTime: 0.2
   jumpFactor: 1
   jumpCounter: 1
   firstJumpActive: 0
@@ -5215,6 +5216,30 @@ PrefabInstance:
     - target: {fileID: -4588592150463544213, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 89.99997
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -4361133911558891815, guid: 2942468309fa57240a049e515b1e94c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
