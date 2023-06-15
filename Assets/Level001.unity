@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.39223355, g: 0.55718356, b: 0.6566439, a: 1}
+  m_IndirectSpecularColor: {r: 0.3356731, g: 0.4808973, b: 0.5713208, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2672,7 +2672,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 40
   m_StepOffset: 0.3
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0
@@ -2684,7 +2684,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860954900}
-  m_Material: {fileID: 13400000, guid: b673b46e5077bc643a7c7c1466558b13, type: 2}
+  m_Material: {fileID: 13400000, guid: 3767ebb8697c09c44b29c7e766e53a97, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2757,8 +2757,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860954900}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.023365263, y: 0.5027255, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2800,6 +2800,7 @@ MonoBehaviour:
   playerModel: {fileID: 1052569897}
   knockbackForce: 20
   knockbackTime: 0.25
+  slopeSlideVelocity: {x: 0, y: 0, z: 0}
 --- !u!95 &860954907
 Animator:
   serializedVersion: 5
@@ -4575,14 +4576,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221002567}
-  m_LocalRotation: {x: 0.35101116, y: -0.17293563, z: 0.4553153, w: 0.79973274}
+  m_LocalRotation: {x: 0.54135275, y: -0.3561041, z: 0.22584334, w: 0.7274077}
   m_LocalPosition: {x: 33, y: 2.5, z: -44.7}
   m_LocalScale: {x: 4.4218, y: 2.2109, z: 11.054501}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1003995434}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 45.965, y: 3.55, z: 60.815}
+  m_LocalEulerAnglesHint: {x: 71.517, y: -59.636, z: -10.357}
 --- !u!65 &1221002569
 BoxCollider:
   m_ObjectHideFlags: 0

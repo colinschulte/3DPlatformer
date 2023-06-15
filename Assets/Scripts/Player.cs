@@ -49,6 +49,9 @@ public class Player : MonoBehaviour
     private InputAction jump;
     private InputAction crouch;
 
+    private bool isSliding;
+    [SerializeField] private Vector3 slopeSlideVelocity;
+
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -95,7 +98,15 @@ public class Player : MonoBehaviour
             //if on the ground, reset y movement and coyote counter
             if (controller.isGrounded)
             {
-                moveDirection.y = 0f;
+                if (slopeSlideVelocity != Vector3.zero)
+                {
+                    isSliding = true;
+                }
+                if (isSliding == false)
+                {
+                    moveDirection.y = 0f;
+                }
+
                 coyoteCounter = coyoteTime;
             }
             else
@@ -104,7 +115,7 @@ public class Player : MonoBehaviour
             }
 
             //check if Jump is pressed
-            if (jump.triggered && coyoteCounter > 0f)
+            if (jump.triggered && coyoteCounter > 0f && isSliding == false)
             {
                 //Backflip
                 if (crouch.IsPressed())
@@ -185,12 +196,26 @@ public class Player : MonoBehaviour
         }
 
         moveDirection.y += (Physics.gravity.y * (gravityScale - 1) * Time.deltaTime);
+
+        setSlopeSlideVelocity();
+
+        if(slopeSlideVelocity == Vector3.zero)
+        {
+            isSliding = false;
+        }
+
         float maxSpeedChange = maxAcceleration * Time.deltaTime;
         velocity.x =
             Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
         velocity.y = moveDirection.y;
         velocity.z =
             Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
+
+        if (isSliding)
+        {
+            velocity = slopeSlideVelocity;
+            velocity.y = moveDirection.y;
+        }
 
         controller.Move(velocity * Time.deltaTime);
 
@@ -206,6 +231,32 @@ public class Player : MonoBehaviour
         animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
         //TODO: animator.SetBool("IsCrouched")
     }
+
+    private void setSlopeSlideVelocity()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5))
+        {
+            float angle = Vector3.Angle(hitInfo.normal, Vector3.up);
+
+            if(angle >= controller.slopeLimit)
+            {
+                slopeSlideVelocity = Vector3.ProjectOnPlane(new Vector3(0, moveDirection.y, 0), hitInfo.normal);
+                return;
+            }
+        }
+        if (isSliding)
+        {
+            slopeSlideVelocity -= slopeSlideVelocity * Time.deltaTime * 3;
+
+            if (slopeSlideVelocity.magnitude > 1)
+            {
+                return;
+            }
+        }
+
+        slopeSlideVelocity = Vector3.zero;
+    }
+
     public void Knockback(Vector3 direction)
     {
         knockbackCounter = knockbackTime;

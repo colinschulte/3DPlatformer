@@ -115,7 +115,7 @@ public class Health : MonoBehaviour
     {
         isRespawning = true;
         player.gameObject.SetActive(false);
-        Instantiate(deathEffect, player.transform.position, player.transform.rotation);
+        GameObject killEffect = Instantiate(deathEffect, player.transform.position, player.transform.rotation);
 
         yield return new WaitForSeconds(respawnLength);
 
@@ -125,6 +125,7 @@ public class Health : MonoBehaviour
 
         isFadingDown = false;
         isFadingUp = true;
+        Destroy(killEffect);
 
         isRespawning = false;
         player.gameObject.SetActive(true);
