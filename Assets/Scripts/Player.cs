@@ -9,10 +9,12 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float moveSpeed;
     //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
-    //[SerializeField] public float runAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
+    [SerializeField] public float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
     //public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
     //[SerializeField] public float runDecceleration; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
     //public float runDeccelAmount;
+    Vector3 velocity;
+
 
     [SerializeField] private float JumpForce;
     [SerializeField] private float gravityScale;
@@ -183,7 +185,14 @@ public class Player : MonoBehaviour
         }
 
         moveDirection.y += (Physics.gravity.y * (gravityScale - 1) * Time.deltaTime);
-        controller.Move(moveDirection * Time.deltaTime);
+        float maxSpeedChange = maxAcceleration * Time.deltaTime;
+        velocity.x =
+            Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
+        velocity.y = moveDirection.y;
+        velocity.z =
+            Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
+
+        controller.Move(velocity * Time.deltaTime);
 
         //Move player direction
         if (moveDirection.x != 0 || moveDirection.z != 0)
@@ -202,6 +211,6 @@ public class Player : MonoBehaviour
         knockbackCounter = knockbackTime;
 
         moveDirection = direction * knockbackForce;
-        moveDirection.y = knockbackForce * 0.4f;
+        moveDirection.y = knockbackForce * 0.5f;
     }
 }
