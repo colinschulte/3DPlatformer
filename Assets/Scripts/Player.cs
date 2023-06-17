@@ -34,7 +34,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 moveDirection;
     public CharacterController controller;
 
-    public Transform pivot;
+    [SerializeField] private Transform cameraTransform;
+
     public float rotateSpeed;
 
     public GameObject playerModel;
@@ -84,7 +85,6 @@ public class Player : MonoBehaviour
     {
         if (knockbackCounter <= 0)
         {
-            //TODO implement inertia
             float xStore = moveDirection.x;
             float yStore = moveDirection.y;
             float zStore = moveDirection.z;
@@ -222,7 +222,7 @@ public class Player : MonoBehaviour
         //Move player direction
         if (moveDirection.x != 0 || moveDirection.z != 0)
         {
-            transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
+            transform.rotation = Quaternion.Euler(0f, cameraTransform.rotation.eulerAngles.y, 0f);
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
