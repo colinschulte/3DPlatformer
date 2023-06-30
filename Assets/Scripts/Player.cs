@@ -91,9 +91,11 @@ public class Player : MonoBehaviour
 
             moveDirection = move.ReadValue<Vector2>();
             moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
-            //moveDirection = moveDirection.normalized;
-            moveDirection = moveDirection * moveSpeed;
-            
+            float magnitude = moveDirection.magnitude;
+            magnitude = Mathf.Clamp01(magnitude);
+            moveDirection = moveDirection.normalized;
+            moveDirection = magnitude * moveSpeed * moveDirection;
+
             moveDirection.y = yStore;
 
             //if on the ground, reset y movement and coyote counter
