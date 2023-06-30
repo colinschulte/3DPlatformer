@@ -9,7 +9,7 @@ public class MainMenuFunction : MonoBehaviour
     public void PlayGame()
     {
         buttonPress.Play();
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Overworld");
     }
     public void QuitGame()
     {
