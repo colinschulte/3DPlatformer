@@ -646,9 +646,9 @@ MonoBehaviour:
   healthText: {fileID: 1080243411}
   blackScreen: {fileID: 1099570797}
   fadeSpeed: 2
-  player: {fileID: 0}
+  player: {fileID: 1693628528482739368}
   invincibilityLength: 2
-  playerRenderer: {fileID: 0}
+  playerRenderer: {fileID: 1693628528482739369}
   flashLength: 0.07
   respawnLength: 1
   waitForFade: 1
@@ -1401,7 +1401,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 602497687}
-  m_LocalRotation: {x: 0.17346148, y: 0.000000016542236, z: -0.000000010478875, w: 0.9848407}
+  m_LocalRotation: {x: 0.17346148, y: 0.000000017653303, z: -0.000000010674568, w: 0.9848407}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2060,7 +2060,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857096639}
-  m_LocalRotation: {x: 0.22975291, y: -0.0000000073584916, z: -0.000000005918265, w: 0.973249}
+  m_LocalRotation: {x: 0.22975291, y: 0.000000017010906, z: -0.0000000116711, w: 0.973249}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2733,7 +2733,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.20159717, y: 0.00000001778089, z: -0.0000000036597165, w: 0.9794685}
+  m_LocalRotation: {x: 0.20159717, y: 0.00000001685311, z: -0.000000003468758, w: 0.9794685}
   m_LocalPosition: {x: 0, y: 5.5, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4486,7 +4486,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1880930707}
-  m_LocalRotation: {x: 0.20159715, y: 0.00000000865375, z: -0.000000009387899, w: 0.9794685}
+  m_LocalRotation: {x: 0.20159715, y: 0.0000000069245405, z: -0.0000000090319885, w: 0.9794685}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4565,3 +4565,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+--- !u!114 &1693628528482739368 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4690545423947595683, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+  m_PrefabInstance: {fileID: 1693628528482739367}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2302a09a8ff8c64b80076b0352132d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!137 &1693628528482739369 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9179733063606657602, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+  m_PrefabInstance: {fileID: 1693628528482739367}
+  m_PrefabAsset: {fileID: 0}

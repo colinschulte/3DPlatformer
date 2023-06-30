@@ -20,7 +20,6 @@ public class PauseGame : MonoBehaviour
     private void Awake()
     {
         playerControls = new PlayerControls();
-        DontDestroyOnLoad(gameObject);
     }
 
     private void OnEnable()

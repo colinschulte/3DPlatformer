@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     //public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
     //[SerializeField] public float runDecceleration; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
     //public float runDeccelAmount;
-    Vector3 velocity;
+    [SerializeField] private Vector3 velocity;
 
 
     [SerializeField] private float JumpForce;
@@ -91,7 +91,8 @@ public class Player : MonoBehaviour
 
             moveDirection = move.ReadValue<Vector2>();
             moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
-            moveDirection = moveDirection.normalized * moveSpeed;
+            //moveDirection = moveDirection.normalized;
+            moveDirection = moveDirection * moveSpeed;
             
             moveDirection.y = yStore;
 
