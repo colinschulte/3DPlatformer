@@ -30,9 +30,12 @@ public class Player : MonoBehaviour
     private float secondJumpTimer;
     private float thirdJumpTimer;
 
+    [SerializeField] private float bounceForce;
+    public bool isBouncing = false;
+
     [SerializeField] private float dashSpeed;
-    private bool canDash;
-    private bool isDashing;
+    private bool canDash = true;
+    private bool isDashing = false;
     [SerializeField] private float dashTime;
     private float dashCounter;
     [SerializeField] private float dashCooldown;
@@ -216,6 +219,12 @@ public class Player : MonoBehaviour
 
         moveDirection.y += (Physics.gravity.y * (gravityScale - 1) * Time.deltaTime);
 
+        if (isBouncing)
+        {
+            moveDirection.y = bounceForce;
+            isBouncing = false;
+        }
+
         setSlopeSlideVelocity();
 
         if(slopeSlideVelocity == Vector3.zero)
@@ -233,7 +242,6 @@ public class Player : MonoBehaviour
             velocity = slopeSlideVelocity;
             velocity.y = moveDirection.y;
         }
-
 
         if (dash.WasPressedThisFrame() && canDash)
         {
