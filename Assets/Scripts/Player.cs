@@ -20,15 +20,23 @@ public class Player : MonoBehaviour
     [SerializeField] private float gravityScale;
 
     [SerializeField] private float coyoteTime;
-    [SerializeField] private float coyoteCounter;
+    private float coyoteCounter;
 
     [SerializeField] private float jumpTime;
     [SerializeField] private float jumpFactor = 1f;
     [SerializeField] private int jumpCounter = 1;
-    [SerializeField] private bool firstJumpActive;
-    [SerializeField] private bool secondJumpActive;
-    [SerializeField] private float secondJumpTimer;
-    [SerializeField] private float thirdJumpTimer;
+    private bool firstJumpActive;
+    private bool secondJumpActive;
+    private float secondJumpTimer;
+    private float thirdJumpTimer;
+
+    [SerializeField] private float dashSpeed;
+    private bool canDash;
+    private bool isDashing;
+    [SerializeField] private float dashTime;
+    private float dashCounter;
+    [SerializeField] private float dashCooldown;
+    private float dashCooldownCount;
 
     private int coinCount;
     [SerializeField] private Vector3 moveDirection;
@@ -49,6 +57,7 @@ public class Player : MonoBehaviour
     private InputAction move;
     private InputAction jump;
     private InputAction crouch;
+    private InputAction dash;
 
     private bool isSliding;
     [SerializeField] private Vector3 slopeSlideVelocity;
@@ -72,6 +81,8 @@ public class Player : MonoBehaviour
         jump.Enable();
         crouch = playerControls.Player.Crouch;
         crouch.Enable();
+        dash = playerControls.Player.Dash;
+        dash.Enable();
     }
 
     private void OnDisable()
@@ -79,6 +90,7 @@ public class Player : MonoBehaviour
         move.Disable();
         jump.Disable();
         crouch.Disable();
+        dash.Disable();
     }
 
     private void Update()
@@ -208,16 +220,43 @@ public class Player : MonoBehaviour
         }
 
         float maxSpeedChange = maxAcceleration * Time.deltaTime;
-        velocity.x =
-            Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
+        velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
         velocity.y = moveDirection.y;
-        velocity.z =
-            Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
+        velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
 
         if (isSliding)
         {
             velocity = slopeSlideVelocity;
             velocity.y = moveDirection.y;
+        }
+
+
+        if (dash.WasPressedThisFrame() && canDash)
+        {
+            velocity = playerModel.transform.forward * dashSpeed;
+            isDashing = true;
+            canDash = false;
+        }
+
+        if (isDashing)
+        {
+            velocity.y = 1f;
+            dashCounter -= Time.deltaTime;
+            if (dashCounter <= 0)
+            {
+                isDashing = false;
+                dashCounter = dashTime;
+            }
+        }
+
+        if (!isDashing && !canDash && controller.isGrounded)
+        {
+            dashCooldownCount -= Time.deltaTime;
+            if (dashCooldownCount <= 0)
+            {
+                canDash = true;
+                dashCooldownCount = dashCooldown;
+            }
         }
 
         controller.Move(velocity * Time.deltaTime);
@@ -230,7 +269,7 @@ public class Player : MonoBehaviour
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
 
-        animator.SetBool("IsGrounded", controller.isGrounded);
+    animator.SetBool("IsGrounded", controller.isGrounded);
         animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
         //TODO: animator.SetBool("IsCrouched")
     }
