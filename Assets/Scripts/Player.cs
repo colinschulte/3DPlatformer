@@ -62,6 +62,9 @@ public class Player : MonoBehaviour
     private bool isSliding;
     [SerializeField] private Vector3 slopeSlideVelocity;
 
+    [SerializeField] private AudioSource jumpSound;
+    [SerializeField] private AudioSource dashSound;
+
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -163,6 +166,7 @@ public class Player : MonoBehaviour
                     }
                 }
                 moveDirection.y = JumpForce * jumpFactor;
+                jumpSound.Play();
                 coyoteCounter = 0f;
             }
             if (jumpCounter > 3)
@@ -234,6 +238,7 @@ public class Player : MonoBehaviour
         if (dash.WasPressedThisFrame() && canDash)
         {
             velocity = playerModel.transform.forward * dashSpeed;
+            dashSound.Play();
             isDashing = true;
             canDash = false;
         }
