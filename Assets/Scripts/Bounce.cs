@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Bounce : MonoBehaviour
 {
-    public float bounceForce;
     public Player player;
 
     // Start is called before the first frame update

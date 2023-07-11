@@ -9,12 +9,14 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float moveSpeed;
     //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
-    [SerializeField] public float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
+    [SerializeField] private float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
+    [SerializeField] private float maxAirAcceleration;
     //public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
     //[SerializeField] public float runDecceleration; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
     //public float runDeccelAmount;
+    private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
-
+    private bool canMove;
 
     [SerializeField] private float JumpForce;
     [SerializeField] private float gravityScale;
@@ -32,6 +34,14 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
+
+    private Vector3 wallNormal;
+    [SerializeField] private float wallPushback;
+    private bool canWallJump;
+    private bool isWallJumping;
+    [SerializeField] private float wallJumpTime;
+    private float wallJumpCounter;
+    private Vector3 lastWallNormal;
 
     [SerializeField] private float dashSpeed;
     private bool canDash = true;
@@ -107,18 +117,22 @@ public class Player : MonoBehaviour
             float yStore = moveDirection.y;
             float zStore = moveDirection.z;
 
-            moveDirection = move.ReadValue<Vector2>();
-            moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
-            float magnitude = moveDirection.magnitude;
-            magnitude = Mathf.Clamp01(magnitude);
-            moveDirection = moveDirection.normalized;
-            moveDirection = magnitude * moveSpeed * moveDirection;
-
+            if (canMove)
+            {
+                moveDirection = move.ReadValue<Vector2>();
+                moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+                float magnitude = moveDirection.magnitude;
+                magnitude = Mathf.Clamp01(magnitude);
+                moveDirection = moveDirection.normalized;
+                moveDirection = magnitude * moveSpeed * moveDirection;
+            }
             moveDirection.y = yStore;
 
             //if on the ground, reset y movement and coyote counter
             if (controller.isGrounded)
             {
+                canWallJump = false;
+
                 if (slopeSlideVelocity != Vector3.zero)
                 {
                     isSliding = true;
@@ -132,45 +146,60 @@ public class Player : MonoBehaviour
             }
             else
             {
+
                 coyoteCounter -= Time.deltaTime;
             }
 
             //check if Jump is pressed
-            if (jump.triggered && coyoteCounter > 0f && isSliding == false)
+            if (jump.triggered)
             {
-                //Backflip
-                if (crouch.IsPressed())
+                if (coyoteCounter > 0f && isSliding == false)
                 {
-                    jumpFactor = 1.4f;
+                    //Backflip
+                    if (crouch.IsPressed())
+                    {
+                        jumpFactor = 1.4f;
+                    }
+                    else
+                    {
+                        if (jumpCounter == 1)
+                        {
+                            jumpFactor = 1f;
+                            jumpCounter++;
+                            firstJumpActive = true;
+                        }
+                        else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                        {
+                            jumpFactor = 1f;
+                            jumpCounter++;
+                            secondJumpTimer = 0f;
+                            firstJumpActive = false;
+                            secondJumpActive = true;
+                        }
+                        else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                        {
+                            jumpFactor = 1.3f;
+                            jumpCounter++;
+                            thirdJumpTimer = 0f;
+                            firstJumpActive = false;
+                            secondJumpActive = false;
+                        }
+                    }
+                    moveDirection.y = JumpForce * jumpFactor;
+                    jumpSound.Play();
+                    coyoteCounter = 0f;
                 }
-                else
+                else if (canWallJump)
                 {
-                    if (jumpCounter == 1)
-                    {
-                        jumpFactor = 1f;
-                        jumpCounter++;
-                        firstJumpActive = true;
-                    }
-                    else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
-                    {
-                        jumpFactor = 1f;
-                        jumpCounter++;
-                        secondJumpTimer = 0f;
-                        firstJumpActive = false;
-                        secondJumpActive = true;
-                    }
-                    else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                    {
-                        jumpFactor = 1.3f;
-                        jumpCounter++;
-                        thirdJumpTimer = 0f;
-                        firstJumpActive = false;
-                        secondJumpActive = false;
-                    }
+                    velocity = Vector3.zero;
+                    moveDirection = wallNormal * wallPushback;
+                    moveDirection.y = JumpForce * jumpFactor;
+                    jumpSound.Play();
+                    wallJumpCounter = wallJumpTime;
+                    canWallJump = false;
+                    canMove = false;
+                    isWallJumping = true;
                 }
-                moveDirection.y = JumpForce * jumpFactor;
-                jumpSound.Play();
-                coyoteCounter = 0f;
             }
             if (jumpCounter > 3)
             {
@@ -211,6 +240,18 @@ public class Player : MonoBehaviour
             {
                 moveDirection.y = -0.2f;
             }
+
+            if (isWallJumping)
+            {
+                wallJumpCounter -= Time.deltaTime;
+            }
+
+            if(wallJumpCounter <= 0)
+            {
+                isWallJumping = false;
+                canWallJump = false;
+                canMove = true;
+            }
         }
         else
         {
@@ -232,20 +273,9 @@ public class Player : MonoBehaviour
             isSliding = false;
         }
 
-        float maxSpeedChange = maxAcceleration * Time.deltaTime;
-        velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
-        velocity.y = moveDirection.y;
-        velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
-
-        if (isSliding)
-        {
-            velocity = slopeSlideVelocity;
-            velocity.y = moveDirection.y;
-        }
-
         if (dash.WasPressedThisFrame() && canDash)
         {
-            velocity = playerModel.transform.forward * dashSpeed;
+            moveDirection = playerModel.transform.forward * dashSpeed;
             dashSound.Play();
             isDashing = true;
             canDash = false;
@@ -253,7 +283,8 @@ public class Player : MonoBehaviour
 
         if (isDashing)
         {
-            velocity.y = 1f;
+            moveDirection = playerModel.transform.forward * dashSpeed;
+            moveDirection.y = 2f;
             dashCounter -= Time.deltaTime;
             if (dashCounter <= 0)
             {
@@ -271,6 +302,24 @@ public class Player : MonoBehaviour
                 dashCooldownCount = dashCooldown;
             }
         }
+        if (controller.isGrounded)
+        {
+            maxSpeedChange = maxAcceleration * Time.deltaTime;
+        }
+        else
+        {
+            maxSpeedChange = maxAirAcceleration * Time.deltaTime;
+        }
+        velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
+        velocity.y = moveDirection.y;
+        velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
+
+        if (isSliding)
+        {
+            velocity = slopeSlideVelocity;
+            velocity.y = moveDirection.y;
+        }
+
 
         controller.Move(velocity * Time.deltaTime);
 
@@ -285,6 +334,16 @@ public class Player : MonoBehaviour
     animator.SetBool("IsGrounded", controller.isGrounded);
         animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
         //TODO: animator.SetBool("IsCrouched")
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(!controller.isGrounded && hit.collider.CompareTag("CanWallJump"))
+        {
+            wallNormal = hit.normal;
+            canWallJump = true;
+            lastWallNormal = wallNormal;
+        }
     }
 
     private void setSlopeSlideVelocity()
