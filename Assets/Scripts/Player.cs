@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private bool canMove;
 
     [SerializeField] private float JumpForce;
-    [SerializeField] private float gravityScale;
+    [SerializeField] public float gravityScale;
 
     [SerializeField] private float coyoteTime;
     private float coyoteCounter;
@@ -258,7 +258,7 @@ public class Player : MonoBehaviour
             knockbackCounter -= Time.deltaTime;
         }
 
-        moveDirection.y += (Physics.gravity.y * (gravityScale - 1) * Time.deltaTime);
+        moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
 
         if (isBouncing)
         {
