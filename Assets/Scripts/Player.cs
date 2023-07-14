@@ -35,6 +35,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
 
+    public bool enemyStomped;
+
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
     private bool canWallJump;
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
     private float dashCooldownCount;
 
     private int coinCount;
-    [SerializeField] private Vector3 moveDirection;
+    [SerializeField] public Vector3 moveDirection;
     public CharacterController controller;
 
     [SerializeField] private Transform cameraTransform;
@@ -264,6 +266,12 @@ public class Player : MonoBehaviour
         {
             moveDirection.y = bounceForce;
             isBouncing = false;
+        }
+
+        if (enemyStomped)
+        {
+            moveDirection.y = 1f;
+            enemyStomped = false;
         }
 
         setSlopeSlideVelocity();

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.38506076, g: 0.547925, b: 0.6462354, a: 1}
+  m_IndirectSpecularColor: {r: 0.4206385, g: 0.59955305, b: 0.7060724, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2782,25 +2782,31 @@ MonoBehaviour:
   animator: {fileID: 1052569899}
   moveSpeed: 11
   maxAcceleration: 40
+  maxAirAcceleration: 0
+  velocity: {x: 0, y: 0, z: 0}
   JumpForce: 20
   gravityScale: 6
   coyoteTime: 0.3
-  coyoteCounter: 0
   jumpTime: 0.2
   jumpFactor: 1
   jumpCounter: 1
-  firstJumpActive: 0
-  secondJumpActive: 0
-  secondJumpTimer: 0
-  thirdJumpTimer: 0
+  bounceForce: 0
+  isBouncing: 0
+  wallPushback: 0
+  wallJumpTime: 0
+  dashSpeed: 0
+  dashTime: 0
+  dashCooldown: 0
   moveDirection: {x: 0, y: 0, z: 0}
   controller: {fileID: 0}
-  pivot: {fileID: 2023538632}
+  cameraTransform: {fileID: 0}
   rotateSpeed: 25
   playerModel: {fileID: 1052569897}
   knockbackForce: 20
   knockbackTime: 0.25
   slopeSlideVelocity: {x: 0, y: 0, z: 0}
+  jumpSound: {fileID: 0}
+  dashSound: {fileID: 0}
 --- !u!95 &860954907
 Animator:
   serializedVersion: 5

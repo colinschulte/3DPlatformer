@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     public Player player;
     public CharacterController controller;
     public Vector3 movePosition;
+    public bool canMove = true;
 
     [SerializeField] private float MoveSpeed = 2;
     [SerializeField] private float MaxSpeed = 5;
@@ -24,37 +25,41 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        transform.LookAt(player.transform);
-        Quaternion g = transform.rotation;
-        g.x = 0;
-        g.z = 0;
-        transform.rotation = g;
+        if (canMove)
+        {
+            transform.LookAt(player.transform);
+            Quaternion g = transform.rotation;
+            g.x = 0;
+            g.z = 0;
+            transform.rotation = g;
 
-        if (Vector3.Distance(transform.position, player.transform.position) <= MaxDistance && Vector3.Distance(transform.position, player.transform.position) >= MinDistance)
-        {
-            movePosition = transform.forward * MoveSpeed;
-        }
-        else
-        {
-            movePosition = Vector3.zero;
-        }
+            if (Vector3.Distance(transform.position, player.transform.position) <= MaxDistance && Vector3.Distance(transform.position, player.transform.position) >= MinDistance)
+            {
+                movePosition = transform.forward * MoveSpeed;
+            }
+            else
+            {
+                movePosition = Vector3.zero;
+            }
         
-        movePosition.y += Physics.gravity.y * (gravityScale - 1);
+            movePosition.y += Physics.gravity.y * (gravityScale - 1);
 
 
-        if (controller.isGrounded)
-        {
-            movePosition.y = 0;
+            if (controller.isGrounded)
+            {
+                movePosition.y = 0;
+            }
+
+            controller.Move(movePosition * Time.deltaTime);
         }
-
-        controller.Move(movePosition * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Death()
     {
-        if (other.CompareTag("Player"))
-        {
-            
-        }
+        canMove = false;
+        this.transform.localScale += new Vector3(0f, -0.25f, 0f);
+        this.transform.localPosition += new Vector3(0f, -0.3f, 0f);
+        Destroy(this.gameObject, 5f);
+
     }
 }
