@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 velocity;
     private bool canMove;
 
-    [SerializeField] private float JumpForce;
+    [SerializeField] public float JumpForce;
     [SerializeField] public float gravityScale;
 
     [SerializeField] private float coyoteTime;

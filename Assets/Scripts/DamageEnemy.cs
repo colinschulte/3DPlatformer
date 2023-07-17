@@ -23,14 +23,10 @@ public class DamageEnemy : MonoBehaviour
     {
         if (other.gameObject.CompareTag("WeakPoint"))
         {
-            Debug.Log("HIT");
+            player.moveDirection.y += player.JumpForce;
             player.enemyStomped = true;
             enemy = other.GetComponentInParent<Enemy>();
             enemy.Death();
-        }
-        else
-        {
-            Debug.Log(other.gameObject.tag);
         }
     }
 }
