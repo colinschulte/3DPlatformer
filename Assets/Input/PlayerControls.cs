@@ -378,6 +378,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""43bfedcb-933e-488e-9cbe-723ea5f5674b"",
+                    ""path"": ""<Keyboard>/period"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""63437b7d-c0fb-441e-90d6-3ade5f528c58"",
                     ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
@@ -435,6 +446,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""d1d22a9b-33a5-4152-9e0a-8efbc28d4293"",
                     ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b24e1bb-7db6-45e2-a3b7-7a74613287ff"",
+                    ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
