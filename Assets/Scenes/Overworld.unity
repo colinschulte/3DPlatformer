@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 1145774}
   - component: {fileID: 1145775}
   - component: {fileID: 1145776}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Stomp
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1145773}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.061, z: 0}
+  m_LocalPosition: {x: 0, y: -1.034, z: 0}
   m_LocalScale: {x: 0.22000001, y: 0.22, z: 0.22000001}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -163,7 +163,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1145773}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: b673b46e5077bc643a7c7c1466558b13, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2090,7 +2090,7 @@ GameObject:
   - component: {fileID: 819239993}
   - component: {fileID: 819239995}
   - component: {fileID: 819239994}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3021,7 +3021,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6984,7 +6984,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857096639}
-  m_LocalRotation: {x: 0.05740749, y: 0.3819438, z: -0.023778956, w: 0.92209435}
+  m_LocalRotation: {x: 0.057407483, y: 0.3819438, z: -0.023778953, w: 0.92209435}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11892,7 +11892,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1880930707}
-  m_LocalRotation: {x: 0.030798245, y: 0.38247058, z: -0.01275705, w: 0.9233661}
+  m_LocalRotation: {x: 0.030798247, y: 0.3824706, z: -0.012757051, w: 0.9233661}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13112,6 +13112,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1841649089518483867, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841649089518483867, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
       propertyPath: m_Material
       value: 
       objectReference: {fileID: 13400000, guid: b673b46e5077bc643a7c7c1466558b13, type: 2}
@@ -13174,6 +13178,10 @@ PrefabInstance:
     - target: {fileID: 7507782637003370865, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
       propertyPath: m_SlopeLimit
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8954977011191089273, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

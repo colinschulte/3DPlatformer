@@ -10,7 +10,6 @@ public class Enemy : MonoBehaviour
     public bool canMove = true;
 
     [SerializeField] private float MoveSpeed = 2;
-    [SerializeField] private float MaxSpeed = 5;
 
     [SerializeField] private float MaxDistance = 10;
     [SerializeField] private float MinDistance = 2;

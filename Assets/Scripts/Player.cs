@@ -115,9 +115,9 @@ public class Player : MonoBehaviour
     {
         if (knockbackCounter <= 0)
         {
-            float xStore = moveDirection.x;
-            float yStore = moveDirection.y;
-            float zStore = moveDirection.z;
+            float xStore = velocity.x;
+            float yStore = velocity.y;
+            float zStore = velocity.z;
 
             if (canMove)
             {
@@ -356,7 +356,7 @@ public class Player : MonoBehaviour
 
     private void setSlopeSlideVelocity()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5f))
         {
             float angle = Vector3.Angle(hitInfo.normal, Vector3.up);
 
