@@ -11,9 +11,16 @@ public class GoldPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
+        if(other.CompareTag("Player"))
         {
-            FindObjectOfType<GameManager>().AddCoins(value);
+            if (gameObject.CompareTag("Coin"))
+            {
+                FindObjectOfType<GameManager>().AddCoins(value);
+            }
+            else if(gameObject.CompareTag("Cheese"))
+            {
+                FindObjectOfType<GameManager>().AddCheese();
+            }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             collectSound.Play();
             Destroy(gameObject);

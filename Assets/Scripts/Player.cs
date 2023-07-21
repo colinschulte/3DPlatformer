@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     //public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
     //[SerializeField] public float runDecceleration; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
     //public float runDeccelAmount;
+    private Vector3 lastForward;
+
     private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
     private bool canMove;
@@ -283,7 +285,7 @@ public class Player : MonoBehaviour
 
         if (dash.WasPressedThisFrame() && canDash)
         {
-            moveDirection = playerModel.transform.forward * dashSpeed;
+            moveDirection = lastForward * dashSpeed;
             dashSound.Play();
             isDashing = true;
             canDash = false;
@@ -291,7 +293,7 @@ public class Player : MonoBehaviour
 
         if (isDashing)
         {
-            moveDirection = playerModel.transform.forward * dashSpeed;
+            moveDirection = lastForward * dashSpeed;
             moveDirection.y = 2f;
             dashCounter -= Time.deltaTime;
             if (dashCounter <= 0)
@@ -335,8 +337,10 @@ public class Player : MonoBehaviour
         if (moveDirection.x != 0 || moveDirection.z != 0)
         {
             transform.rotation = Quaternion.Euler(0f, cameraTransform.rotation.eulerAngles.y, 0f);
-            Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
-            playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
+            Quaternion newRotation = Quaternion.LookRotation(new Vector3(velocity.x, 0f, velocity.z));
+            //playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
+            playerModel.transform.rotation = newRotation;
+            lastForward = playerModel.transform.forward;
         }
 
     animator.SetBool("IsGrounded", controller.isGrounded);

@@ -8,7 +8,7 @@ public class HurtPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && gameObject.GetComponent<Enemy>().canHurt)
         {
             Vector3 hitDirection = other.transform.position - transform.position;
             other.transform.position = new Vector3(other.transform.position.x + hitDirection.x, other.transform.position.y, other.transform.position.z + hitDirection.z);
