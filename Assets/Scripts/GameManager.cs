@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     public int currentCoins;
     public Text coinText;
 
@@ -19,6 +21,20 @@ public class GameManager : MonoBehaviour
     {
         //DontDestroyOnLoad(gameObject);
         coinCheese.SetActive(false);
+    }
+
+    private void Awake()
+    {
+        // start of new code
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        // end of new code
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame

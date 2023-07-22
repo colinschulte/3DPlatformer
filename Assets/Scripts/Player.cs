@@ -348,10 +348,6 @@ public class Player : MonoBehaviour
             playerModel.transform.rotation = newRotation;
             lastForward = playerModel.transform.forward;
         }
-
-    animator.SetBool("IsGrounded", controller.isGrounded);
-        animator.SetBool("IsRunning", (Mathf.Abs(moveDirection.z) + Mathf.Abs(moveDirection.x)) > 0);
-        //TODO: animator.SetBool("IsCrouched")
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
