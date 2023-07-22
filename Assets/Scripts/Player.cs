@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     //public float runDeccelAmount;
     private Vector3 lastForward;
 
-    private float maxSpeedChange;
+    [SerializeField] private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
     private bool canMove;
 
@@ -285,7 +285,7 @@ public class Player : MonoBehaviour
 
         if (dash.WasPressedThisFrame() && canDash)
         {
-            moveDirection = lastForward * dashSpeed;
+            velocity = lastForward * dashSpeed;
             dashSound.Play();
             isDashing = true;
             canDash = false;
@@ -296,6 +296,10 @@ public class Player : MonoBehaviour
             moveDirection = lastForward * dashSpeed;
             moveDirection.y = 2f;
             dashCounter -= Time.deltaTime;
+            if (dash.WasReleasedThisFrame())
+            {
+                dashCounter = 0;
+            }
             if (dashCounter <= 0)
             {
                 isDashing = false;
@@ -312,17 +316,19 @@ public class Player : MonoBehaviour
                 dashCooldownCount = dashCooldown;
             }
         }
-        if (controller.isGrounded)
-        {
-            maxSpeedChange = maxAcceleration * Time.deltaTime;
-        }
-        else
-        {
-            maxSpeedChange = maxAirAcceleration * Time.deltaTime;
-        }
-        velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxSpeedChange);
+        //if (controller.isGrounded)
+        //{
+        //    maxSpeedChange = maxAcceleration * Time.deltaTime;
+        //}
+        //else
+        //{
+        //    maxSpeedChange = maxAirAcceleration * Time.deltaTime;
+        //}
+
+        velocity = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
         velocity.y = moveDirection.y;
-        velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxSpeedChange);
+        //velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxAcceleration);
+        //velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxAcceleration);
 
         if (isSliding)
         {
