@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DoorTransition : MonoBehaviour
+public class SceneTransition : MonoBehaviour
 {
     public string TargetScene;
 
