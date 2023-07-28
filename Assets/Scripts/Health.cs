@@ -25,7 +25,7 @@ public class Health : MonoBehaviour
     private float flashCounter;
 
     private bool isRespawning;
-    private Vector3 respawnPoint;
+    [SerializeField] private Vector3 respawnPoint;
 
     public float respawnLength;
     public float waitForFade;
