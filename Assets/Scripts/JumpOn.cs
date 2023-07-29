@@ -22,7 +22,6 @@ public class JumpOn : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
         if (other.gameObject.CompareTag("WeakPoint"))
         {
             player.moveDirection.y += player.JumpForce;
@@ -32,7 +31,6 @@ public class JumpOn : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Button"))
         {
-            Debug.Log("HIT");
             button = other.GetComponent<Button>();
             button.Press();
         }

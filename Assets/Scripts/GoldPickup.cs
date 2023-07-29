@@ -15,11 +15,11 @@ public class GoldPickup : MonoBehaviour
         {
             if (gameObject.CompareTag("Coin"))
             {
-                FindObjectOfType<GameManager>().AddCoins(value);
+                FindObjectOfType<LevelManager>().AddCoins(value);
             }
             else if(gameObject.CompareTag("Cheese"))
             {
-                FindObjectOfType<GameManager>().AddCheese();
+                FindObjectOfType<LevelManager>().CheeseGet();
             }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             collectSound.Play();
