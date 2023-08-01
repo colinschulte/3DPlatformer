@@ -29,7 +29,7 @@ public class JumpOn : MonoBehaviour
             enemy = other.GetComponentInParent<Enemy>();
             enemy.Death();
         }
-        if (other.gameObject.CompareTag("Button"))
+        if (other.gameObject.CompareTag("Button") && player.isGroundPounding)
         {
             button = other.GetComponent<Button>();
             button.Press();

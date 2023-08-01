@@ -33,6 +33,7 @@ public class LevelManager : MonoBehaviour
 
     public void AddCoins(int coinsToAdd)
     {
+        Debug.Log("running AddCoins");
         currentCoins += coinsToAdd;
         coinText.text = "Coins: " + currentCoins;
     }

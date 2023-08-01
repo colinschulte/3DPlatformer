@@ -8,6 +8,7 @@ public class GoldPickup : MonoBehaviour
 
     public GameObject pickupEffect;
     public AudioSource collectSound;
+    public LevelManager levelManager;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,11 +16,11 @@ public class GoldPickup : MonoBehaviour
         {
             if (gameObject.CompareTag("Coin"))
             {
-                FindObjectOfType<LevelManager>().AddCoins(value);
+                levelManager.AddCoins(value);
             }
             else if(gameObject.CompareTag("Cheese"))
             {
-                FindObjectOfType<LevelManager>().CheeseGet();
+                levelManager.CheeseGet();
             }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             collectSound.Play();

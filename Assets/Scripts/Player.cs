@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
     private bool canMove;
-
+    public bool isGroundPounding;
     [SerializeField] public float JumpForce;
     [SerializeField] public float gravityScale;
 
@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     public bool isBouncing = false;
 
     public bool enemyStomped;
+    public int groundPoundPower;
 
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
@@ -91,6 +92,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        dashCounter = dashTime;
+        lastForward = playerModel.transform.forward;
     }
 
     private void OnEnable()
@@ -135,7 +138,9 @@ public class Player : MonoBehaviour
             //if on the ground, reset y movement and coyote counter
             if (controller.isGrounded)
             {
+                canMove = true;
                 canWallJump = false;
+                isGroundPounding = false;
 
                 if (slopeSlideVelocity != Vector3.zero)
                 {
@@ -255,6 +260,7 @@ public class Player : MonoBehaviour
                 isWallJumping = false;
                 canWallJump = false;
                 canMove = true;
+                wallJumpCounter = wallJumpTime;
             }
         }
         else
@@ -283,7 +289,7 @@ public class Player : MonoBehaviour
             isSliding = false;
         }
 
-        if (dash.WasPressedThisFrame() && canDash)
+        if (dash.WasPressedThisFrame() && canDash && !controller.isGrounded)
         {
             velocity = lastForward * dashSpeed;
             dashSound.Play();
@@ -296,7 +302,7 @@ public class Player : MonoBehaviour
             moveDirection = lastForward * dashSpeed;
             moveDirection.y = 2f;
             dashCounter -= Time.deltaTime;
-            if (dash.WasReleasedThisFrame())
+            if (dash.WasReleasedThisFrame() || crouch.triggered)
             {
                 dashCounter = 0;
             }
@@ -316,26 +322,24 @@ public class Player : MonoBehaviour
                 dashCooldownCount = dashCooldown;
             }
         }
-        //if (controller.isGrounded)
-        //{
-        //    maxSpeedChange = maxAcceleration * Time.deltaTime;
-        //}
-        //else
-        //{
-        //    maxSpeedChange = maxAirAcceleration * Time.deltaTime;
-        //}
+        
+        if (crouch.triggered)
+        {
+            moveDirection = Vector3.zero;
+            //yield return new WaitForSeconds(1);
+            moveDirection = (Vector3.down * groundPoundPower);
+            canMove = false;
+            isGroundPounding = true;
+        }
 
         velocity = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
         velocity.y = moveDirection.y;
-        //velocity.x = Mathf.MoveTowards(velocity.x, moveDirection.x, maxAcceleration);
-        //velocity.z = Mathf.MoveTowards(velocity.z, moveDirection.z, maxAcceleration);
 
         if (isSliding)
         {
             velocity = slopeSlideVelocity;
             velocity.y = moveDirection.y;
         }
-
 
         controller.Move(velocity * Time.deltaTime);
 
