@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class OpenDoor : MonoBehaviour
 {
+    [SerializeField] private float newX;
+    [SerializeField] private float newY;
+    [SerializeField] private float newZ;
 
     // Start is called before the first frame update
     void Start()
@@ -19,9 +22,9 @@ public class OpenDoor : MonoBehaviour
 
     public void Open()
     {
-        Quaternion newRotation = transform.rotation;
-        newRotation.y = 90f;
+        //Quaternion newRotation = transform.rotation;
+        //newRotation.y = 90f;
         //transform.rotation = newRotation;
-        transform.Rotate(0, 90, 0, Space.Self);
+        transform.Rotate(newX, newY, newZ, Space.Self);
     }
 }

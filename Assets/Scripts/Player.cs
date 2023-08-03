@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
     private bool canMove;
-    public bool isGroundPounding;
+    
     [SerializeField] public float JumpForce;
     [SerializeField] public float gravityScale;
 
@@ -39,6 +39,9 @@ public class Player : MonoBehaviour
 
     public bool enemyStomped;
     public int groundPoundPower;
+    public bool isGroundPounding;
+
+    public bool isClimbing;
 
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
@@ -120,147 +123,159 @@ public class Player : MonoBehaviour
     {
         if (knockbackCounter <= 0)
         {
-            float xStore = velocity.x;
-            float yStore = velocity.y;
-            float zStore = velocity.z;
+            if (!isClimbing)
+            {
+                float xStore = velocity.x;
+                float yStore = velocity.y;
+                float zStore = velocity.z;
 
-            if (canMove)
+                if (canMove)
+                {
+                    moveDirection = move.ReadValue<Vector2>();
+                    moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+                    float magnitude = moveDirection.magnitude;
+                    magnitude = Mathf.Clamp01(magnitude);
+                    moveDirection = moveDirection.normalized;
+                    moveDirection = magnitude * moveSpeed * moveDirection;
+                }
+                moveDirection.y = yStore;
+
+                //if on the ground, reset y movement and coyote counter
+                if (controller.isGrounded)
+                {
+                    canMove = true;
+                    canWallJump = false;
+                    isGroundPounding = false;
+
+                    if (slopeSlideVelocity != Vector3.zero)
+                    {
+                        isSliding = true;
+                    }
+                    if (isSliding == false)
+                    {
+                        moveDirection.y = 0f;
+                    }
+
+                    coyoteCounter = coyoteTime;
+                }
+                else
+                {
+
+                    coyoteCounter -= Time.deltaTime;
+                }
+
+                //check if Jump is pressed
+                if (jump.triggered)
+                {
+                    if (coyoteCounter > 0f && isSliding == false)
+                    {
+                        //Backflip
+                        if (crouch.IsPressed())
+                        {
+                            jumpFactor = 1.4f;
+                        }
+                        else
+                        {
+                            if (jumpCounter == 1)
+                            {
+                                jumpFactor = 1f;
+                                jumpCounter++;
+                                firstJumpActive = true;
+                            }
+                            else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                            {
+                                jumpFactor = 1f;
+                                jumpCounter++;
+                                secondJumpTimer = 0f;
+                                firstJumpActive = false;
+                                secondJumpActive = true;
+                            }
+                            else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                            {
+                                jumpFactor = 1.3f;
+                                jumpCounter++;
+                                thirdJumpTimer = 0f;
+                                firstJumpActive = false;
+                                secondJumpActive = false;
+                            }
+                        }
+                        moveDirection.y = JumpForce * jumpFactor;
+                        jumpSound.Play();
+                        coyoteCounter = 0f;
+                    }
+                    else if (canWallJump)
+                    {
+                        velocity = Vector3.zero;
+                        moveDirection = wallNormal * wallPushback;
+                        moveDirection.y = JumpForce * jumpFactor;
+                        jumpSound.Play();
+                        wallJumpCounter = wallJumpTime;
+                        canWallJump = false;
+                        canMove = false;
+                        isWallJumping = true;
+                    }
+                }
+                if (jumpCounter > 3)
+                {
+                    jumpCounter = 1;
+                }
+                if (secondJumpTimer >= jumpTime)
+                {
+                    jumpFactor = 1f;
+                    jumpCounter = 1;
+                    secondJumpTimer = 0f;
+                    firstJumpActive = false;
+                }
+
+                if (thirdJumpTimer >= jumpTime)
+                {
+                    jumpFactor = 1f;
+                    jumpCounter = 1;
+                    thirdJumpTimer = 0f;
+                    secondJumpActive = false;
+                }
+                if (firstJumpActive && coyoteCounter > 0f)
+                {
+                    secondJumpTimer += Time.deltaTime;
+                }
+
+                if (secondJumpActive && coyoteCounter > 0f)
+                {
+                    thirdJumpTimer += Time.deltaTime;
+                }
+
+                if (crouch.WasReleasedThisFrame())
+                {
+                    jumpFactor = 1f;
+                }
+
+                //if Jump is let go then start falling
+                if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
+                {
+                    moveDirection.y = -0.2f;
+                }
+
+                if (isWallJumping)
+                {
+                    wallJumpCounter -= Time.deltaTime;
+                }
+
+                if (wallJumpCounter <= 0)
+                {
+                    isWallJumping = false;
+                    canWallJump = false;
+                    canMove = true;
+                    wallJumpCounter = wallJumpTime;
+                }
+            }
+            else
             {
                 moveDirection = move.ReadValue<Vector2>();
-                moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+                moveDirection = (transform.up * moveDirection.y) + (transform.right * moveDirection.x);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
                 moveDirection = magnitude * moveSpeed * moveDirection;
-            }
-            moveDirection.y = yStore;
-
-            //if on the ground, reset y movement and coyote counter
-            if (controller.isGrounded)
-            {
-                canMove = true;
-                canWallJump = false;
-                isGroundPounding = false;
-
-                if (slopeSlideVelocity != Vector3.zero)
-                {
-                    isSliding = true;
-                }
-                if (isSliding == false)
-                {
-                    moveDirection.y = 0f;
-                }
-
-                coyoteCounter = coyoteTime;
-            }
-            else
-            {
-
-                coyoteCounter -= Time.deltaTime;
-            }
-
-            //check if Jump is pressed
-            if (jump.triggered)
-            {
-                if (coyoteCounter > 0f && isSliding == false)
-                {
-                    //Backflip
-                    if (crouch.IsPressed())
-                    {
-                        jumpFactor = 1.4f;
-                    }
-                    else
-                    {
-                        if (jumpCounter == 1)
-                        {
-                            jumpFactor = 1f;
-                            jumpCounter++;
-                            firstJumpActive = true;
-                        }
-                        else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
-                        {
-                            jumpFactor = 1f;
-                            jumpCounter++;
-                            secondJumpTimer = 0f;
-                            firstJumpActive = false;
-                            secondJumpActive = true;
-                        }
-                        else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                        {
-                            jumpFactor = 1.3f;
-                            jumpCounter++;
-                            thirdJumpTimer = 0f;
-                            firstJumpActive = false;
-                            secondJumpActive = false;
-                        }
-                    }
-                    moveDirection.y = JumpForce * jumpFactor;
-                    jumpSound.Play();
-                    coyoteCounter = 0f;
-                }
-                else if (canWallJump)
-                {
-                    velocity = Vector3.zero;
-                    moveDirection = wallNormal * wallPushback;
-                    moveDirection.y = JumpForce * jumpFactor;
-                    jumpSound.Play();
-                    wallJumpCounter = wallJumpTime;
-                    canWallJump = false;
-                    canMove = false;
-                    isWallJumping = true;
-                }
-            }
-            if (jumpCounter > 3)
-            {
-                jumpCounter = 1;
-            }
-            if (secondJumpTimer >= jumpTime)
-            {
-                jumpFactor = 1f;
-                jumpCounter = 1;
-                secondJumpTimer = 0f;
-                firstJumpActive = false;
-            }
-
-            if (thirdJumpTimer >= jumpTime)
-            {
-                jumpFactor = 1f;
-                jumpCounter = 1;
-                thirdJumpTimer = 0f;
-                secondJumpActive = false;
-            }
-            if (firstJumpActive && coyoteCounter > 0f)
-            {
-                secondJumpTimer += Time.deltaTime;
-            }
-
-            if (secondJumpActive && coyoteCounter > 0f)
-            {
-                thirdJumpTimer += Time.deltaTime;
-            }
-
-            if(crouch.WasReleasedThisFrame())
-            {
-                jumpFactor = 1f;
-            }
-
-            //if Jump is let go then start falling
-            if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
-            {
-                moveDirection.y = -0.2f;
-            }
-
-            if (isWallJumping)
-            {
-                wallJumpCounter -= Time.deltaTime;
-            }
-
-            if(wallJumpCounter <= 0)
-            {
-                isWallJumping = false;
-                canWallJump = false;
-                canMove = true;
-                wallJumpCounter = wallJumpTime;
             }
         }
         else
@@ -274,6 +289,7 @@ public class Player : MonoBehaviour
         {
             moveDirection.y = bounceForce;
             isBouncing = false;
+            isGroundPounding = false;
         }
 
         if (enemyStomped)
@@ -361,6 +377,22 @@ public class Player : MonoBehaviour
             wallNormal = hit.normal;
             canWallJump = true;
             lastWallNormal = wallNormal;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Climbable"))
+        {
+            isClimbing = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Climbable"))
+        {
+            isClimbing = false;
         }
     }
 
