@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     public bool isGroundPounding;
 
     public bool isClimbing;
+    public Climb climbObject;
 
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
@@ -367,6 +368,15 @@ public class Player : MonoBehaviour
             //playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
             playerModel.transform.rotation = newRotation;
             lastForward = playerModel.transform.forward;
+
+            if (isClimbing)
+            {
+                playerModel.transform.LookAt(climbObject.transform);
+                Quaternion g = transform.rotation;
+                g.x = 0;
+                g.z = 0;
+                playerModel.transform.rotation = g;
+            }
         }
     }
 

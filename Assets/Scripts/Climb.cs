@@ -21,6 +21,7 @@ public class Climb : MonoBehaviour
         if(other.gameObject.CompareTag("Player"))
         {
             other.gameObject.GetComponent<Player>().isClimbing = true;
+            other.gameObject.GetComponent<Player>().climbObject = this;
         }
     }
     private void OnTriggerExit(Collider other)
