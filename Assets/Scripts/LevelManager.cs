@@ -12,6 +12,7 @@ public class LevelManager : MonoBehaviour
     public Text cheeseText;
 
     [SerializeField] private int maxCoins;
+    private GameObject coins;
     [SerializeField] private GameObject coinCheese;
     public bool allCoinsCollected = false;
 
@@ -19,6 +20,8 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         coinCheese.SetActive(false);
+        coins = GameObject.Find("Coins");
+        maxCoins = coins.transform.childCount;
     }
 
     // Update is called once per frame
@@ -33,7 +36,6 @@ public class LevelManager : MonoBehaviour
 
     public void AddCoins(int coinsToAdd)
     {
-        Debug.Log("running AddCoins");
         currentCoins += coinsToAdd;
         coinText.text = "Coins: " + currentCoins;
     }
