@@ -5,7 +5,7 @@ using UnityEngine;
 public class Button : MonoBehaviour
 {
     public bool buttonPressed = false;
-    public OpenDoor openDoor;
+    public List<OpenDoor> openDoors;
 
     // Start is called before the first frame update
     void Start()
@@ -21,12 +21,17 @@ public class Button : MonoBehaviour
 
     public void Press()
     {
-        Vector3 newPosition = transform.position;
-        newPosition.y -= 0.24f;
-        transform.position = newPosition;
+        if (!buttonPressed) { 
+            Vector3 newPosition = transform.position;
+            newPosition.y -= 0.24f;
+            transform.position = newPosition;
 
-        openDoor.Open();
-        buttonPressed = true;
+            foreach(OpenDoor openDoor in openDoors)
+            {
+                openDoor.Open();
+            }
+            buttonPressed = true;
+        }
     }
 }
 
