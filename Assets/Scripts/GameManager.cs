@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public int CheesesCollected;
 
+    public float musicVolume;
 
     // Start is called before the first frame update
     void Start()
