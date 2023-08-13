@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 4780481885130047844}
   - component: {fileID: 9092304250961423611}
   m_Layer: 2
-  m_Name: Particle System
+  m_Name: StepClouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4895,12 +4895,12 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8954977011191089273}
+  - {fileID: 723190853951006188}
   - {fileID: 3750508004866531873}
   - {fileID: 4863179659282118934}
-  - {fileID: 723190853951006188}
   - {fileID: 8226068750617542932}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3192039710163055045
 MeshFilter:
@@ -4967,7 +4967,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -5028,6 +5028,10 @@ MonoBehaviour:
   bounceForce: 30
   isBouncing: 0
   enemyStomped: 0
+  groundPoundPower: 20
+  isGroundPounding: 0
+  isClimbing: 0
+  climbObject: {fileID: 0}
   wallPushback: 10
   wallJumpTime: 0.4
   dashSpeed: 20
@@ -5107,7 +5111,7 @@ GameObject:
   - component: {fileID: 2114235979500763850}
   m_Layer: 2
   m_Name: Stomp
-  m_TagString: Player
+  m_TagString: Stomp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5170,7 +5174,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100002, guid: 28a5e79925e3ce04a82856c16a572cbe, type: 3}
       propertyPath: m_Name
-      value: BlobShadowProjector
+      value: DropShadow
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 28a5e79925e3ce04a82856c16a572cbe, type: 3}
       propertyPath: m_RootOrder

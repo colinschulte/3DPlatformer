@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class LevelManager : MonoBehaviour
     private GameObject pauseMenu;
     private Slider volumeSlider;
     private Volume musicVolume;
+    public CinemachineFreeLook freeLook;
+    private Slider cameraSlider;
+    private bool xInvertOption;
+    private bool yInvertOption;
     [SerializeField] private GameObject coinCheese;
     public bool allCoinsCollected = false;
 
@@ -32,6 +37,10 @@ public class LevelManager : MonoBehaviour
         pauseMenu = GameObject.Find("PauseMenu");
         gameManager = FindObjectOfType<GameManager>();
         volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
+        cameraSlider = GameObject.Find("CameraSensitivity").GetComponent<Slider>();
+        xInvertOption = gameManager.xInvert;
+        yInvertOption = gameManager.yInvert;
+        freeLook = FindObjectOfType<CinemachineFreeLook>();
         coinCheese.SetActive(false);
         if (pauseMenu)
         {
@@ -53,6 +62,8 @@ public class LevelManager : MonoBehaviour
             volumeSlider.value = gameManager.musicVolume;
         }
         musicVolume.SetVolume(volumeSlider.value);
+        freeLook.m_XAxis.m_InvertInput = xInvertOption;
+        freeLook.m_YAxis.m_InvertInput = yInvertOption;
         options.SetActive(false);
     }
 
