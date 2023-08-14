@@ -11,6 +11,7 @@ public class PauseGame : MonoBehaviour
     public AudioSource levelMusic;
     public GameObject pauseMenu, optionsMenu;
     public GameObject mainCamera;
+    public Player player;
     public AudioSource pauseOpen;
     public AudioSource pauseClose;
     public AudioSource buttonPress;
@@ -26,6 +27,7 @@ public class PauseGame : MonoBehaviour
     {
         playerControls = new PlayerControls();
         activeScene = SceneManager.GetActiveScene();
+        player = FindObjectOfType<Player>();
     }
 
     private void OnEnable()
@@ -50,6 +52,7 @@ public class PauseGame : MonoBehaviour
                 {
                     Time.timeScale = 0;
                     gamePaused = true;
+                    player.canMove = false;
                     Cursor.visible = true;
                     levelMusic.Pause();
                     pauseOpen.Play();
@@ -61,6 +64,7 @@ public class PauseGame : MonoBehaviour
                 {
                     Time.timeScale = 1;
                     gamePaused = false;
+                    player.canMove = true;
                     //Cursor.visible = false;
                     pauseClose.Play();
                     levelMusic.UnPause();

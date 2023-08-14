@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
-    private bool canMove;
+    public bool canMove;
     
     [SerializeField] public float JumpForce;
     [SerializeField] public float gravityScale;
@@ -37,9 +37,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
 
+    private bool crouchHeld;
+    private bool isCrouching;
+    private bool isBackflipping;
     public bool enemyStomped;
     public int groundPoundPower;
     public bool isGroundPounding;
+    public float groundPoundHangtime;
+    public float groundPoundHangcount;
 
     public bool isClimbing;
     public Climb climbObject;
@@ -124,12 +129,23 @@ public class Player : MonoBehaviour
     {
         if (knockbackCounter <= 0)
         {
-            if (!isClimbing)
-            {
-                float xStore = velocity.x;
-                float yStore = velocity.y;
-                float zStore = velocity.z;
+            float xStore = velocity.x;
+            float yStore = velocity.y;
+            float zStore = velocity.z;
 
+            if (isClimbing)
+            {
+                moveDirection = move.ReadValue<Vector2>();
+                moveDirection = (transform.up * moveDirection.y) + (transform.right * moveDirection.x);
+                float magnitude = moveDirection.magnitude;
+                magnitude = Mathf.Clamp01(magnitude);
+                moveDirection = moveDirection.normalized;
+                moveDirection = magnitude * moveSpeed * moveDirection;
+                canWallJump = true;
+                
+            }
+            else
+            {
                 if (canMove)
                 {
                     moveDirection = move.ReadValue<Vector2>();
@@ -140,233 +156,282 @@ public class Player : MonoBehaviour
                     moveDirection = magnitude * moveSpeed * moveDirection;
                 }
                 moveDirection.y = yStore;
+            }
 
-                //if on the ground, reset y movement and coyote counter
-                if (controller.isGrounded)
+            //if on the ground, reset y movement and coyote counter
+            if (controller.isGrounded)
+            {
+                canMove = true;
+                canWallJump = false;
+                isGroundPounding = false;
+                isBackflipping = false;
+
+                if (slopeSlideVelocity != Vector3.zero)
                 {
-                    canMove = true;
-                    canWallJump = false;
-                    isGroundPounding = false;
-
-                    if (slopeSlideVelocity != Vector3.zero)
-                    {
-                        isSliding = true;
-                    }
-                    if (isSliding == false)
-                    {
-                        moveDirection.y = 0f;
-                    }
-
-                    coyoteCounter = coyoteTime;
+                    isSliding = true;
                 }
-                else
+                if (isSliding == false)
                 {
-
-                    coyoteCounter -= Time.deltaTime;
+                    moveDirection.y = 0f;
                 }
 
-                //check if Jump is pressed
-                if (jump.triggered)
-                {
-                    if (coyoteCounter > 0f && isSliding == false)
-                    {
-                        //Backflip
-                        if (crouch.IsPressed())
-                        {
-                            jumpFactor = 1.4f;
-                        }
-                        else
-                        {
-                            if (jumpCounter == 1)
-                            {
-                                jumpFactor = 1f;
-                                jumpCounter++;
-                                firstJumpActive = true;
-                            }
-                            else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
-                            {
-                                jumpFactor = 1f;
-                                jumpCounter++;
-                                secondJumpTimer = 0f;
-                                firstJumpActive = false;
-                                secondJumpActive = true;
-                            }
-                            else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                            {
-                                jumpFactor = 1.3f;
-                                jumpCounter++;
-                                thirdJumpTimer = 0f;
-                                firstJumpActive = false;
-                                secondJumpActive = false;
-                            }
-                        }
-                        moveDirection.y = JumpForce * jumpFactor;
-                        jumpSound.Play();
-                        coyoteCounter = 0f;
-                    }
-                    else if (canWallJump)
-                    {
-                        velocity = Vector3.zero;
-                        moveDirection = wallNormal * wallPushback;
-                        moveDirection.y = JumpForce * jumpFactor;
-                        jumpSound.Play();
-                        wallJumpCounter = wallJumpTime;
-                        canWallJump = false;
-                        canMove = false;
-                        isWallJumping = true;
-                    }
-                }
-                if (jumpCounter > 3)
-                {
-                    jumpCounter = 1;
-                }
-                if (secondJumpTimer >= jumpTime)
-                {
-                    jumpFactor = 1f;
-                    jumpCounter = 1;
-                    secondJumpTimer = 0f;
-                    firstJumpActive = false;
-                }
-
-                if (thirdJumpTimer >= jumpTime)
-                {
-                    jumpFactor = 1f;
-                    jumpCounter = 1;
-                    thirdJumpTimer = 0f;
-                    secondJumpActive = false;
-                }
-                if (firstJumpActive && coyoteCounter > 0f)
-                {
-                    secondJumpTimer += Time.deltaTime;
-                }
-
-                if (secondJumpActive && coyoteCounter > 0f)
-                {
-                    thirdJumpTimer += Time.deltaTime;
-                }
-
-                if (crouch.WasReleasedThisFrame())
-                {
-                    jumpFactor = 1f;
-                }
-
-                //if Jump is let go then start falling
-                if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
-                {
-                    moveDirection.y = -0.2f;
-                }
-
-                if (isWallJumping)
-                {
-                    wallJumpCounter -= Time.deltaTime;
-                }
-
-                if (wallJumpCounter <= 0)
-                {
-                    isWallJumping = false;
-                    canWallJump = false;
-                    canMove = true;
-                    wallJumpCounter = wallJumpTime;
-                }
+                coyoteCounter = coyoteTime;
             }
             else
             {
-                moveDirection = move.ReadValue<Vector2>();
-                moveDirection = (transform.up * moveDirection.y) + (transform.right * moveDirection.x);
-                float magnitude = moveDirection.magnitude;
-                magnitude = Mathf.Clamp01(magnitude);
-                moveDirection = moveDirection.normalized;
-                moveDirection = magnitude * moveSpeed * moveDirection;
+
+                coyoteCounter -= Time.deltaTime;
             }
+
+            //check if Jump is pressed
+            if (jump.triggered)
+            {
+                if (coyoteCounter > 0f && isSliding == false)
+                {
+                    //Backflip
+                    if (isCrouching)
+                    {
+                        jumpFactor = 1.4f;
+                        isBackflipping = true;
+                        canMove = true;
+                        //isCrouching = false;
+                    }
+                    else
+                    {
+                        if (jumpCounter == 1)
+                        {
+                            jumpFactor = 1f;
+                            jumpCounter++;
+                            firstJumpActive = true;
+                        }
+                        else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                        {
+                            jumpFactor = 1f;
+                            jumpCounter++;
+                            secondJumpTimer = 0f;
+                            firstJumpActive = false;
+                            secondJumpActive = true;
+                        }
+                        else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                        {
+                            jumpFactor = 1.3f;
+                            jumpCounter++;
+                            thirdJumpTimer = 0f;
+                            firstJumpActive = false;
+                            secondJumpActive = false;
+                        }
+                    }
+                    moveDirection.y = JumpForce * jumpFactor;
+                    jumpSound.Play();
+                    coyoteCounter = 0f;
+                }
+                else if (canWallJump)
+                {
+                    velocity = Vector3.zero;
+                    moveDirection = wallNormal * wallPushback;
+                    moveDirection.y = JumpForce * jumpFactor;
+                    jumpSound.Play();
+                    wallJumpCounter = wallJumpTime;
+                    canWallJump = false;
+                    canMove = false;
+                    isWallJumping = true;
+                }
+            }
+            if (jumpCounter > 3)
+            {
+                jumpCounter = 1;
+            }
+            if (secondJumpTimer >= jumpTime)
+            {
+                jumpFactor = 1f;
+                jumpCounter = 1;
+                secondJumpTimer = 0f;
+                firstJumpActive = false;
+            }
+
+            if (thirdJumpTimer >= jumpTime)
+            {
+                jumpFactor = 1f;
+                jumpCounter = 1;
+                thirdJumpTimer = 0f;
+                secondJumpActive = false;
+            }
+            if (firstJumpActive && coyoteCounter > 0f)
+            {
+                secondJumpTimer += Time.deltaTime;
+            }
+
+            if (secondJumpActive && coyoteCounter > 0f)
+            {
+                thirdJumpTimer += Time.deltaTime;
+            }
+
+            if (crouch.WasReleasedThisFrame())
+            {
+                jumpFactor = 1f;
+            }
+
+            //if Jump is let go then start falling
+            if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
+            {
+                moveDirection.y = -0.2f;
+            }
+
+            if (isWallJumping)
+            {
+                wallJumpCounter -= Time.deltaTime;
+            }
+
+            if (wallJumpCounter <= 0)
+            {
+                isWallJumping = false;
+                canWallJump = false;
+                canMove = true;
+                wallJumpCounter = wallJumpTime;
+            }
+
+            moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
+
+            if (isBouncing)
+            {
+                moveDirection.y = bounceForce;
+                isBouncing = false;
+                isGroundPounding = false;
+                canDash = true;
+                canMove = true;
+            }
+
+            if (enemyStomped)
+            {
+                moveDirection.y = 1f;
+                enemyStomped = false;
+            }
+
+            setSlopeSlideVelocity();
+
+            if(slopeSlideVelocity == Vector3.zero)
+            {
+                isSliding = false;
+            }
+
+            if (dash.WasPressedThisFrame() && canDash && !controller.isGrounded)
+            {
+                velocity = lastForward * dashSpeed;
+                dashSound.Play();
+                isDashing = true;
+                canDash = false;
+            }
+
+            if (isDashing)
+            {
+                moveDirection = lastForward * dashSpeed;
+                moveDirection.y = 2f;
+                dashCounter -= Time.deltaTime;
+                if (dash.WasReleasedThisFrame() || crouch.triggered)
+                {
+                    dashCounter = 0;
+                }
+                if (dashCounter <= 0)
+                {
+                    isDashing = false;
+                    dashCounter = dashTime;
+                }
+            }
+
+            if (!isDashing && !canDash && controller.isGrounded)
+            {
+                dashCooldownCount -= Time.deltaTime;
+                if (dashCooldownCount <= 0)
+                {
+                    canDash = true;
+                    dashCooldownCount = dashCooldown;
+                }
+            }
+        
+            if (crouch.triggered)
+            {
+                crouchHeld = true;
+                if (controller.isGrounded)
+                {
+                    isCrouching = true;
+                }
+                else
+                {
+                    velocity = Vector3.zero;
+                    groundPoundHangcount = groundPoundHangtime;
+                    canMove = false;
+                    isGroundPounding = true;
+                }
+            }
+
+            if(crouch.WasReleasedThisFrame())
+            {
+                isCrouching = false;
+            }
+
+            if (isCrouching)
+            {
+                if (controller.isGrounded)
+                {
+                    canMove = false;
+                    yStore = moveDirection.y;
+                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.2f);
+                    moveDirection.y = yStore;
+                }
+            }
+
+            if (isBackflipping)
+            {
+                canMove = true;
+                yStore = moveDirection.y;
+                moveDirection = Vector3.MoveTowards(velocity, moveDirection, 0.2f);
+                moveDirection.y = yStore;
+            }
+
+            if (isGroundPounding)
+            {
+                if(groundPoundHangcount <= 0)
+                {
+                    moveDirection = (Vector3.down * groundPoundPower);
+                }
+                else
+                {
+                    moveDirection = Vector3.zero;
+                    groundPoundHangcount -= Time.deltaTime;
+                }
+            }
+        
+            velocity = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
+            velocity.y = moveDirection.y;
+
+
+            if (isSliding)
+            {
+                velocity = slopeSlideVelocity;
+                velocity.y = moveDirection.y;
+            }
+
+            controller.Move(velocity * Time.deltaTime);
+
         }
         else
         {
             knockbackCounter -= Time.deltaTime;
         }
-
-        moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
-
-        if (isBouncing)
-        {
-            moveDirection.y = bounceForce;
-            isBouncing = false;
-            isGroundPounding = false;
-        }
-
-        if (enemyStomped)
-        {
-            moveDirection.y = 1f;
-            enemyStomped = false;
-        }
-
-        setSlopeSlideVelocity();
-
-        if(slopeSlideVelocity == Vector3.zero)
-        {
-            isSliding = false;
-        }
-
-        if (dash.WasPressedThisFrame() && canDash && !controller.isGrounded)
-        {
-            velocity = lastForward * dashSpeed;
-            dashSound.Play();
-            isDashing = true;
-            canDash = false;
-        }
-
-        if (isDashing)
-        {
-            moveDirection = lastForward * dashSpeed;
-            moveDirection.y = 2f;
-            dashCounter -= Time.deltaTime;
-            if (dash.WasReleasedThisFrame() || crouch.triggered)
-            {
-                dashCounter = 0;
-            }
-            if (dashCounter <= 0)
-            {
-                isDashing = false;
-                dashCounter = dashTime;
-            }
-        }
-
-        if (!isDashing && !canDash && controller.isGrounded)
-        {
-            dashCooldownCount -= Time.deltaTime;
-            if (dashCooldownCount <= 0)
-            {
-                canDash = true;
-                dashCooldownCount = dashCooldown;
-            }
-        }
-        
-        if (crouch.triggered)
-        {
-            moveDirection = Vector3.zero;
-            //yield return new WaitForSeconds(1);
-            moveDirection = (Vector3.down * groundPoundPower);
-            canMove = false;
-            isGroundPounding = true;
-        }
-
-        velocity = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
-        velocity.y = moveDirection.y;
-
-        if (isSliding)
-        {
-            velocity = slopeSlideVelocity;
-            velocity.y = moveDirection.y;
-        }
-
-        controller.Move(velocity * Time.deltaTime);
-
         //Move player direction
         if (moveDirection.x != 0 || moveDirection.z != 0)
         {
+            Quaternion newRotation;
             transform.rotation = Quaternion.Euler(0f, cameraTransform.rotation.eulerAngles.y, 0f);
-            Quaternion newRotation = Quaternion.LookRotation(new Vector3(velocity.x, 0f, velocity.z));
-            //playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
-            playerModel.transform.rotation = newRotation;
+            Vector3 newLookVector = new Vector3(moveDirection.x, 0f, moveDirection.z);
+            if (newLookVector != Vector3.zero)
+            {
+                newRotation = Quaternion.LookRotation(newLookVector);
+                if (canMove)
+                {
+                    playerModel.transform.rotation = newRotation;
+                }
+            }
             lastForward = playerModel.transform.forward;
 
             if (isClimbing)
@@ -395,6 +460,9 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Climbable"))
         {
             isClimbing = true;
+            wallNormal = collision.transform.position;
+            canWallJump = true;
+            lastWallNormal = wallNormal;
         }
     }
 
@@ -403,6 +471,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Climbable"))
         {
             isClimbing = false;
+            canWallJump = false;
         }
     }
 
