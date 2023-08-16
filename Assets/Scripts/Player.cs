@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
 
     private bool crouchHeld;
     private bool isCrouching;
-    private bool isBackflipping;
+    [SerializeField] private bool isBackflipping;
     public bool enemyStomped;
     public int groundPoundPower;
     public bool isGroundPounding;
@@ -188,13 +188,22 @@ public class Player : MonoBehaviour
             {
                 if (coyoteCounter > 0f && isSliding == false)
                 {
-                    //Backflip
+                    
                     if (isCrouching)
                     {
-                        jumpFactor = 1.4f;
-                        isBackflipping = true;
-                        canMove = true;
-                        //isCrouching = false;
+                        if(velocity.x != 0 || velocity.x != 0)
+                        {
+                            //long jump
+                            jumpFactor = 1f;
+                            canMove = false;
+                        }
+                        else
+                        {
+                            //backflip
+                            jumpFactor = 1.4f;
+                            isBackflipping = true;
+                            canMove = true;
+                        }
                     }
                     else
                     {
@@ -272,7 +281,7 @@ public class Player : MonoBehaviour
             }
 
             //if Jump is let go then start falling
-            if (jump.WasReleasedThisFrame() && moveDirection.y > 0)
+            if (jump.WasReleasedThisFrame() && moveDirection.y > 0 && !isBackflipping)
             {
                 moveDirection.y = -0.2f;
             }
