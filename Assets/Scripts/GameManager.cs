@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
         freeLook = FindObjectOfType<CinemachineFreeLook>();
         CameraXMax = 200;
-        CameraYMax = 3;
+        CameraYMax = 2;
     }
 
     // Update is called once per frame

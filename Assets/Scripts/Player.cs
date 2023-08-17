@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private PauseGame pause;
 
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float climbSpeed;
     [SerializeField] private float forwardInfluence;
     [SerializeField] private float sidewaysInfluence;
     //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
 
-    private bool isCrouching;
+    [SerializeField] private bool isCrouching;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
     public bool enemyStomped;
@@ -50,13 +51,13 @@ public class Player : MonoBehaviour
     public float groundPoundHangtime;
     public float groundPoundHangcount;
 
-    public bool isClimbing;
+    [SerializeField] public bool isClimbing;
     public Climb climbObject;
 
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
-    private bool canWallJump;
-    private bool isWallJumping;
+    [SerializeField] private bool canWallJump;
+    [SerializeField] private bool isWallJumping;
     [SerializeField] private float wallJumpTime;
     private float wallJumpCounter;
     private Vector3 lastWallNormal;
@@ -142,10 +143,11 @@ public class Player : MonoBehaviour
             {
                 moveDirection = move.ReadValue<Vector2>();
                 moveDirection = (transform.up * moveDirection.y) + (transform.right * moveDirection.x);
+                moveDirection += playerModel.transform.forward;
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
-                moveDirection = magnitude * moveSpeed * moveDirection;
+                moveDirection = magnitude * climbSpeed * moveDirection;
                 canWallJump = true;
                 
             }
@@ -254,12 +256,17 @@ public class Player : MonoBehaviour
                 else if (canWallJump)
                 {
                     velocity = Vector3.zero;
+                    if (isClimbing)
+                    {
+                        wallNormal = -playerModel.transform.forward;
+                    }
                     moveDirection = wallNormal * wallPushback;
                     moveDirection.y = JumpForce * jumpFactor;
                     jumpSound.Play();
                     wallJumpCounter = wallJumpTime;
                     canWallJump = false;
                     canMove = false;
+                    isClimbing = false;
                     isWallJumping = true;
                 }
             }
@@ -316,7 +323,10 @@ public class Player : MonoBehaviour
                 wallJumpCounter = wallJumpTime;
             }
 
-            moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
+            if (!isClimbing)
+            {
+                moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
+            }
 
             if (isBouncing)
             {
@@ -481,8 +491,8 @@ public class Player : MonoBehaviour
 
             if (isClimbing)
             {
-                playerModel.transform.LookAt(climbObject.transform);
-                Quaternion g = transform.rotation;
+                playerModel.transform.LookAt(climbObject.transform.position);
+                Quaternion g = playerModel.transform.rotation;
                 g.x = 0;
                 g.z = 0;
                 playerModel.transform.rotation = g;

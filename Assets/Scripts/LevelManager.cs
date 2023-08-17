@@ -7,7 +7,7 @@ using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
-    private GameManager gameManager;
+    [SerializeField] private GameManager gameManager;
     public int currentCoins;
     public Text coinText;
     public Scene activeScene;
@@ -85,6 +85,11 @@ public class LevelManager : MonoBehaviour
         if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
         {
             cameraOptions.SetSensitivity(cameraSlider.value);
+        }
+        if (gameManager.CheesesCollected== 0)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+            cheeseText.text = "Cheese: " + gameManager.CheesesCollected;
         }
     }
 
