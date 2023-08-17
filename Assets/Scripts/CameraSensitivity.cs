@@ -9,7 +9,7 @@ public class CameraSensitivty : MonoBehaviour
     public GameManager gameManager;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
         freeLook = FindObjectOfType<CinemachineFreeLook>();
@@ -23,6 +23,7 @@ public class CameraSensitivty : MonoBehaviour
 
     public void SetSensitivity(float sliderValue)
     {
+        gameManager = FindObjectOfType<GameManager>();
         freeLook.m_XAxis.m_MaxSpeed = gameManager.CameraXMax * sliderValue;
         freeLook.m_YAxis.m_MaxSpeed = gameManager.CameraYMax * sliderValue;
         gameManager.CameraXCurrent = freeLook.m_XAxis.m_MaxSpeed;

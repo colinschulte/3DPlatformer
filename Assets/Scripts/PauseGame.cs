@@ -48,11 +48,12 @@ public class PauseGame : MonoBehaviour
         {
             if (pause.triggered)
             {
-                if(gamePaused == false)
+                if(!gamePaused)
                 {
                     Time.timeScale = 0;
                     gamePaused = true;
                     player.canMove = false;
+                    player.canTurn = false;
                     Cursor.visible = true;
                     levelMusic.Pause();
                     pauseOpen.Play();
@@ -65,6 +66,7 @@ public class PauseGame : MonoBehaviour
                     Time.timeScale = 1;
                     gamePaused = false;
                     player.canMove = true;
+                    player.canTurn = true;
                     //Cursor.visible = false;
                     pauseClose.Play();
                     levelMusic.UnPause();

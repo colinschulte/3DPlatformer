@@ -21,6 +21,7 @@ public class LevelManager : MonoBehaviour
     private GameObject pauseMenu;
     private Slider volumeSlider;
     private Volume musicVolume;
+    private CameraSensitivty cameraOptions;
     public CinemachineFreeLook freeLook;
     private Slider cameraSlider;
     private bool xInvertOption;
@@ -42,11 +43,13 @@ public class LevelManager : MonoBehaviour
         yInvertOption = gameManager.yInvert;
         freeLook = FindObjectOfType<CinemachineFreeLook>();
         coinCheese.SetActive(false);
+        options.SetActive(true);
         if (pauseMenu)
         {
             pauseMenu.SetActive(false);
         }
         musicVolume = volumeSlider.GetComponent<Volume>();
+        cameraOptions = cameraSlider.GetComponent<CameraSensitivty>();
         if (coins)
         {
             maxCoins = coins.transform.childCount;
@@ -62,6 +65,9 @@ public class LevelManager : MonoBehaviour
             volumeSlider.value = gameManager.musicVolume;
         }
         musicVolume.SetVolume(volumeSlider.value);
+        cameraOptions.freeLook = freeLook;
+        cameraOptions.gameManager = gameManager;
+        cameraOptions.SetSensitivity(cameraSlider.value);
         freeLook.m_XAxis.m_InvertInput = xInvertOption;
         freeLook.m_YAxis.m_InvertInput = yInvertOption;
         options.SetActive(false);
@@ -74,6 +80,11 @@ public class LevelManager : MonoBehaviour
         {
             coinCheese.SetActive(true);
             allCoinsCollected = true;
+        }
+
+        if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
+        {
+            cameraOptions.SetSensitivity(cameraSlider.value);
         }
     }
 

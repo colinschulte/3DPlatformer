@@ -5014,11 +5014,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 832740023498546749}
-  moveSpeed: 11
-  maxAcceleration: 25
-  maxAirAcceleration: 50
-  maxSpeedChange: 0.7
+  moveSpeed: 12
+  forwardInfluence: 0
+  sidewaysInfluence: 0
+  maxAcceleration: 1
+  maxAirAcceleration: 1
+  maxSpeedChange: 1
   velocity: {x: 0, y: 0, z: 0}
+  canMove: 0
+  canTurn: 0
   JumpForce: 18
   gravityScale: 5
   coyoteTime: 0.3
@@ -5027,9 +5031,13 @@ MonoBehaviour:
   jumpCounter: 1
   bounceForce: 30
   isBouncing: 0
+  isBackflipping: 0
+  isLongJumping: 0
   enemyStomped: 0
   groundPoundPower: 20
   isGroundPounding: 0
+  groundPoundHangtime: 0.25
+  groundPoundHangcount: 0
   isClimbing: 0
   climbObject: {fileID: 0}
   wallPushback: 10

@@ -37,8 +37,8 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         freeLook = FindObjectOfType<CinemachineFreeLook>();
-        CameraXMax = freeLook.m_XAxis.m_MaxSpeed;
-        CameraYMax = freeLook.m_YAxis.m_MaxSpeed;
+        CameraXMax = 200;
+        CameraYMax = 3;
     }
 
     // Update is called once per frame

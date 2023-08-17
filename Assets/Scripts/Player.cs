@@ -6,8 +6,11 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public Animator animator;
+    private PauseGame pause;
 
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float forwardInfluence;
+    [SerializeField] private float sidewaysInfluence;
     //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
     [SerializeField] private float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
     [SerializeField] private float maxAirAcceleration;
@@ -19,7 +22,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxSpeedChange;
     [SerializeField] private Vector3 velocity;
     public bool canMove;
-    
+    public bool canTurn;
+
     [SerializeField] public float JumpForce;
     [SerializeField] public float gravityScale;
 
@@ -37,9 +41,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
 
-    private bool crouchHeld;
     private bool isCrouching;
     [SerializeField] private bool isBackflipping;
+    [SerializeField] private bool isLongJumping;
     public bool enemyStomped;
     public int groundPoundPower;
     public bool isGroundPounding;
@@ -101,6 +105,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        pause = FindObjectOfType<PauseGame>();
         dashCounter = dashTime;
         lastForward = playerModel.transform.forward;
     }
@@ -161,10 +166,20 @@ public class Player : MonoBehaviour
             //if on the ground, reset y movement and coyote counter
             if (controller.isGrounded)
             {
-                canMove = true;
+                if (!pause.gamePaused)
+                {
+                    canMove = true;
+                    canTurn = true;
+                }
                 canWallJump = false;
                 isGroundPounding = false;
                 isBackflipping = false;
+                isLongJumping = false;
+                maxAcceleration = 1f;
+                maxAirAcceleration = 0.85f;
+                forwardInfluence = 1f;
+                sidewaysInfluence = 1f;
+                gravityScale = 5f;
 
                 if (slopeSlideVelocity != Vector3.zero)
                 {
@@ -191,11 +206,13 @@ public class Player : MonoBehaviour
                     
                     if (isCrouching)
                     {
-                        if(velocity.x != 0 || velocity.x != 0)
+                        if(velocity.x != 0 || velocity.z != 0)
                         {
                             //long jump
-                            jumpFactor = 1f;
-                            canMove = false;
+                            jumpFactor = 0.6f;
+                            maxAirAcceleration = 1f;
+                            isLongJumping = true;
+                            canMove = true;
                         }
                         else
                         {
@@ -281,7 +298,7 @@ public class Player : MonoBehaviour
             }
 
             //if Jump is let go then start falling
-            if (jump.WasReleasedThisFrame() && moveDirection.y > 0 && !isBackflipping)
+            if (jump.WasReleasedThisFrame() && moveDirection.y > 0 && !isBackflipping && !isLongJumping)
             {
                 moveDirection.y = -0.2f;
             }
@@ -359,8 +376,7 @@ public class Player : MonoBehaviour
         
             if (crouch.triggered)
             {
-                crouchHeld = true;
-                if (controller.isGrounded)
+                if (coyoteCounter > 0)
                 {
                     isCrouching = true;
                 }
@@ -384,7 +400,7 @@ public class Player : MonoBehaviour
                 {
                     canMove = false;
                     yStore = moveDirection.y;
-                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.2f);
+                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), maxSpeedChange);
                     moveDirection.y = yStore;
                 }
             }
@@ -393,7 +409,7 @@ public class Player : MonoBehaviour
             {
                 canMove = true;
                 yStore = moveDirection.y;
-                moveDirection = Vector3.MoveTowards(velocity, moveDirection, 0.2f);
+                moveDirection = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
                 moveDirection.y = yStore;
             }
 
@@ -409,9 +425,29 @@ public class Player : MonoBehaviour
                     groundPoundHangcount -= Time.deltaTime;
                 }
             }
-        
-            velocity = Vector3.MoveTowards(velocity, moveDirection, maxSpeedChange);
+
+            if (isLongJumping)
+            {
+                canMove = true;
+                canTurn = false;
+                maxAirAcceleration = 1f;
+                gravityScale = 4f;
+                yStore = moveDirection.y;
+                moveDirection += playerModel.transform.forward * 5;
+                moveDirection.y = yStore;
+            }
+            
+            if (controller.isGrounded)
+            {
+                velocity = Vector3.MoveTowards(velocity, moveDirection * maxAcceleration, maxSpeedChange);
+            }
+            else
+            {
+                velocity = Vector3.MoveTowards(velocity, moveDirection * maxAirAcceleration, maxSpeedChange);
+            }
+
             velocity.y = moveDirection.y;
+
 
 
             if (isSliding)
@@ -436,7 +472,7 @@ public class Player : MonoBehaviour
             if (newLookVector != Vector3.zero)
             {
                 newRotation = Quaternion.LookRotation(newLookVector);
-                if (canMove)
+                if (canTurn)
                 {
                     playerModel.transform.rotation = newRotation;
                 }
