@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private int maxCoins;
     private GameObject coins;
     private GameObject UI;
-    private GameObject options;
+    private GameObject options, controls;
     private GameObject pauseMenu;
     private Slider volumeSlider;
     private Volume musicVolume;
@@ -35,6 +35,7 @@ public class LevelManager : MonoBehaviour
         coins = GameObject.Find("Coins");
         UI = GameObject.Find("UI");
         options = GameObject.Find("OptionsMenu");
+        controls = GameObject.Find("ControlsMenu");
         pauseMenu = GameObject.Find("PauseMenu");
         gameManager = FindObjectOfType<GameManager>();
         volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
@@ -71,6 +72,7 @@ public class LevelManager : MonoBehaviour
         freeLook.m_XAxis.m_InvertInput = xInvertOption;
         freeLook.m_YAxis.m_InvertInput = yInvertOption;
         options.SetActive(false);
+        controls.SetActive(false);
     }
 
     // Update is called once per frame
@@ -86,7 +88,7 @@ public class LevelManager : MonoBehaviour
         {
             cameraOptions.SetSensitivity(cameraSlider.value);
         }
-        if (gameManager.CheesesCollected== 0)
+        if (gameManager.CheesesCollected == 0)
         {
             gameManager = FindObjectOfType<GameManager>();
             cheeseText.text = "Cheese: " + gameManager.CheesesCollected;

@@ -9,7 +9,7 @@ public class PauseGame : MonoBehaviour
 {
     public bool gamePaused = false;
     public AudioSource levelMusic;
-    public GameObject pauseMenu, optionsMenu;
+    public GameObject pauseMenu, optionsMenu, controlsMenu;
     public GameObject mainCamera;
     public Player player;
     public AudioSource pauseOpen;
@@ -21,7 +21,7 @@ public class PauseGame : MonoBehaviour
     private InputAction pause;
     private Scene activeScene;
 
-    public GameObject firstButton, optionsFirstButton, optionsExitButton;
+    public GameObject firstButton, optionsFirstButton, optionsExitButton, controlsFirstButton, controlsExitButton;
 
     private void Awake()
     {
@@ -72,6 +72,7 @@ public class PauseGame : MonoBehaviour
                     levelMusic.UnPause();
                     pauseMenu.SetActive(false);
                     optionsMenu.SetActive(false);
+                    controlsMenu.SetActive(false);
                 }
             }
         }
@@ -101,6 +102,22 @@ public class PauseGame : MonoBehaviour
         pauseMenu.SetActive(true);
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(optionsExitButton);
+    }
+    public void Controls()
+    {
+        buttonPress.Play();
+        optionsMenu.SetActive(false);
+        controlsMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(controlsFirstButton);
+    }
+    public void CloseControls()
+    {
+        buttonPress.Play();
+        controlsMenu.SetActive(false);
+        optionsMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(controlsExitButton);
     }
     public void Restart()
     {
