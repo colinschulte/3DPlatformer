@@ -24,10 +24,11 @@ public class CameraSensitivty : MonoBehaviour
     public void SetSensitivity(float sliderValue)
     {
         gameManager = FindObjectOfType<GameManager>();
-        freeLook.m_XAxis.m_MaxSpeed = gameManager.CameraXMax * sliderValue;
-        freeLook.m_YAxis.m_MaxSpeed = gameManager.CameraYMax * sliderValue;
-        gameManager.CameraXCurrent = freeLook.m_XAxis.m_MaxSpeed;
-        gameManager.CameraYCurrent = freeLook.m_YAxis.m_MaxSpeed;
+        freeLook.m_XAxis.m_MaxSpeed = gameManager.cameraXMax * sliderValue;
+        freeLook.m_YAxis.m_MaxSpeed = gameManager.cameraYMax * sliderValue;
+        gameManager.cameraXCurrent = freeLook.m_XAxis.m_MaxSpeed;
+        gameManager.cameraYCurrent = freeLook.m_YAxis.m_MaxSpeed;
+        gameManager.cameraSliderValue = sliderValue;
     }
 
     public void InvertX(bool isXinverted)

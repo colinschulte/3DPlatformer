@@ -8,21 +8,23 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public CinemachineFreeLook freeLook;
 
-    public int CheesesCollected;
+    public Dictionary<string, bool> CheesesCollected;
+    public int NumCheesesCollected;
 
     public float musicVolume;
 
-    public float CameraXMax;
-    public float CameraYMax;
-    public float CameraXCurrent;
-    public float CameraYCurrent;
+    public float cameraXMax;
+    public float cameraYMax;
+    public float cameraXCurrent;
+    public float cameraYCurrent;
+    public float cameraSliderValue;
     public bool xInvert = false;
     public bool yInvert = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        CheesesCollected = new Dictionary<string, bool>();
     }
 
     private void Awake()
@@ -37,8 +39,8 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         freeLook = FindObjectOfType<CinemachineFreeLook>();
-        CameraXMax = 200;
-        CameraYMax = 2;
+        cameraXMax = 200;
+        cameraYMax = 2;
     }
 
     // Update is called once per frame
@@ -48,9 +50,13 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void AddCheese()
+    public void AddCheese(string id)
     {
-        CheesesCollected += 1;
+        if (!CheesesCollected.ContainsKey(id))
+        {
+            CheesesCollected.Add(id, false);
+            NumCheesesCollected += 1;
+        }
     }
         
 }

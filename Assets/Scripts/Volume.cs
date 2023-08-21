@@ -21,6 +21,7 @@ public class Volume : MonoBehaviour
     public void SetVolume(float sliderValue)
     {
         audioSource.volume = sliderValue;
+        gameManager = FindObjectOfType<GameManager>();
         gameManager.musicVolume = sliderValue;
 
     }

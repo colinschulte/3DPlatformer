@@ -7,7 +7,7 @@ using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField] private GameManager gameManager;
+    public GameManager gameManager;
     public int currentCoins;
     public Text coinText;
     public Scene activeScene;
@@ -19,8 +19,8 @@ public class LevelManager : MonoBehaviour
     private GameObject UI;
     private GameObject options, controls;
     private GameObject pauseMenu;
-    private Slider volumeSlider;
-    private Volume musicVolume;
+    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private Volume musicVolume;
     private CameraSensitivty cameraOptions;
     public CinemachineFreeLook freeLook;
     private Slider cameraSlider;
@@ -28,21 +28,24 @@ public class LevelManager : MonoBehaviour
     private bool yInvertOption;
     [SerializeField] private GameObject coinCheese;
     public bool allCoinsCollected = false;
+    private bool FirstUpdate;
 
     // Start is called before the first frame update
     void Start()
     {
+        FirstUpdate = true;
         coins = GameObject.Find("Coins");
         UI = GameObject.Find("UI");
         options = GameObject.Find("OptionsMenu");
         controls = GameObject.Find("ControlsMenu");
         pauseMenu = GameObject.Find("PauseMenu");
+        freeLook = FindObjectOfType<CinemachineFreeLook>();
         gameManager = FindObjectOfType<GameManager>();
+        gameManager.freeLook = freeLook;
         volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
         cameraSlider = GameObject.Find("CameraSensitivity").GetComponent<Slider>();
         xInvertOption = gameManager.xInvert;
         yInvertOption = gameManager.yInvert;
-        freeLook = FindObjectOfType<CinemachineFreeLook>();
         coinCheese.SetActive(false);
         options.SetActive(true);
         if (pauseMenu)
@@ -60,9 +63,10 @@ public class LevelManager : MonoBehaviour
         {
             UI.SetActive(false);
         }
-        cheeseText.text = "Cheese: " + gameManager.CheesesCollected;
+        cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
         if (gameManager.musicVolume != 0)
         {
+            volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
             volumeSlider.value = gameManager.musicVolume;
         }
         musicVolume.SetVolume(volumeSlider.value);
@@ -78,21 +82,47 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (FirstUpdate)
+        {
+            if(FindObjectsOfType<GameManager>().Length > 1)
+            {
+                return;
+            }
+            gameManager = FindObjectOfType<GameManager>();
+            gameManager.freeLook = freeLook;
+            if(gameManager.cameraSliderValue != 0)
+            {
+                cameraSlider.value = gameManager.cameraSliderValue;
+            }
+            cameraOptions.SetSensitivity(cameraSlider.value);
+            cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+            volumeSlider.value = gameManager.musicVolume;
+
+
+            FirstUpdate = false;
+        }
         if (currentCoins >= maxCoins && !allCoinsCollected)
         {
             coinCheese.SetActive(true);
             allCoinsCollected = true;
         }
 
-        if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
-        {
-            cameraOptions.SetSensitivity(cameraSlider.value);
-        }
-        if (gameManager.CheesesCollected == 0)
-        {
-            gameManager = FindObjectOfType<GameManager>();
-            cheeseText.text = "Cheese: " + gameManager.CheesesCollected;
-        }
+        //if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
+        //{
+        //    gameManager = FindObjectOfType<GameManager>();
+        //    gameManager.freeLook = freeLook;
+        //    cameraOptions.SetSensitivity(cameraSlider.value);
+        //}
+        //if (gameManager.NumCheesesCollected == 0)
+        //{
+        //    gameManager = FindObjectOfType<GameManager>();
+        //    cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+        //}
+        //if (gameManager.musicVolume != 0)
+        //{
+        //    //volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
+        //    volumeSlider.value = gameManager.musicVolume;
+        //}
     }
 
     public void AddCoins(int coinsToAdd)
@@ -101,9 +131,10 @@ public class LevelManager : MonoBehaviour
         coinText.text = "Coins: " + currentCoins;
     }
 
-    public void CheeseGet()
+    public void CheeseGet(string id)
     {
-        gameManager.AddCheese();
-        cheeseText.text = "Cheese: " + gameManager.CheesesCollected;
+        gameManager.AddCheese(id);
+        cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
     }
+    
 }
