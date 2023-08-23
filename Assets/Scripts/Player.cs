@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isLongJumping;
     public bool enemyStomped;
     public int groundPoundPower;
+    public bool canGroundPound;
     public bool isGroundPounding;
     public float groundPoundHangtime;
     public float groundPoundHangcount;
@@ -175,6 +176,7 @@ public class Player : MonoBehaviour
                 }
                 canWallJump = false;
                 isGroundPounding = false;
+                canGroundPound = true;
                 isBackflipping = false;
                 isLongJumping = false;
                 maxAcceleration = 1f;
@@ -392,10 +394,13 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    velocity = Vector3.zero;
-                    groundPoundHangcount = groundPoundHangtime;
-                    canMove = false;
-                    isGroundPounding = true;
+                    if (canGroundPound)
+                    {
+                        velocity = Vector3.zero;
+                        groundPoundHangcount = groundPoundHangtime;
+                        canMove = false;
+                        isGroundPounding = true;
+                    }
                 }
             }
 
@@ -425,6 +430,7 @@ public class Player : MonoBehaviour
 
             if (isGroundPounding)
             {
+                canGroundPound = false;
                 if(groundPoundHangcount <= 0)
                 {
                     moveDirection = (Vector3.down * groundPoundPower);
