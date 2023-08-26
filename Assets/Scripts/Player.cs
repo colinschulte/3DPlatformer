@@ -140,11 +140,11 @@ public class Player : MonoBehaviour
             float yStore = velocity.y;
             float zStore = velocity.z;
 
-            if (isClimbing)
+            if (isClimbing && !controller.isGrounded)
             {
                 moveDirection = move.ReadValue<Vector2>();
-                moveDirection = (transform.up * moveDirection.y) + (transform.right * moveDirection.x);
-                moveDirection += playerModel.transform.forward;
+                moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                moveDirection += (playerModel.transform.forward  * 0.5f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
@@ -354,6 +354,7 @@ public class Player : MonoBehaviour
 
             if (dash.WasPressedThisFrame() && canDash && !controller.isGrounded)
             {
+                maxAirAcceleration = 1f;
                 velocity = lastForward * dashSpeed;
                 dashSound.Play();
                 isDashing = true;
@@ -415,7 +416,7 @@ public class Player : MonoBehaviour
                 {
                     canMove = false;
                     yStore = moveDirection.y;
-                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), maxSpeedChange);
+                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.5f);
                     moveDirection.y = yStore;
                 }
             }

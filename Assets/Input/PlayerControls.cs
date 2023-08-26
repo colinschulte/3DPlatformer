@@ -82,18 +82,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Recenter Camera"",
+                    ""name"": ""Dash"",
                     ""type"": ""Button"",
-                    ""id"": ""1eb3e4ca-29d2-45be-a0e9-c37b421e0a20"",
+                    ""id"": ""e0d17efb-85e9-40b5-9431-0381c241bd11"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Dash"",
+                    ""name"": ""Recenter Camera"",
                     ""type"": ""Button"",
-                    ""id"": ""e0d17efb-85e9-40b5-9431-0381c241bd11"",
+                    ""id"": ""1eb3e4ca-29d2-45be-a0e9-c37b421e0a20"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -237,7 +237,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""path"": ""<Joystick>/stick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Joystick"",
+                    ""groups"": ""Joystick;Gamepad"",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -249,6 +249,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ed85b93-3232-4285-8d31-e12105b95abd"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -376,22 +387,22 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""22cecf97-b0b1-424d-8f05-4e53c90081b3"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""id"": ""6e9550d9-ab83-4a52-9bd7-957d06b711db"",
+                    ""path"": ""<HID::8BitDo 8BitDo Micro gamepad>/button2"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6e9550d9-ab83-4a52-9bd7-957d06b711db"",
-                    ""path"": ""<HID::8Bitdo SF30 Pro   8Bitdo SN30 Pro>/button2"",
+                    ""id"": ""22cecf97-b0b1-424d-8f05-4e53c90081b3"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -431,6 +442,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""4bcee0a4-33f4-455d-909c-52480ebc9c02"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""7e342e23-d0d9-4b38-87ac-4653f3fde380"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
@@ -442,23 +464,23 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d48763f8-1bcd-4687-b0ce-901a6c8e0e5b"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""id"": ""5708df1a-6d0b-4197-9d87-e812a821d72d"",
+                    ""path"": ""<HID::8BitDo 8BitDo Micro gamepad>/button7"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e1d9c4c2-3d75-497b-9a72-57a80cc7f8e5"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""id"": ""4ad825df-3bc2-432e-ba26-2570c1027e17"",
+                    ""path"": ""<HID::8BitDo 8BitDo Micro gamepad>/button9"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Recenter Camera"",
+                    ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -466,17 +488,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""d1d22a9b-33a5-4152-9e0a-8efbc28d4293"",
                     ""path"": ""<Gamepad>/buttonWest"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2b24e1bb-7db6-45e2-a3b7-7a74613287ff"",
-                    ""path"": ""<Keyboard>/comma"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -503,6 +514,61 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""New action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e1d9c4c2-3d75-497b-9a72-57a80cc7f8e5"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Recenter Camera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d48763f8-1bcd-4687-b0ce-901a6c8e0e5b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a57515b-6b9e-48a8-8a91-5fdb1af52565"",
+                    ""path"": ""<HID::8BitDo 8BitDo Micro gamepad>/button4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7015ddf-5623-4826-be75-fee3d3dac931"",
+                    ""path"": ""<HID::8BitDo 8BitDo Micro gamepad>/button5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b24e1bb-7db6-45e2-a3b7-7a74613287ff"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1096,8 +1162,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
-        m_Player_RecenterCamera = m_Player.FindAction("Recenter Camera", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_RecenterCamera = m_Player.FindAction("Recenter Camera", throwIfNotFound: true);
         m_Player_Newaction = m_Player.FindAction("New action", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1178,8 +1244,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Crouch;
-    private readonly InputAction m_Player_RecenterCamera;
     private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_RecenterCamera;
     private readonly InputAction m_Player_Newaction;
     public struct PlayerActions
     {
@@ -1191,8 +1257,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
-        public InputAction @RecenterCamera => m_Wrapper.m_Player_RecenterCamera;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @RecenterCamera => m_Wrapper.m_Player_RecenterCamera;
         public InputAction @Newaction => m_Wrapper.m_Player_Newaction;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -1221,12 +1287,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
-            @RecenterCamera.started += instance.OnRecenterCamera;
-            @RecenterCamera.performed += instance.OnRecenterCamera;
-            @RecenterCamera.canceled += instance.OnRecenterCamera;
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @RecenterCamera.started += instance.OnRecenterCamera;
+            @RecenterCamera.performed += instance.OnRecenterCamera;
+            @RecenterCamera.canceled += instance.OnRecenterCamera;
             @Newaction.started += instance.OnNewaction;
             @Newaction.performed += instance.OnNewaction;
             @Newaction.canceled += instance.OnNewaction;
@@ -1252,12 +1318,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
-            @RecenterCamera.started -= instance.OnRecenterCamera;
-            @RecenterCamera.performed -= instance.OnRecenterCamera;
-            @RecenterCamera.canceled -= instance.OnRecenterCamera;
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @RecenterCamera.started -= instance.OnRecenterCamera;
+            @RecenterCamera.performed -= instance.OnRecenterCamera;
+            @RecenterCamera.canceled -= instance.OnRecenterCamera;
             @Newaction.started -= instance.OnNewaction;
             @Newaction.performed -= instance.OnNewaction;
             @Newaction.canceled -= instance.OnNewaction;
@@ -1449,8 +1515,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnRecenterCamera(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnRecenterCamera(InputAction.CallbackContext context);
         void OnNewaction(InputAction.CallbackContext context);
     }
     public interface IUIActions
