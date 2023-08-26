@@ -24,10 +24,13 @@ public class JumpOn : MonoBehaviour
     {
         if (other.gameObject.CompareTag("WeakPoint"))
         {
-            player.moveDirection.y += player.JumpForce;
+            player.moveDirection.y += player.jumpForce;
             player.enemyStomped = true;
             enemy = other.GetComponentInParent<Enemy>();
-            enemy.Death();
+            if(!enemy.defeated)
+            {
+                enemy.Death();
+            }
         }
         if (other.gameObject.CompareTag("Button") && player.isGroundPounding)
         {

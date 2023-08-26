@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     public bool canMove;
     public bool canTurn;
 
-    [SerializeField] public float JumpForce;
+    [SerializeField] public float jumpForce;
     [SerializeField] public float gravityScale;
 
     [SerializeField] private float coyoteTime;
@@ -251,7 +251,7 @@ public class Player : MonoBehaviour
                             secondJumpActive = false;
                         }
                     }
-                    moveDirection.y = JumpForce * jumpFactor;
+                    moveDirection.y = jumpForce * jumpFactor;
                     jumpSound.Play();
                     coyoteCounter = 0f;
                 }
@@ -263,7 +263,7 @@ public class Player : MonoBehaviour
                         wallNormal = -playerModel.transform.forward;
                     }
                     moveDirection = wallNormal * wallPushback;
-                    moveDirection.y = JumpForce * jumpFactor;
+                    moveDirection.y = jumpForce * jumpFactor;
                     jumpSound.Play();
                     wallJumpCounter = wallJumpTime;
                     canWallJump = false;
@@ -341,7 +341,14 @@ public class Player : MonoBehaviour
 
             if (enemyStomped)
             {
-                moveDirection.y = 1f;
+                if (jump.IsPressed())
+                {
+                    moveDirection.y += jumpForce;
+                }
+                else
+                {
+                    moveDirection.y += 10f;
+                }
                 enemyStomped = false;
             }
 
@@ -543,7 +550,7 @@ public class Player : MonoBehaviour
         {
             float angle = Vector3.Angle(hitInfo.normal, Vector3.up);
 
-            if(angle >= controller.slopeLimit)
+            if (angle >= controller.slopeLimit && !hitInfo.collider.CompareTag("Climbable"))
             {
                 slopeSlideVelocity = Vector3.ProjectOnPlane(new Vector3(0, moveDirection.y, 0), hitInfo.normal);
                 return;

@@ -19,8 +19,14 @@ public class GoldPickup : MonoBehaviour
     public Material collectedMaterial;
     public bool isCollectable = true;
 
+    private void Start()
+    {
+        levelManager = FindObjectOfType<LevelManager>();
+    }
+
     private void Update()
     {
+        
         if (levelManager.gameManager.CheesesCollected != null && levelManager.gameManager.CheesesCollected.ContainsKey(id) && isCollectable)
         {
             Debug.Log("Cheese Already Collected");

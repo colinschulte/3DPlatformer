@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public Vector3 movePosition;
     public bool canMove = true;
     public bool canHurt = true;
+    public bool defeated = false;
 
     [SerializeField] private float MoveSpeed = 2;
 
@@ -58,9 +59,10 @@ public class Enemy : MonoBehaviour
     {
         canMove = false;
         canHurt = false;
+        defeated = true;
         this.transform.localScale += new Vector3(0f, -0.25f, 0f);
         this.transform.localPosition += new Vector3(0f, -0.3f, 0f);
-        Destroy(this.gameObject, 5f);
+        Destroy(this.gameObject, 1f);
 
     }
 }

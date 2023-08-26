@@ -54,7 +54,7 @@ public class PauseGame : MonoBehaviour
                     gamePaused = true;
                     player.canMove = false;
                     player.canTurn = false;
-                    Cursor.visible = true;
+                    //Cursor.visible = true;
                     levelMusic.Pause();
                     pauseOpen.Play();
                     pauseMenu.SetActive(true);
@@ -127,7 +127,7 @@ public class PauseGame : MonoBehaviour
         Cursor.visible = false;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(activeScene.buildIndex);
     }
     public void Quit()
     {

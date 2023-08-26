@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private int maxCoins;
     private GameObject coins;
     private GameObject UI;
-    private GameObject options, controls;
+    [SerializeField] private GameObject options, controls;
     private GameObject pauseMenu;
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private Volume musicVolume;
@@ -37,6 +37,7 @@ public class LevelManager : MonoBehaviour
         coins = GameObject.Find("Coins");
         UI = GameObject.Find("UI");
         options = GameObject.Find("OptionsMenu");
+        options.SetActive(true);
         controls = GameObject.Find("ControlsMenu");
         pauseMenu = GameObject.Find("PauseMenu");
         freeLook = FindObjectOfType<CinemachineFreeLook>();
@@ -47,7 +48,6 @@ public class LevelManager : MonoBehaviour
         xInvertOption = gameManager.xInvert;
         yInvertOption = gameManager.yInvert;
         coinCheese.SetActive(false);
-        options.SetActive(true);
         if (pauseMenu)
         {
             pauseMenu.SetActive(false);
@@ -66,7 +66,6 @@ public class LevelManager : MonoBehaviour
         cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
         if (gameManager.musicVolume != 0)
         {
-            volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
             volumeSlider.value = gameManager.musicVolume;
         }
         musicVolume.SetVolume(volumeSlider.value);
@@ -93,10 +92,14 @@ public class LevelManager : MonoBehaviour
             if(gameManager.cameraSliderValue != 0)
             {
                 cameraSlider.value = gameManager.cameraSliderValue;
+                cameraOptions.SetSensitivity(cameraSlider.value);
             }
-            cameraOptions.SetSensitivity(cameraSlider.value);
             cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
-            volumeSlider.value = gameManager.musicVolume;
+            if (gameManager.musicVolume != 0)
+            {
+                volumeSlider.value = gameManager.musicVolume;
+            }
+            
 
 
             FirstUpdate = false;
