@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
     private GameObject coins;
     private GameObject UI;
     [SerializeField] private GameObject options, controls;
-    private GameObject pauseMenu;
+    private GameObject pauseMenu, hud;
     [SerializeField] private Slider volumeSlider;
     [SerializeField] private Volume musicVolume;
     private CameraSensitivty cameraOptions;
@@ -40,6 +40,7 @@ public class LevelManager : MonoBehaviour
         options.SetActive(true);
         controls = GameObject.Find("ControlsMenu");
         pauseMenu = GameObject.Find("PauseMenu");
+        hud = GameObject.Find("HUD");
         freeLook = FindObjectOfType<CinemachineFreeLook>();
         gameManager = FindObjectOfType<GameManager>();
         gameManager.freeLook = freeLook;
@@ -61,7 +62,11 @@ public class LevelManager : MonoBehaviour
         activeScene = SceneManager.GetActiveScene();
         if (activeScene.name == "MainMenu" && UI)
         {
-            UI.SetActive(false);
+            hud.SetActive(false);
+        }
+        else
+        {
+            hud.SetActive(true);
         }
         cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
         if (gameManager.musicVolume != 0)

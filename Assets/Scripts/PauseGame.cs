@@ -83,7 +83,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        Cursor.visible = false;
+        //Cursor.visible = false;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
     }
@@ -124,7 +124,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        Cursor.visible = false;
+        //Cursor.visible = false;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
         SceneManager.LoadScene(activeScene.buildIndex);
@@ -134,7 +134,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        Cursor.visible = false;
+        //Cursor.visible = false;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
         SceneManager.LoadScene(1);
