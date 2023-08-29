@@ -63,10 +63,12 @@ public class LevelManager : MonoBehaviour
         if (activeScene.name == "MainMenu" && UI)
         {
             hud.SetActive(false);
+            Cursor.lockState = CursorLockMode.None;
         }
         else
         {
             hud.SetActive(true);
+            Cursor.lockState = CursorLockMode.Locked;
         }
         cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
         if (gameManager.musicVolume != 0)
@@ -100,6 +102,7 @@ public class LevelManager : MonoBehaviour
                 cameraOptions.SetSensitivity(cameraSlider.value);
             }
             cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+            coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
             if (gameManager.musicVolume != 0)
             {
                 volumeSlider.value = gameManager.musicVolume;
@@ -112,6 +115,7 @@ public class LevelManager : MonoBehaviour
         if (currentCoins >= maxCoins && !allCoinsCollected)
         {
             coinCheese.SetActive(true);
+            coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
             allCoinsCollected = true;
         }
 
@@ -136,7 +140,7 @@ public class LevelManager : MonoBehaviour
     public void AddCoins(int coinsToAdd)
     {
         currentCoins += coinsToAdd;
-        coinText.text = "Coins: " + currentCoins;
+        coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
     }
 
     public void CheeseGet(string id)

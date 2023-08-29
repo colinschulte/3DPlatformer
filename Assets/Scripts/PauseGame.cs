@@ -54,7 +54,7 @@ public class PauseGame : MonoBehaviour
                     gamePaused = true;
                     player.canMove = false;
                     player.canTurn = false;
-                    //Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
                     levelMusic.Pause();
                     pauseOpen.Play();
                     pauseMenu.SetActive(true);
@@ -67,7 +67,7 @@ public class PauseGame : MonoBehaviour
                     gamePaused = false;
                     player.canMove = true;
                     player.canTurn = true;
-                    //Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
                     pauseClose.Play();
                     levelMusic.UnPause();
                     pauseMenu.SetActive(false);
@@ -83,7 +83,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
     }
@@ -124,7 +124,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
         SceneManager.LoadScene(activeScene.buildIndex);
@@ -134,7 +134,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
-        //Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);
         SceneManager.LoadScene(1);
