@@ -195,6 +195,7 @@ public class Player : MonoBehaviour
                 }
 
                 coyoteCounter = coyoteTime;
+                
             }
             else
             {
@@ -333,10 +334,11 @@ public class Player : MonoBehaviour
             if (isBouncing)
             {
                 moveDirection.y = bounceForce;
-                isBouncing = false;
+                coyoteCounter = 0;
                 isGroundPounding = false;
                 canDash = true;
                 canMove = true;
+                isBouncing = false;
             }
 
             if (enemyStomped)
@@ -446,6 +448,7 @@ public class Player : MonoBehaviour
                 else
                 {
                     moveDirection = Vector3.zero;
+                    playerModel.transform.Rotate(new Vector3(0, 1440, 0) * Time.deltaTime);
                     groundPoundHangcount -= Time.deltaTime;
                 }
             }
@@ -512,6 +515,12 @@ public class Player : MonoBehaviour
                 playerModel.transform.rotation = g;
             }
         }
+        animator.SetBool("isGrounded", controller.isGrounded || coyoteCounter > 0);
+        animator.SetBool("isRunning", moveDirection.x != 0 || moveDirection.z != 0);
+        animator.SetBool("isCrouching", isCrouching);
+        animator.SetBool("isDashing", isDashing);
+        animator.SetBool("isLongJumping", isLongJumping);
+        animator.SetBool("isGroundPounding", isGroundPounding);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

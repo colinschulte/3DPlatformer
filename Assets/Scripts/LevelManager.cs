@@ -101,7 +101,14 @@ public class LevelManager : MonoBehaviour
                 cameraSlider.value = gameManager.cameraSliderValue;
                 cameraOptions.SetSensitivity(cameraSlider.value);
             }
-            cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+            if (gameManager.NumCheesesCollected == 1)
+            {
+                cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+            }
+            else
+            {
+                cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
+            }
             coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
             if (gameManager.musicVolume != 0)
             {
@@ -146,7 +153,14 @@ public class LevelManager : MonoBehaviour
     public void CheeseGet(string id)
     {
         gameManager.AddCheese(id);
-        cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+        if(gameManager.NumCheesesCollected == 1)
+        {
+            cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
+        }
+        else
+        {
+            cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
+        }
     }
     
 }

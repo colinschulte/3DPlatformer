@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 47365cc78e5cfad41badc534e3d2b7e1, type: 3}
       propertyPath: m_Name
-      value: Cheese Variant
+      value: Cheese
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47365cc78e5cfad41badc534e3d2b7e1, type: 3}
       propertyPath: m_Layer
@@ -129,8 +129,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  id: fa2d049d-63a3-4244-860d-b3f9b742d991
   pickupEffect: {fileID: 4780669585529739569, guid: cd56331f2437de74dbe43a6646cc4286, type: 3}
   collectSound: {fileID: 0}
+  levelManager: {fileID: 0}
+  collectedMaterial: {fileID: 2100000, guid: 6801b362d5839664e87fad760b245e2d, type: 2}
+  isCollectable: 1
 --- !u!135 &3869851527855198382
 SphereCollider:
   m_ObjectHideFlags: 0
