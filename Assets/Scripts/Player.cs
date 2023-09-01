@@ -488,7 +488,11 @@ public class Player : MonoBehaviour
         }
         else
         {
+            canTurn = false;
+            moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
+            controller.Move(moveDirection * Time.deltaTime);
             knockbackCounter -= Time.deltaTime;
+
         }
         //Move player direction
         if (moveDirection.x != 0 || moveDirection.z != 0)
@@ -583,6 +587,6 @@ public class Player : MonoBehaviour
         knockbackCounter = knockbackTime;
 
         moveDirection = direction * knockbackForce;
-        moveDirection.y = knockbackForce * 0.5f;
+        moveDirection.y = knockbackForce;
     }
 }
