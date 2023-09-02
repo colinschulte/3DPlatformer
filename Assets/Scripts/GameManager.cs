@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, bool> CheesesCollected;
     public int NumCheesesCollected;
 
+    public float timer;
     public float musicVolume;
 
     public float cameraXMax;
