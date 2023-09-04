@@ -109,7 +109,7 @@ public class LevelManager : MonoBehaviour
             {
                 cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
             }
-            coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
+            coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
             if (gameManager.musicVolume != 0)
             {
                 volumeSlider.value = gameManager.musicVolume;
@@ -122,7 +122,7 @@ public class LevelManager : MonoBehaviour
         if (currentCoins >= maxCoins && !allCoinsCollected)
         {
             coinCheese.SetActive(true);
-            coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
+            coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
             allCoinsCollected = true;
         }
 
@@ -147,7 +147,7 @@ public class LevelManager : MonoBehaviour
     public void AddCoins(int coinsToAdd)
     {
         currentCoins += coinsToAdd;
-        coinText.text = "Coins: " + currentCoins + "/" + maxCoins;
+        coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
     }
 
     public void CheeseGet(string id)

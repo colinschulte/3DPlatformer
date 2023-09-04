@@ -36,7 +36,7 @@ public class Health : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        healthText.text = "Health: " + currentHealth;
+        healthText.text = "Health: " + currentHealth + "/" + maxHealth;
         respawnPoint = player.transform.position;
         blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, 1f);
         isFadingUp = true;
@@ -85,6 +85,7 @@ public class Health : MonoBehaviour
         if(invincibilityCounter <= 0) 
         {
             currentHealth -= damage;
+            healthText.text = "Health: " + currentHealth + "/" + maxHealth;
             
             if(currentHealth <= 0)
             {
@@ -92,7 +93,6 @@ public class Health : MonoBehaviour
             }
             else
             {
-                healthText.text = "Health: " + currentHealth;
 
                 player.Knockback(direction);
 
@@ -152,7 +152,7 @@ public class Health : MonoBehaviour
             {
                 currentHealth = maxHealth;
             }
-            healthText.text = "Health: " + currentHealth;
+            healthText.text = "Health: " + currentHealth + "/" + maxHealth;
         }
     }
 }
