@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
 {
     public Animator animator;
     private PauseGame pause;
+    [SerializeField] private LevelManager levelManager;
+    private bool firstUpdate = true;
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float climbSpeed;
@@ -110,6 +112,7 @@ public class Player : MonoBehaviour
         pause = FindObjectOfType<PauseGame>();
         dashCounter = dashTime;
         lastForward = playerModel.transform.forward;
+        
     }
 
     private void OnEnable()
@@ -134,6 +137,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (firstUpdate)
+        {
+            if (levelManager.gameManager != null)
+            {
+                if(levelManager.gameManager.lastScene == 4)
+                {
+                    Debug.Log("triggered");
+                    transform.position = new Vector3(39.8f, 3.9f, 57.5f);
+                }
+                else { Debug.Log("negative"); }
+                firstUpdate = false;
+            }
+        }
         if (knockbackCounter <= 0)
         {
             float xStore = velocity.x;

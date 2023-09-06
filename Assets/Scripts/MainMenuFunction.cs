@@ -12,6 +12,8 @@ public class MainMenuFunction : MonoBehaviour
 
     public GameObject firstButton, optionsFirstButton, optionsExitButton;
 
+    public LevelManager levelManager;
+
     public void Start()
     {
         //optionsMenu.SetActive(false);
@@ -20,6 +22,7 @@ public class MainMenuFunction : MonoBehaviour
     public void PlayGame()
     {
         buttonPress.Play();
+        levelManager.gameManager.lastScene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene("Overworld");
     }
 

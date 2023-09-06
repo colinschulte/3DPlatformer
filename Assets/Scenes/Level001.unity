@@ -6539,7 +6539,7 @@ PrefabInstance:
     - target: {fileID: 3290217973374331429, guid: 5ad7c1c712c1b9b4e993cba8920c1e88, type: 3}
       propertyPath: playerRenderer
       value: 
-      objectReference: {fileID: 1323175327}
+      objectReference: {fileID: 0}
     - target: {fileID: 3364408548203265703, guid: 5ad7c1c712c1b9b4e993cba8920c1e88, type: 3}
       propertyPath: player
       value: 
@@ -6547,7 +6547,7 @@ PrefabInstance:
     - target: {fileID: 3364408548203265703, guid: 5ad7c1c712c1b9b4e993cba8920c1e88, type: 3}
       propertyPath: playerRenderer
       value: 
-      objectReference: {fileID: 1323175327}
+      objectReference: {fileID: 0}
     - target: {fileID: 3806772882800369022, guid: 5ad7c1c712c1b9b4e993cba8920c1e88, type: 3}
       propertyPath: m_Name
       value: LevelManager
@@ -27125,11 +27125,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 833521417226418490, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.000000010134754
+      value: 0.0000000065732593
       objectReference: {fileID: 0}
     - target: {fileID: 833521417226418490, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0000000051781077
+      value: 0.000000009291182
       objectReference: {fileID: 0}
     - target: {fileID: 833521417226418490, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.y
@@ -27241,11 +27241,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4676973381259330887, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.000000033415148
+      value: 0.000000033415255
       objectReference: {fileID: 0}
     - target: {fileID: 4676973381259330887, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.000000008225931
+      value: 0.000000008225959
       objectReference: {fileID: 0}
     - target: {fileID: 4676973381259330887, guid: 8b85bb0e281ea1745bb2ef556242ba9e, type: 3}
       propertyPath: m_LocalRotation.y
@@ -28263,11 +28263,6 @@ MeshCollider:
 Transform:
   m_CorrespondingSourceObject: {fileID: 9089358015440361873, guid: 8b93c8bae4d31d1448c0cddc1bd1b956, type: 3}
   m_PrefabInstance: {fileID: 226035611}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &1323175327 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 9179733063606657602, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
-  m_PrefabInstance: {fileID: 1662963008}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1323462777
 GameObject:
@@ -30581,6 +30576,10 @@ PrefabInstance:
       propertyPath: TargetScene
       value: Overworld
       objectReference: {fileID: 0}
+    - target: {fileID: 185209116720187673, guid: 16469116572a14941a466069d840b0f6, type: 3}
+      propertyPath: levelManager
+      value: 
+      objectReference: {fileID: 1838000911}
     - target: {fileID: 7753737122240798025, guid: 16469116572a14941a466069d840b0f6, type: 3}
       propertyPath: m_Name
       value: Portal
@@ -35737,6 +35736,10 @@ PrefabInstance:
       propertyPath: jumpSound
       value: 
       objectReference: {fileID: 567992754}
+    - target: {fileID: 4690545423947595683, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
+      propertyPath: levelManager
+      value: 
+      objectReference: {fileID: 1838000911}
     - target: {fileID: 4690545423947595683, guid: d21e58544dba84c4487fb0af0af6848f, type: 3}
       propertyPath: cameraTransform
       value: 

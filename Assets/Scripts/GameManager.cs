@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public CinemachineFreeLook freeLook;
 
     public Dictionary<string, bool> CheesesCollected;
-    public int NumCheesesCollected;
+    public int NumCheesesCollected = 0;
 
     public float timer;
     public float musicVolume;
@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public float cameraSliderValue;
     public bool xInvert = false;
     public bool yInvert = true;
+
+    public int lastScene = 1;
 
     // Start is called before the first frame update
     void Start()
