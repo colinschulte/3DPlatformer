@@ -7,6 +7,7 @@ public class JumpOn : MonoBehaviour
     Player player;
     Enemy enemy;
     Button button;
+    KeyPress keyPress;
 
     // Start is called before the first frame update
     void Start()
@@ -32,10 +33,15 @@ public class JumpOn : MonoBehaviour
                 enemy.Death();
             }
         }
-        if (other.gameObject.CompareTag("Button") && player.isGroundPounding)
+        else if (other.gameObject.CompareTag("Button") && player.isGroundPounding)
         {
             button = other.GetComponent<Button>();
             button.Press();
+        }
+        else if (other.gameObject.CompareTag("KeyPress") && player.isGroundPounding)
+        {
+            keyPress = other.GetComponent<KeyPress>();
+            keyPress.Press();
         }
     }
 }
