@@ -23,12 +23,13 @@ public class JumpOn : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.tag);
         if (other.gameObject.CompareTag("WeakPoint"))
         {
             player.moveDirection.y += player.jumpForce;
             player.enemyStomped = true;
             enemy = other.GetComponentInParent<Enemy>();
-            if(!enemy.defeated)
+            if (!enemy.defeated)
             {
                 enemy.Death();
             }
