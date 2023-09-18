@@ -41,6 +41,7 @@ public class JumpOn : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("KeyPress") && player.isGroundPounding)
         {
+            Debug.Log("key press");
             keyPress = other.GetComponent<KeyPress>();
             keyPress.Press();
         }
