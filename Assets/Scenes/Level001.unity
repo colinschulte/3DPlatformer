@@ -17896,7 +17896,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dd76183491c07ee4f972bb2d249d1f21, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -46784,6 +46784,10 @@ PrefabInstance:
       propertyPath: levelManager
       value: 
       objectReference: {fileID: 1838000911}
+    - target: {fileID: 4292167904585018778, guid: 16469116572a14941a466069d840b0f6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f5227c7cf458c394ca1950b5f2b4b99b, type: 2}
     - target: {fileID: 7753737122240798025, guid: 16469116572a14941a466069d840b0f6, type: 3}
       propertyPath: m_Name
       value: Portal
@@ -64060,7 +64064,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dd76183491c07ee4f972bb2d249d1f21, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
