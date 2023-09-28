@@ -143,10 +143,8 @@ public class Player : MonoBehaviour
             {
                 if(levelManager.gameManager.lastScene == 4)
                 {
-                    Debug.Log("triggered");
                     transform.position = new Vector3(39.8f, 3.9f, 57.5f);
                 }
-                else { Debug.Log("negative"); }
                 firstUpdate = false;
             }
         }

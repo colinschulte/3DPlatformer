@@ -47,7 +47,6 @@ public class MazeInput : MonoBehaviour
 
     public void Move(string direction)
     {
-        Debug.Log(direction);
         if (direction == mazeList[maze][location] && canMove)
         {
             Vector2 position = player.rectTransform.anchoredPosition;

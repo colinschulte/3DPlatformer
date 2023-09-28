@@ -23,7 +23,6 @@ public class JumpOn : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
         if (other.gameObject.CompareTag("WeakPoint"))
         {
             player.moveDirection.y += player.jumpForce;
@@ -41,7 +40,6 @@ public class JumpOn : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("KeyPress") && player.isGroundPounding)
         {
-            Debug.Log("key press");
             keyPress = other.GetComponent<KeyPress>();
             keyPress.Press();
         }
