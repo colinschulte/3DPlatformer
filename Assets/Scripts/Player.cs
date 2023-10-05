@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
     public bool isBouncing = false;
 
     [SerializeField] private bool isCrouching;
+    [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
     public bool enemyStomped;
@@ -225,7 +226,7 @@ public class Player : MonoBehaviour
                     
                     if (isCrouching)
                     {
-                        if(velocity.x != 0 || velocity.z != 0)
+                        if(!isStopped)
                         {
                             //long jump
                             jumpFactor = 0.6f;
@@ -415,6 +416,9 @@ public class Player : MonoBehaviour
                 if (coyoteCounter > 0)
                 {
                     isCrouching = true;
+                    this.gameObject.GetComponent<CharacterController>().height = 1;
+                    this.gameObject.GetComponent<CharacterController>().center = new Vector3(0f, -0.5f, 0f);
+                    isStopped = false;
                 }
                 else
                 {
@@ -431,16 +435,29 @@ public class Player : MonoBehaviour
             if(crouch.WasReleasedThisFrame())
             {
                 isCrouching = false;
+                this.gameObject.GetComponent<CharacterController>().height = 2;
+                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero           ;
             }
 
             if (isCrouching)
             {
                 if (controller.isGrounded)
                 {
-                    canMove = false;
-                    yStore = moveDirection.y;
-                    moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.5f);
-                    moveDirection.y = yStore;
+                    if (!isStopped)
+                    {
+                        canMove = false;
+                        yStore = moveDirection.y;
+                        moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.5f);
+                        moveDirection.y = yStore;
+                        if(moveDirection.x == 0 && moveDirection.z == 0) 
+                        {
+                            isStopped = true;
+                        }
+                    }
+                    else
+                    {
+                        maxAcceleration = 0.15f;
+                    }
                 }
             }
 
