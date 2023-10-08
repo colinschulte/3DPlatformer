@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
         pause = FindObjectOfType<PauseGame>();
         dashCounter = dashTime;
         lastForward = playerModel.transform.forward;
-        
+
     }
 
     private void OnEnable()
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
         {
             if (levelManager.gameManager != null)
             {
-                if(levelManager.gameManager.lastScene == 4)
+                if (levelManager.gameManager.lastScene == 4)
                 {
                     transform.position = new Vector3(39.8f, 3.9f, 57.5f);
                 }
@@ -159,13 +159,13 @@ public class Player : MonoBehaviour
             {
                 moveDirection = move.ReadValue<Vector2>();
                 moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
-                moveDirection += (playerModel.transform.forward  * 0.5f);
+                moveDirection += (playerModel.transform.forward * 0.5f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
                 moveDirection = magnitude * climbSpeed * moveDirection;
                 canWallJump = true;
-                
+
             }
             else
             {
@@ -210,7 +210,7 @@ public class Player : MonoBehaviour
                 }
 
                 coyoteCounter = coyoteTime;
-                
+
             }
             else
             {
@@ -223,10 +223,10 @@ public class Player : MonoBehaviour
             {
                 if (coyoteCounter > 0f && isSliding == false)
                 {
-                    
+
                     if (isCrouching)
                     {
-                        if(!isStopped)
+                        if (!isStopped)
                         {
                             //long jump
                             jumpFactor = 0.6f;
@@ -371,7 +371,7 @@ public class Player : MonoBehaviour
 
             setSlopeSlideVelocity();
 
-            if(slopeSlideVelocity == Vector3.zero)
+            if (slopeSlideVelocity == Vector3.zero)
             {
                 isSliding = false;
             }
@@ -410,7 +410,7 @@ public class Player : MonoBehaviour
                     dashCooldownCount = dashCooldown;
                 }
             }
-        
+
             if (crouch.triggered)
             {
                 if (coyoteCounter > 0)
@@ -432,11 +432,11 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if(crouch.WasReleasedThisFrame())
+            if (crouch.WasReleasedThisFrame())
             {
                 isCrouching = false;
                 this.gameObject.GetComponent<CharacterController>().height = 2;
-                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero           ;
+                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero;
             }
 
             if (isCrouching)
@@ -449,7 +449,7 @@ public class Player : MonoBehaviour
                         yStore = moveDirection.y;
                         moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.5f);
                         moveDirection.y = yStore;
-                        if(moveDirection.x == 0 && moveDirection.z == 0) 
+                        if (moveDirection.x == 0 && moveDirection.z == 0)
                         {
                             isStopped = true;
                         }
@@ -472,7 +472,7 @@ public class Player : MonoBehaviour
             if (isGroundPounding)
             {
                 canGroundPound = false;
-                if(groundPoundHangcount <= 0)
+                if (groundPoundHangcount <= 0)
                 {
                     moveDirection = (Vector3.down * groundPoundPower);
                 }
@@ -494,7 +494,7 @@ public class Player : MonoBehaviour
                 moveDirection += playerModel.transform.forward * 5;
                 moveDirection.y = yStore;
             }
-            
+
             if (controller.isGrounded)
             {
                 velocity = Vector3.MoveTowards(velocity, moveDirection * maxAcceleration, maxSpeedChange);
@@ -560,7 +560,7 @@ public class Player : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if(!controller.isGrounded && hit.collider.CompareTag("CanWallJump"))
+        if (!controller.isGrounded && hit.collider.CompareTag("CanWallJump"))
         {
             wallNormal = hit.normal;
             canWallJump = true;
