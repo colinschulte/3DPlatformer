@@ -158,13 +158,17 @@ public class Player : MonoBehaviour
             if (isClimbing && !controller.isGrounded)
             {
                 moveDirection = move.ReadValue<Vector2>();
-                moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                //moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                moveDirection = (transform.up * moveDirection.y);
                 moveDirection += (playerModel.transform.forward * 0.5f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
                 moveDirection = magnitude * climbSpeed * moveDirection;
                 canWallJump = true;
+
+                //toggle for moving sideways when climbing
+                //moveDirection.x = 0;
 
             }
             else
