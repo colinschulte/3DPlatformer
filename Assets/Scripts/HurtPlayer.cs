@@ -14,7 +14,7 @@ public class HurtPlayer : MonoBehaviour
             other.transform.position = new Vector3(other.transform.position.x + hitDirection.x, other.transform.position.y, other.transform.position.z + hitDirection.z);
             hitDirection = hitDirection.normalized;
 
-            FindObjectOfType<Health>().hurtPlayer(damage, hitDirection);
+            FindObjectOfType<Health>().HurtPlayer(damage, hitDirection);
         }
     }
 }

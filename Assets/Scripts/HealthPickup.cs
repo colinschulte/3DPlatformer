@@ -12,7 +12,7 @@ public class HealthPickup : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            FindObjectOfType<Health>().healPlayer(value);
+            FindObjectOfType<Health>().HealPlayer(value);
             //GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             collectSound.Play();
             Destroy(gameObject);

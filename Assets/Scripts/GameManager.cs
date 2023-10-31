@@ -46,12 +46,6 @@ public class GameManager : MonoBehaviour
         cameraYMax = 2;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void AddCheese(string id)
     {

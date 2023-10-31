@@ -9,13 +9,6 @@ public class LevelUnlock : MonoBehaviour
     [SerializeField] private int cheesesNeeded;
     [SerializeField] private GameObject levelText;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (levelManager != null)

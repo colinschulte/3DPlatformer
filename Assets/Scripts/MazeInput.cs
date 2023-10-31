@@ -10,39 +10,37 @@ public class MazeInput : MonoBehaviour
     [SerializeField] private GameObject Level2;
     private int maze = 0;
     private int location = 0;
-    private List<List<string>> mazeList = new List<List<string>> ();
+    private List<List<string>> mazeList = new();
     [SerializeField] private UnityEngine.UI.Image player;
     private bool canMove = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        List<string> maze1 = new List<string>();
-        maze1.Add("R");
-        maze1.Add("R");
-        maze1.Add("R");
+        List<string> maze1 = new()
+        {
+            "R",
+            "R",
+            "R"
+        };
         mazeList.Add(maze1);
-        List<string> maze2 = new List<string>();
-        maze2.Add("U");
-        maze2.Add("U");
-        maze2.Add("R");
-        maze2.Add("D");
-        maze2.Add("D");
-        maze2.Add("R");
-        maze2.Add("U");
-        maze2.Add("U");
-        maze2.Add("R");
-        maze2.Add("D");
-        maze2.Add("D");
+        List<string> maze2 = new()
+        {
+            "U",
+            "U",
+            "R",
+            "D",
+            "D",
+            "R",
+            "U",
+            "U",
+            "R",
+            "D",
+            "D"
+        };
         mazeList.Add(maze2);
         rewardCheese.SetActive(false);
         Level2.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Move(string direction)

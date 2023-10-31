@@ -6,6 +6,7 @@ public class Button : MonoBehaviour
 {
     public bool buttonPressed = false;
     public List<OpenDoor> openDoors;
+    public CheeseLaunch launch;
 
     public void Press()
     {
@@ -18,6 +19,12 @@ public class Button : MonoBehaviour
             {
                 openDoor.Open();
             }
+
+            if(launch != null)
+            {
+                launch.Punch();
+            }
+
             buttonPressed = true;
         }
     }

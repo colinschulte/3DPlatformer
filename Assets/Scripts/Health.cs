@@ -80,7 +80,7 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void hurtPlayer(int damage, Vector3 direction)
+    public void HurtPlayer(int damage, Vector3 direction)
     {
         if(invincibilityCounter <= 0) 
         {
@@ -142,7 +142,7 @@ public class Health : MonoBehaviour
         flashCounter = flashLength;
     }
 
-    public void healPlayer(int value)
+    public void HealPlayer(int value)
     {
         if (invincibilityCounter <= 0)
         {

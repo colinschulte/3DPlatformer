@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float climbSpeed;
-    [SerializeField] private float forwardInfluence;
-    [SerializeField] private float sidewaysInfluence;
+    //[SerializeField] private float forwardInfluence;
+    //[SerializeField] private float sidewaysInfluence;
     //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
     [SerializeField] private float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
     [SerializeField] private float maxAirAcceleration;
@@ -27,8 +27,8 @@ public class Player : MonoBehaviour
     public bool canMove;
     public bool canTurn;
 
-    [SerializeField] public float jumpForce;
-    [SerializeField] public float gravityScale;
+    public float jumpForce;
+    public float gravityScale;
 
     [SerializeField] private float coyoteTime;
     private float coyoteCounter;
@@ -55,7 +55,7 @@ public class Player : MonoBehaviour
     public float groundPoundHangtime;
     public float groundPoundHangcount;
 
-    [SerializeField] public bool isClimbing;
+    public bool isClimbing;
     public Climb climbObject;
 
     private Vector3 wallNormal;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isWallJumping;
     [SerializeField] private float wallJumpTime;
     private float wallJumpCounter;
-    private Vector3 lastWallNormal;
+    //private Vector3 lastWallNormal;
 
     [SerializeField] private float dashSpeed;
     private bool canDash = true;
@@ -74,8 +74,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashCooldown;
     private float dashCooldownCount;
 
-    private int coinCount;
-    [SerializeField] public Vector3 moveDirection;
+    //private int coinCount;
+    public Vector3 moveDirection;
     public CharacterController controller;
 
     [SerializeField] private Transform cameraTransform;
@@ -151,15 +151,15 @@ public class Player : MonoBehaviour
         }
         if (knockbackCounter <= 0)
         {
-            float xStore = velocity.x;
+            //float xStore = velocity.x;
             float yStore = velocity.y;
-            float zStore = velocity.z;
+            //float zStore = velocity.z;
 
             if (isClimbing && !controller.isGrounded)
             {
                 moveDirection = move.ReadValue<Vector2>();
-                //moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
-                moveDirection = (transform.up * moveDirection.y);
+                moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                //moveDirection = (transform.up * moveDirection.y);
                 moveDirection += (playerModel.transform.forward * 0.5f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
@@ -200,8 +200,8 @@ public class Player : MonoBehaviour
                 isLongJumping = false;
                 maxAcceleration = 1f;
                 maxAirAcceleration = 0.85f;
-                forwardInfluence = 1f;
-                sidewaysInfluence = 1f;
+                //forwardInfluence = 1f;
+                //sidewaysInfluence = 1f;
                 gravityScale = 5f;
 
                 if (slopeSlideVelocity != Vector3.zero)
@@ -373,7 +373,7 @@ public class Player : MonoBehaviour
                 enemyStomped = false;
             }
 
-            setSlopeSlideVelocity();
+            SetSlopeSlideVelocity();
 
             if (slopeSlideVelocity == Vector3.zero)
             {
@@ -534,7 +534,7 @@ public class Player : MonoBehaviour
         {
             Quaternion newRotation;
             transform.rotation = Quaternion.Euler(0f, cameraTransform.rotation.eulerAngles.y, 0f);
-            Vector3 newLookVector = new Vector3(moveDirection.x, 0f, moveDirection.z);
+            Vector3 newLookVector = new(moveDirection.x, 0f, moveDirection.z);
             if (newLookVector != Vector3.zero)
             {
                 newRotation = Quaternion.LookRotation(newLookVector);
@@ -568,7 +568,7 @@ public class Player : MonoBehaviour
         {
             wallNormal = hit.normal;
             canWallJump = true;
-            lastWallNormal = wallNormal;
+            //lastWallNormal = wallNormal;
         }
     }
 
@@ -579,7 +579,7 @@ public class Player : MonoBehaviour
             isClimbing = true;
             wallNormal = collision.transform.position;
             canWallJump = true;
-            lastWallNormal = wallNormal;
+            //lastWallNormal = wallNormal;
         }
     }
 
@@ -592,7 +592,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void setSlopeSlideVelocity()
+    private void SetSlopeSlideVelocity()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5f))
         {
@@ -606,7 +606,7 @@ public class Player : MonoBehaviour
         }
         if (isSliding)
         {
-            slopeSlideVelocity -= slopeSlideVelocity * Time.deltaTime * 3;
+            slopeSlideVelocity -= 3 * Time.deltaTime * slopeSlideVelocity;
 
             if (slopeSlideVelocity.magnitude > 1)
             {
