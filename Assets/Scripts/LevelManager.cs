@@ -8,11 +8,13 @@ using Cinemachine;
 public class LevelManager : MonoBehaviour
 {
     public GameManager gameManager;
-    public int currentCoins;
-    public Text coinText;
     public Scene activeScene;
 
+    public int currentCoins;
+    public int currentBricks;
+    public Text coinText;
     public Text cheeseText;
+    public Text brickText;
 
     [SerializeField] private int maxCoins;
     private GameObject coins;
@@ -153,14 +155,12 @@ public class LevelManager : MonoBehaviour
     public void CheeseGet(string id)
     {
         gameManager.AddCheese(id);
-        if(gameManager.NumCheesesCollected == 1)
-        {
-            cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
-        }
-        else
-        {
-            cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
-        }
+        cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
     }
     
+    public void BrickGet()
+    {
+        currentBricks += 1;
+        brickText.text = "Bricks: " + currentBricks + "/5";
+    }
 }

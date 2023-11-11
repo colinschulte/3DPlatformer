@@ -52,6 +52,10 @@ public class GoldPickup : MonoBehaviour
             {
                 levelManager.CheeseGet(id);
             }
+            else if (gameObject.CompareTag("Brick"))
+            {
+                levelManager.BrickGet();
+            }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             collectSound.Play();
             Destroy(gameObject);
