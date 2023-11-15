@@ -15,6 +15,11 @@ public class LevelManager : MonoBehaviour
     public Text coinText;
     public Text cheeseText;
     public Text brickText;
+    
+    [SerializeField] private GameObject coinCheese;
+    [SerializeField] private GameObject brickCheese;
+    public bool allCoinsCollected = false;
+    public bool allBricksCollected = false;
 
     [SerializeField] private int maxCoins;
     private GameObject coins;
@@ -28,8 +33,6 @@ public class LevelManager : MonoBehaviour
     private Slider cameraSlider;
     private bool xInvertOption;
     private bool yInvertOption;
-    [SerializeField] private GameObject coinCheese;
-    public bool allCoinsCollected = false;
     private bool FirstUpdate;
 
     // Start is called before the first frame update
@@ -126,6 +129,13 @@ public class LevelManager : MonoBehaviour
             coinCheese.SetActive(true);
             coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
             allCoinsCollected = true;
+        }
+
+        if (currentBricks >= 5 && !allBricksCollected)
+        {
+            brickCheese.SetActive(true);
+            brickText.text = "Bricks: " + currentBricks + "/5";
+            allBricksCollected = true;
         }
 
         //if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
