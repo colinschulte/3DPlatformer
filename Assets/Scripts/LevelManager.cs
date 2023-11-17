@@ -54,6 +54,7 @@ public class LevelManager : MonoBehaviour
         xInvertOption = gameManager.xInvert;
         yInvertOption = gameManager.yInvert;
         coinCheese.SetActive(false);
+        brickCheese.SetActive(false);
         if (pauseMenu)
         {
             pauseMenu.SetActive(false);
