@@ -23,7 +23,7 @@ public class MainMenuFunction : MonoBehaviour
     {
         buttonPress.Play();
         levelManager.gameManager.lastScene = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene("Overworld");
+        SceneManager.LoadScene("Level001");
     }
 
     public void Options()
