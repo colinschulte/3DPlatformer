@@ -6,6 +6,7 @@ public class Button : MonoBehaviour
 {
     public bool buttonPressed = false;
     public List<OpenDoor> openDoors;
+    public List<GrowPlant> growPlants;
     public CheeseLaunch launch;
 
     public void Press()
@@ -18,6 +19,11 @@ public class Button : MonoBehaviour
             foreach(OpenDoor openDoor in openDoors)
             {
                 openDoor.Open();
+            }
+
+            foreach(GrowPlant growPlant in growPlants)
+            {
+                growPlant.Grow();
             }
 
             if(launch != null)
