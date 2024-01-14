@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
@@ -15,9 +16,15 @@ public class LevelManager : MonoBehaviour
     public Text coinText;
     public Text cheeseText;
     public Text brickText;
-    
+
+    [SerializeField] private float waitTime = 1;
+    [SerializeField] private float startWaitCounter;
+    [SerializeField] private float endWaitCounter;
     [SerializeField] private GameObject coinCheese;
+    [SerializeField] private GameObject cheeseCam;
     [SerializeField] private GameObject brickCheese;
+    [SerializeField] private GameObject brickCam;
+    [SerializeField] private GameObject MainCam;
     public bool allCoinsCollected = false;
     public bool allBricksCollected = false;
 
@@ -26,11 +33,11 @@ public class LevelManager : MonoBehaviour
     private GameObject UI;
     [SerializeField] private GameObject options, controls;
     private GameObject pauseMenu, hud;
-    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private UnityEngine.UI.Slider volumeSlider;
     [SerializeField] private Volume musicVolume;
     private CameraSensitivty cameraOptions;
     public CinemachineFreeLook freeLook;
-    private Slider cameraSlider;
+    private UnityEngine.UI.Slider cameraSlider;
     private bool xInvertOption;
     private bool yInvertOption;
     private bool FirstUpdate;
@@ -49,12 +56,14 @@ public class LevelManager : MonoBehaviour
         freeLook = FindObjectOfType<CinemachineFreeLook>();
         gameManager = FindObjectOfType<GameManager>();
         gameManager.freeLook = freeLook;
-        volumeSlider = GameObject.Find("MusicVolume").GetComponent<Slider>();
-        cameraSlider = GameObject.Find("CameraSensitivity").GetComponent<Slider>();
+        volumeSlider = GameObject.Find("MusicVolume").GetComponent<UnityEngine.UI.Slider>();
+        cameraSlider = GameObject.Find("CameraSensitivity").GetComponent<UnityEngine.UI.Slider>();
         xInvertOption = gameManager.xInvert;
         yInvertOption = gameManager.yInvert;
         coinCheese.SetActive(false);
+        cheeseCam.SetActive(false);
         brickCheese.SetActive(false);
+        brickCam.SetActive(false);
         if (pauseMenu)
         {
             pauseMenu.SetActive(false);
@@ -69,12 +78,12 @@ public class LevelManager : MonoBehaviour
         if (activeScene.name == "MainMenu" && UI)
         {
             hud.SetActive(false);
-            Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
         }
         else
         {
             hud.SetActive(true);
-            Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         }
         cheeseText.text = "Cheese: " + gameManager.NumCheesesCollected;
         if (gameManager.musicVolume != 0)
@@ -127,9 +136,33 @@ public class LevelManager : MonoBehaviour
         }
         if (currentCoins >= maxCoins && !allCoinsCollected)
         {
-            coinCheese.SetActive(true);
-            coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
-            allCoinsCollected = true;
+            cheeseCam.SetActive(true);
+            MainCam.SetActive(false);
+
+            if (startWaitCounter < 0)
+            {
+                coinCheese.SetActive(true);
+            }
+            else
+            {
+                startWaitCounter -= Time.deltaTime;
+            }
+            //transform.Rotate(newX, newY, newZ, Space.Self);
+            if (coinCheese.activeInHierarchy)
+            {
+                if (endWaitCounter < 0)
+                {
+                    cheeseCam.SetActive(false);
+                    MainCam.SetActive(true);
+                    startWaitCounter = waitTime;
+                    endWaitCounter = waitTime * 1.5f;
+                    allCoinsCollected = true;
+                }
+                else
+                {
+                    endWaitCounter -= Time.deltaTime;
+                }
+            }
         }
 
         if (currentBricks >= 5 && !allBricksCollected)

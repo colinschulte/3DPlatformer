@@ -380,13 +380,23 @@ public class Player : MonoBehaviour
                 isSliding = false;
             }
 
-            if (dash.WasPressedThisFrame() && canDash && !controller.isGrounded)
+            if (dash.WasPressedThisFrame())
             {
-                maxAirAcceleration = 1f;
-                velocity = lastForward * dashSpeed;
-                dashSound.Play();
-                isDashing = true;
-                canDash = false;
+                if (controller.isGrounded)
+                {
+                    //if player is inside sign radius
+                    {
+
+                    }
+                }
+                else if(canDash)
+                {
+                    maxAirAcceleration = 1f;
+                    velocity = lastForward * dashSpeed;
+                    dashSound.Play();
+                    isDashing = true;
+                    canDash = false;
+                }
             }
 
             if (isDashing)

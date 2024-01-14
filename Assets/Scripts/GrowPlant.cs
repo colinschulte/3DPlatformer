@@ -8,7 +8,7 @@ public class GrowPlant : MonoBehaviour
 {
     [SerializeField] private GameObject shortVine;
     [SerializeField] private GameObject longVine;
-    [SerializeField] private float waitTime = 2;
+    [SerializeField] private float waitTime = 1;
     [SerializeField] private float startWaitCounter;
     [SerializeField] private float endWaitCounter;
     [SerializeField] private GameObject cineCam;
@@ -58,7 +58,6 @@ public class GrowPlant : MonoBehaviour
                     endWaitCounter -= Time.deltaTime;
                 }
             }
-
         }
     }
 
