@@ -58,6 +58,11 @@ public class Player : MonoBehaviour
     public bool isClimbing;
     public Climb climbObject;
 
+    [SerializeField] public bool isNearSign = false;
+    private bool isReading = false;
+    [SerializeField] public GameObject currentSign;
+    private ReadSign readSign;
+
     private Vector3 wallNormal;
     [SerializeField] private float wallPushback;
     [SerializeField] private bool canWallJump;
@@ -225,6 +230,11 @@ public class Player : MonoBehaviour
             //check if Jump is pressed
             if (jump.triggered)
             {
+                if (isReading)
+                {
+                    readSign.EndRead();
+                    isReading = false;
+                }
                 if (coyoteCounter > 0f && isSliding == false)
                 {
 
@@ -384,9 +394,11 @@ public class Player : MonoBehaviour
             {
                 if (controller.isGrounded)
                 {
-                    //if player is inside sign radius
+                    if(isNearSign)
                     {
-
+                        readSign = currentSign.GetComponent<ReadSign>();
+                        readSign.Read();
+                        isReading = true;
                     }
                 }
                 else if(canDash)
@@ -591,6 +603,11 @@ public class Player : MonoBehaviour
             canWallJump = true;
             //lastWallNormal = wallNormal;
         }
+        if (collision.gameObject.CompareTag("Sign"))
+        {
+            isNearSign = true;
+            currentSign = collision.gameObject;
+        }
     }
 
     private void OnCollisionExit(Collision collision)
@@ -599,6 +616,11 @@ public class Player : MonoBehaviour
         {
             isClimbing = false;
             canWallJump = false;
+        }
+        if (collision.gameObject.CompareTag("Sign"))
+        {
+            isNearSign = false;
+            currentSign = null;
         }
     }
 

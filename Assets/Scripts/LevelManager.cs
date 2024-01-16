@@ -60,6 +60,8 @@ public class LevelManager : MonoBehaviour
         cameraSlider = GameObject.Find("CameraSensitivity").GetComponent<UnityEngine.UI.Slider>();
         xInvertOption = gameManager.xInvert;
         yInvertOption = gameManager.yInvert;
+        startWaitCounter = waitTime;
+        endWaitCounter = waitTime * 1.5f;
         coinCheese.SetActive(false);
         cheeseCam.SetActive(false);
         brickCheese.SetActive(false);
@@ -147,7 +149,6 @@ public class LevelManager : MonoBehaviour
             {
                 startWaitCounter -= Time.deltaTime;
             }
-            //transform.Rotate(newX, newY, newZ, Space.Self);
             if (coinCheese.activeInHierarchy)
             {
                 if (endWaitCounter < 0)
@@ -167,9 +168,32 @@ public class LevelManager : MonoBehaviour
 
         if (currentBricks >= 5 && !allBricksCollected)
         {
-            brickCheese.SetActive(true);
-            brickText.text = "Bricks: " + currentBricks + "/5";
-            allBricksCollected = true;
+            brickCam.SetActive(true);
+            MainCam.SetActive(false);
+
+            if (startWaitCounter < 0)
+            {
+                brickCheese.SetActive(true);
+            }
+            else
+            {
+                startWaitCounter -= Time.deltaTime;
+            }
+            if (brickCheese.activeInHierarchy)
+            {
+                if (endWaitCounter < 0)
+                {
+                    brickCam.SetActive(false);
+                    MainCam.SetActive(true);
+                    startWaitCounter = waitTime;
+                    endWaitCounter = waitTime * 1.5f;
+                    allBricksCollected = true;
+                }
+                else
+                {
+                    endWaitCounter -= Time.deltaTime;
+                }
+            }
         }
 
         //if (freeLook != null && (freeLook.m_XAxis.m_MaxSpeed == 0f || freeLook.m_XAxis.m_MaxSpeed == 0f))
