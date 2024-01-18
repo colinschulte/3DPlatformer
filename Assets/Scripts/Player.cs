@@ -392,7 +392,12 @@ public class Player : MonoBehaviour
 
             if (dash.WasPressedThisFrame())
             {
-                if (controller.isGrounded)
+                if (isReading)
+                {
+                    readSign.EndRead();
+                    isReading = false;
+                }
+                else if (controller.isGrounded)
                 {
                     if(isNearSign)
                     {
