@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     public Climb climbObject;
 
     [SerializeField] public bool isNearSign = false;
-    private bool isReading = false;
+    private bool isReading = true;
     [SerializeField] public GameObject currentSign;
     private ReadSign readSign;
 
@@ -232,6 +232,7 @@ public class Player : MonoBehaviour
             {
                 if (isReading)
                 {
+                    readSign = currentSign.GetComponent<ReadSign>();
                     readSign.EndRead();
                     isReading = false;
                 }
@@ -394,6 +395,7 @@ public class Player : MonoBehaviour
             {
                 if (isReading)
                 {
+                    readSign = currentSign.GetComponent<ReadSign>();
                     readSign.EndRead();
                     isReading = false;
                 }

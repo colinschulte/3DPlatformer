@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 7285681276878904757}
   - component: {fileID: 6895373839407450421}
   - component: {fileID: 72768434707188937}
+  - component: {fileID: 690074546861605085}
   m_Layer: 0
   m_Name: Brick
   m_TagString: Brick
@@ -395,3 +396,24 @@ MonoBehaviour:
   levelManager: {fileID: 0}
   collectedMaterial: {fileID: 0}
   isCollectable: 1
+--- !u!95 &690074546861605085
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7638154452830071842}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3f3a74cb6b30e0e42bed413c5c5171e4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
