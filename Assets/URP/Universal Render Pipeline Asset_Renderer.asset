@@ -36,6 +36,7 @@ MonoBehaviour:
     blitHDROverlay: {fileID: 4800000, guid: a89bee29cffa951418fc1e2da94d1959, type: 3}
     cameraMotionVector: {fileID: 4800000, guid: c56b7e0d4c7cb484e959caeeedae9bbf, type: 3}
     objectMotionVector: {fileID: 4800000, guid: 7b3ede40266cd49a395def176e1bc486, type: 3}
+    dataDrivenLensFlare: {fileID: 4800000, guid: 6cda457ac28612740adb23da5d39ea92, type: 3}
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
@@ -69,10 +70,13 @@ MonoBehaviour:
   m_Name: Outlines
   m_EditorClassIdentifier: 
   m_Active: 0
-  passMaterial: {fileID: 2100000, guid: 501b6d0776e92d64c91b6778699ed9ca, type: 2}
   injectionPoint: 600
-  requirements: 6
+  fetchColorBuffer: 1
+  requirements: 2
+  passMaterial: {fileID: 2100000, guid: 501b6d0776e92d64c91b6778699ed9ca, type: 2}
   passIndex: 1
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &8958010657571492694
 MonoBehaviour:
   m_ObjectHideFlags: 0
