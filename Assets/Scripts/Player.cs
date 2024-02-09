@@ -141,7 +141,7 @@ public class Player : MonoBehaviour
         dash.Disable();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (firstUpdate)
         {
