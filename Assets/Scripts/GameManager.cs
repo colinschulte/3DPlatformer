@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public CinemachineFreeLook freeLook;
 
-    public Dictionary<string, bool> CheesesCollected;
+    [SerializeField] public Dictionary<string, bool> CheesesCollected;
     public int NumCheesesCollected = 0;
 
     public float timer;

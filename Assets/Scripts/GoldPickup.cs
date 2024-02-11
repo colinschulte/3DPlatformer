@@ -26,7 +26,6 @@ public class GoldPickup : MonoBehaviour
 
     private void Update()
     {
-        
         if (levelManager.gameManager.CheesesCollected != null && levelManager.gameManager.CheesesCollected.ContainsKey(id) && isCollectable)
         {
             Renderer meshRenderer = gameObject.GetComponent<Renderer>();

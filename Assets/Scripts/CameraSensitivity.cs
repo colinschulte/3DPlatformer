@@ -15,12 +15,6 @@ public class CameraSensitivty : MonoBehaviour
         freeLook = FindObjectOfType<CinemachineFreeLook>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetSensitivity(float sliderValue)
     {
         gameManager = FindObjectOfType<GameManager>();

@@ -44,9 +44,9 @@ public class PauseGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(activeScene.name != "MainMenu")
+        if(pause.triggered)
         {
-            if (pause.triggered)
+            if (activeScene.name != "MainMenu")
             {
                 if(!gamePaused)
                 {

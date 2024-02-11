@@ -12,12 +12,6 @@ public class Volume : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetVolume(float sliderValue)
     {
         audioSource.volume = sliderValue;

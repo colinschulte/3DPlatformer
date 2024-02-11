@@ -44,6 +44,13 @@ public class Player : MonoBehaviour
     [SerializeField] private float bounceForce;
     public bool isBouncing = false;
 
+    [SerializeField] private bool jumpPressed;
+    [SerializeField] private bool jumpReleased;
+    [SerializeField] private bool dashPressed;
+    [SerializeField] private bool dashReleased;
+    [SerializeField] private bool crouchPressed;
+    [SerializeField] private bool crouchReleased;
+
     [SerializeField] private bool isCrouching;
     [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
@@ -141,6 +148,36 @@ public class Player : MonoBehaviour
         dash.Disable();
     }
 
+    private void Update()
+    {
+        if (jump.triggered)
+        {
+            jumpPressed = true;
+        }
+        else if (jump.WasReleasedThisFrame())
+        {
+            jumpReleased = true;
+        }
+
+        if (dash.triggered)
+        {
+            dashPressed = true;
+        }
+        else if (dash.WasReleasedThisFrame())
+        {
+            dashReleased = true;
+        }
+
+        if (crouch.triggered)
+        {
+            crouchPressed = true;
+        }
+        else if (crouch.WasReleasedThisFrame())
+        {
+            crouchReleased = true;
+        }
+    }
+
     private void FixedUpdate()
     {
         if (firstUpdate)
@@ -165,7 +202,7 @@ public class Player : MonoBehaviour
                 moveDirection = move.ReadValue<Vector2>();
                 moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
                 //moveDirection = (transform.up * moveDirection.y);
-                moveDirection += (playerModel.transform.forward * 0.5f);
+                moveDirection += (playerModel.transform.forward * 0.2f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
@@ -228,7 +265,7 @@ public class Player : MonoBehaviour
             }
 
             //check if Jump is pressed
-            if (jump.triggered)
+            if (jumpPressed)
             {
                 if (isReading)
                 {
@@ -332,13 +369,13 @@ public class Player : MonoBehaviour
                 thirdJumpTimer += Time.deltaTime;
             }
 
-            if (crouch.WasReleasedThisFrame())
+            if (crouchReleased)
             {
                 jumpFactor = 1f;
             }
 
             //if Jump is let go then start falling
-            if (jump.WasReleasedThisFrame() && moveDirection.y > 0 && !isBackflipping && !isLongJumping)
+            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping)
             {
                 moveDirection.y = -0.2f;
             }
@@ -373,7 +410,7 @@ public class Player : MonoBehaviour
 
             if (enemyStomped)
             {
-                if (jump.IsPressed())
+                if (jumpPressed)
                 {
                     moveDirection.y += jumpForce;
                 }
@@ -391,7 +428,7 @@ public class Player : MonoBehaviour
                 isSliding = false;
             }
 
-            if (dash.WasPressedThisFrame())
+            if (dashPressed)
             {
                 if (isReading)
                 {
@@ -416,6 +453,7 @@ public class Player : MonoBehaviour
                     isDashing = true;
                     canDash = false;
                 }
+                //dashPressed = false;
             }
 
             if (isDashing)
@@ -423,7 +461,7 @@ public class Player : MonoBehaviour
                 moveDirection = lastForward * dashSpeed;
                 moveDirection.y = 2f;
                 dashCounter -= Time.deltaTime;
-                if (dash.WasReleasedThisFrame() || crouch.triggered)
+                if (dashReleased || crouchPressed)
                 {
                     dashCounter = 0;
                 }
@@ -444,7 +482,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (crouch.triggered)
+            if (crouchPressed)
             {
                 if (coyoteCounter > 0)
                 {
@@ -463,13 +501,6 @@ public class Player : MonoBehaviour
                         isGroundPounding = true;
                     }
                 }
-            }
-
-            if (crouch.WasReleasedThisFrame())
-            {
-                isCrouching = false;
-                this.gameObject.GetComponent<CharacterController>().height = 2;
-                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero;
             }
 
             if (isCrouching)
@@ -492,6 +523,13 @@ public class Player : MonoBehaviour
                         maxAcceleration = 0.15f;
                     }
                 }
+            }
+
+            if (crouchReleased)
+            {
+                isCrouching = false;
+                this.gameObject.GetComponent<CharacterController>().height = 2;
+                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero;
             }
 
             if (isBackflipping)
@@ -589,6 +627,13 @@ public class Player : MonoBehaviour
         animator.SetBool("isDashing", isDashing);
         animator.SetBool("isLongJumping", isLongJumping);
         animator.SetBool("isGroundPounding", isGroundPounding);
+
+        jumpPressed = false;
+        jumpReleased = false;
+        dashPressed = false;
+        dashReleased = false;
+        crouchPressed = false;
+        crouchReleased = false;
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
