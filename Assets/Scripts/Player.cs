@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
     private InputAction crouch;
     private InputAction dash;
 
-    private bool isSliding;
+    [SerializeField] private bool isSliding;
     [SerializeField] private Vector3 slopeSlideVelocity;
 
     [SerializeField] private AudioSource jumpSound;
@@ -252,7 +252,7 @@ public class Player : MonoBehaviour
                 }
                 if (isSliding == false)
                 {
-                    moveDirection.y = 0f;
+                    moveDirection.y = -2f;
                 }
 
                 coyoteCounter = coyoteTime;
@@ -273,7 +273,8 @@ public class Player : MonoBehaviour
                     readSign.EndRead();
                     isReading = false;
                 }
-                if (coyoteCounter > 0f && isSliding == false)
+                //if (coyoteCounter > 0f && isSliding == false)
+                if (coyoteCounter > 0f)
                 {
 
                     if (isCrouching)
@@ -421,12 +422,20 @@ public class Player : MonoBehaviour
                 enemyStomped = false;
             }
 
-            SetSlopeSlideVelocity();
+            //if (controller.isGrounded)
+            //{
+                SetSlopeSlideVelocity();
 
-            if (slopeSlideVelocity == Vector3.zero)
-            {
-                isSliding = false;
-            }
+
+                if (slopeSlideVelocity == Vector3.zero)
+                {
+                    isSliding = false;
+                }
+            //else
+            //{
+            //    isSliding = true;
+            //}
+            //}
 
             if (dashPressed)
             {
@@ -487,9 +496,10 @@ public class Player : MonoBehaviour
                 if (coyoteCounter > 0)
                 {
                     isCrouching = true;
-                    this.gameObject.GetComponent<CharacterController>().height = 1;
-                    this.gameObject.GetComponent<CharacterController>().center = new Vector3(0f, -0.5f, 0f);
+                    controller.height = 1;
+                    controller.center = new Vector3(0f, -0.5f, 0f);
                     isStopped = false;
+                    controller.slopeLimit = 5;
                 }
                 else
                 {
@@ -522,14 +532,16 @@ public class Player : MonoBehaviour
                     {
                         maxAcceleration = 0.15f;
                     }
+                    controller.slopeLimit = 5;
                 }
             }
 
             if (crouchReleased)
             {
                 isCrouching = false;
-                this.gameObject.GetComponent<CharacterController>().height = 2;
-                this.gameObject.GetComponent<CharacterController>().center = Vector3.zero;
+                controller.height = 2;
+                controller.center = Vector3.zero;
+                controller.slopeLimit = 50;
             }
 
             if (isBackflipping)
@@ -583,6 +595,7 @@ public class Player : MonoBehaviour
             {
                 velocity = slopeSlideVelocity;
                 velocity.y = moveDirection.y;
+                moveDirection = slopeSlideVelocity;
             }
 
             controller.Move(velocity * Time.deltaTime);
@@ -678,7 +691,8 @@ public class Player : MonoBehaviour
 
     private void SetSlopeSlideVelocity()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5f))
+        int layerMask = LayerMask.GetMask("Default");
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5f, layerMask))
         {
             float angle = Vector3.Angle(hitInfo.normal, Vector3.up);
 
