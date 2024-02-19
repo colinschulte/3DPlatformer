@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Climb : MonoBehaviour
 {
+    public bool canSideClimb;
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player"))
