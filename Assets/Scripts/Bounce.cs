@@ -18,7 +18,7 @@ public class Bounce : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             //player = other.GetComponent<Player>();
-            player.isBouncing = true;
+            player.bounceStart = true;
         }
     }
 }

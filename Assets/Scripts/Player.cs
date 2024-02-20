@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     private float thirdJumpTimer;
 
     [SerializeField] private float bounceForce;
+    public bool bounceStart = false;
     public bool isBouncing = false;
 
     [SerializeField] private bool jumpPressed;
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour
     public float rotateSpeed;
 
     public GameObject playerModel;
+    [SerializeField] private GameObject dashModel;
 
     public float knockbackForce;
     public float knockbackTime;
@@ -413,7 +415,7 @@ public class Player : MonoBehaviour
                 moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
             }
 
-            if (isBouncing)
+            if (bounceStart)
             {
                 moveDirection.y = bounceForce;
                 coyoteCounter = 0;
@@ -421,7 +423,13 @@ public class Player : MonoBehaviour
                 canDash = true;
                 canMove = true;
                 canTurn = true;
-                isBouncing = false;
+                bounceStart = false;
+                isBouncing = true;
+            }
+
+            if (isBouncing)
+            {
+                maxAirSpeedChange = 1f;
             }
 
             if (enemyStomped)
@@ -442,6 +450,24 @@ public class Player : MonoBehaviour
             if (slopeSlideVelocity == Vector3.zero)
             {
                 isSliding = false;
+            }
+
+            if (isDashing)
+            {
+                canTurn = false;
+                maxAirSpeedChange = 1f;
+                moveDirection = lastForward * dashSpeed;
+                moveDirection.y = 2f;
+                dashCounter -= Time.deltaTime;
+                if (dashReleased || crouchPressed)
+                {
+                    dashCounter = 0;
+                }
+                if (dashCounter <= 0)
+                {
+                    isDashing = false;
+                    dashCounter = dashTime;
+                }
             }
 
             if (dashPressed)
@@ -468,22 +494,7 @@ public class Player : MonoBehaviour
                     dashSound.Play();
                     isDashing = true;
                     canDash = false;
-                }
-            }
-
-            if (isDashing)
-            {
-                moveDirection = lastForward * dashSpeed;
-                moveDirection.y = 2f;
-                dashCounter -= Time.deltaTime;
-                if (dashReleased || crouchPressed)
-                {
-                    dashCounter = 0;
-                }
-                if (dashCounter <= 0)
-                {
-                    isDashing = false;
-                    dashCounter = dashTime;
+                    canTurn = true;
                 }
             }
 
@@ -505,7 +516,7 @@ public class Player : MonoBehaviour
                     controller.height = 1;
                     controller.center = new Vector3(0f, -0.5f, 0f);
                     isStopped = false;
-                    controller.slopeLimit = 5;
+                    controller.slopeLimit = 50;
                 }
                 else
                 {
@@ -538,7 +549,7 @@ public class Player : MonoBehaviour
                     {
                         maxAcceleration = 0.15f;
                     }
-                    controller.slopeLimit = 5;
+                    controller.slopeLimit = 50;
                 }
             }
 
@@ -622,12 +633,13 @@ public class Player : MonoBehaviour
             if (newLookVector != Vector3.zero)
             {
                 newRotation = Quaternion.LookRotation(newLookVector);
+                dashModel.transform.rotation = newRotation;
                 if (canTurn)
                 {
-                    playerModel.transform.rotation = newRotation;
+                    playerModel.transform.rotation = dashModel.transform.rotation;
                 }
             }
-            lastForward = playerModel.transform.forward;
+            lastForward = dashModel.transform.forward;
 
             if (isClimbing)
             {
