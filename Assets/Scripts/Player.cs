@@ -255,6 +255,7 @@ public class Player : MonoBehaviour
                 canGroundPound = true;
                 isBackflipping = false;
                 isLongJumping = false;
+                isBouncing = false;
                 maxAcceleration = 1f;
                 maxAirAcceleration = 0.85f;
                 //forwardInfluence = 1f;
