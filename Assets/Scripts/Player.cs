@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -23,8 +24,8 @@ public class Player : MonoBehaviour
     //public float runDeccelAmount;
     private Vector3 lastForward;
 
-    [SerializeField] private float maxSpeedChange;
-    [SerializeField] private float maxAirSpeedChange;
+    [SerializeField] private float maxDeceleration;
+    [SerializeField] private float maxAirDeceleration;
     [SerializeField] private Vector3 velocity;
     public bool canMove;
     public bool canTurn;
@@ -42,6 +43,11 @@ public class Player : MonoBehaviour
     private bool secondJumpActive;
     private float secondJumpTimer;
     private float thirdJumpTimer;
+    [SerializeField] private float hoverTime;
+    [SerializeField] private float hoverTimer;
+    public bool canHover;
+    public bool isHovering;
+
 
     [SerializeField] private float bounceForce;
     public bool bounceStart = false;
@@ -203,7 +209,7 @@ public class Player : MonoBehaviour
 
             if (isClimbing && !controller.isGrounded)
             {
-                maxAirSpeedChange = 2f;
+                //maxAirSpeedChange = 2f;
                 canDash = false;
                 isDashing = false;
                 canGroundPound = false;
@@ -229,7 +235,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                maxAirSpeedChange = 0.3f;
+                //maxAirSpeedChange = 0.3f;
                 if (canMove)
                 {
                     moveDirection = move.ReadValue<Vector2>();
@@ -256,8 +262,10 @@ public class Player : MonoBehaviour
                 isBackflipping = false;
                 isLongJumping = false;
                 isBouncing = false;
-                maxAcceleration = 1f;
-                maxAirAcceleration = 0.85f;
+                isHovering = false;
+                canHover = true;
+                //maxAcceleration = 1f;
+                //maxAirAcceleration = 0.85f;
                 //forwardInfluence = 1f;
                 //sidewaysInfluence = 1f;
                 gravityScale = 5f;
@@ -284,6 +292,8 @@ public class Player : MonoBehaviour
             if (jumpPressed)
             {
                 canTurn = false;
+
+                //remove text
                 if (isReading)
                 {
                     readSign = currentSign.GetComponent<ReadSign>();
@@ -387,15 +397,34 @@ public class Player : MonoBehaviour
                 thirdJumpTimer += Time.deltaTime;
             }
 
-            if (crouchReleased)
+            if (moveDirection.y <= 0f && !controller.isGrounded && canHover)
             {
-                jumpFactor = 1f;
+                canHover = false;
+                isHovering = true;
+                hoverTimer = hoverTime;
+            }
+
+            if (isHovering)
+            {
+                moveDirection.y = 1f;
+
+                if (hoverTimer <= 0)
+                {
+                    moveDirection.y = -5f;
+                    isHovering = false;
+                }
+                else
+                {
+                    hoverTimer -= Time.deltaTime;
+                }
             }
 
             //if Jump is let go then start falling
             if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping)
             {
-                moveDirection.y = -0.2f;
+                moveDirection.y = -5f;
+                canHover = false;
+                isHovering = false;
             }
 
             if (isWallJumping)
@@ -430,7 +459,8 @@ public class Player : MonoBehaviour
 
             if (isBouncing)
             {
-                maxAirSpeedChange = 1f;
+                maxAirAcceleration = 1f;
+                maxAirDeceleration = 1f;
             }
 
             if (enemyStomped)
@@ -456,7 +486,9 @@ public class Player : MonoBehaviour
             if (isDashing)
             {
                 canTurn = false;
-                maxAirSpeedChange = 1f;
+                canMove = false;
+                maxAirAcceleration = 1f;
+                maxAirDeceleration = 1f;
                 moveDirection = lastForward * dashSpeed;
                 moveDirection.y = 2f;
                 dashCounter -= Time.deltaTime;
@@ -490,7 +522,7 @@ public class Player : MonoBehaviour
                 }
                 else if(canDash)
                 {
-                    maxAirAcceleration = 1f;
+                    //maxAirAcceleration = 1f;
                     velocity = lastForward * dashSpeed;
                     dashSound.Play();
                     isDashing = true;
@@ -509,6 +541,11 @@ public class Player : MonoBehaviour
                 }
             }
 
+            if (crouchReleased)
+            {
+                jumpFactor = 1f;
+            }
+
             if (crouchPressed)
             {
                 if (coyoteCounter > 0)
@@ -517,7 +554,7 @@ public class Player : MonoBehaviour
                     controller.height = 1;
                     controller.center = new Vector3(0f, -0.5f, 0f);
                     isStopped = false;
-                    controller.slopeLimit = 50;
+                    controller.slopeLimit = 90;
                 }
                 else
                 {
@@ -559,7 +596,7 @@ public class Player : MonoBehaviour
                 isCrouching = false;
                 controller.height = 2;
                 controller.center = Vector3.zero;
-                controller.slopeLimit = 50;
+                controller.slopeLimit = 90;
             }
 
             if (isBackflipping)
@@ -594,17 +631,29 @@ public class Player : MonoBehaviour
                 moveDirection.y = yStore;
             }
 
-            if (controller.isGrounded)
+            if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
             {
-                velocity = Vector3.MoveTowards(velocity, moveDirection * maxAcceleration, maxSpeedChange);
+                if (controller.isGrounded)
+                {
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAcceleration);
+                }
+                else
+                {
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration);
+                }
             }
             else
             {
-                velocity = Vector3.MoveTowards(velocity, moveDirection * maxAirAcceleration, maxAirSpeedChange);
+                if (controller.isGrounded)
+                {
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxDeceleration);
+                }
+                else
+                {
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirDeceleration);
+                }
             }
-
             velocity.y = moveDirection.y;
-
 
 
             if (isSliding)
