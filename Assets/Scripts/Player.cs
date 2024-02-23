@@ -12,21 +12,22 @@ public class Player : MonoBehaviour
     [SerializeField] private LevelManager levelManager;
     private bool firstUpdate = true;
 
+    [SerializeField] private float maxSpeed;
     [SerializeField] private float moveSpeed;
-    [SerializeField] private float climbSpeed;
-    //[SerializeField] private float forwardInfluence;
-    //[SerializeField] private float sidewaysInfluence;
-    //[SerializeField] public float runMaxSpeed; //Target speed we want the player to reach.
-    [SerializeField] private float maxAcceleration; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
-    [SerializeField] private float maxAirAcceleration;
-    //public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
-    //[SerializeField] public float runDecceleration; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
-    //public float runDeccelAmount;
-    private Vector3 lastForward;
-
-    [SerializeField] private float maxDeceleration;
-    [SerializeField] private float maxAirDeceleration;
+    private float maxAcceleration;
+    private float maxAirAcceleration;
+    private float maxDeceleration;
+    private float maxAirDeceleration;
+    [SerializeField] private float defaultMaxAccel;
+    [SerializeField] private float defaultMaxAirAccel;
+    [SerializeField] private float defaultMaxDecel;
+    [SerializeField] private float defaultMaxAirDecel;
     [SerializeField] private Vector3 velocity;
+    public Vector3 moveDirection;
+    private Vector3 lastMoveDirection;
+    public CharacterController controller;
+
+    private Vector3 lastForward;
     public bool canMove;
     public bool canTurn;
 
@@ -48,7 +49,6 @@ public class Player : MonoBehaviour
     public bool canHover;
     public bool isHovering;
 
-
     [SerializeField] private float bounceForce;
     public bool bounceStart = false;
     public bool isBouncing = false;
@@ -65,14 +65,17 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
     public bool enemyStomped;
-    public int groundPoundPower;
-    public bool canGroundPound;
+    [SerializeField] private int groundPoundPower;
+    [SerializeField] private bool canGroundPound;
     public bool isGroundPounding;
-    public float groundPoundHangtime;
-    public float groundPoundHangcount;
+    [SerializeField] private float groundPoundHangtime;
+    [SerializeField] private float groundPoundHangcount;
 
     public bool isClimbing;
     public Climb climbObject;
+    [SerializeField] private float climbSpeed;
+    [SerializeField] private float climbPull;
+    [SerializeField] private float climbAcceleration;
 
     [SerializeField] public bool isNearSign = false;
     private bool isReading = true;
@@ -95,9 +98,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashCooldown;
     private float dashCooldownCount;
 
-    //private int coinCount;
-    public Vector3 moveDirection;
-    public CharacterController controller;
 
     [SerializeField] private Transform cameraTransform;
 
@@ -222,11 +222,11 @@ public class Player : MonoBehaviour
                 {
                     moveDirection = (transform.up * moveDirection.y);
                 }
-                moveDirection += (playerModel.transform.forward * 0.2f);
                 float magnitude = moveDirection.magnitude;
                 magnitude = Mathf.Clamp01(magnitude);
                 moveDirection = moveDirection.normalized;
                 moveDirection = magnitude * climbSpeed * moveDirection;
+                moveDirection += (playerModel.transform.forward * climbPull);
                 canWallJump = true;
 
                 //toggle for moving sideways when climbing
@@ -263,11 +263,10 @@ public class Player : MonoBehaviour
                 isLongJumping = false;
                 isBouncing = false;
                 isHovering = false;
-                canHover = true;
-                //maxAcceleration = 1f;
-                //maxAirAcceleration = 0.85f;
-                //forwardInfluence = 1f;
-                //sidewaysInfluence = 1f;
+                maxAcceleration = defaultMaxAccel;
+                maxAirAcceleration = defaultMaxAirAccel;
+                maxDeceleration = defaultMaxDecel;
+                maxAirDeceleration = defaultMaxAirDecel;
                 gravityScale = 5f;
 
                 if (slopeSlideVelocity != Vector3.zero)
@@ -285,14 +284,14 @@ public class Player : MonoBehaviour
             else
             {
 
-                coyoteCounter -= Time.deltaTime;
+                coyoteCounter -= Time.fixedDeltaTime;
             }
 
             //check if Jump is pressed
             if (jumpPressed)
             {
                 canTurn = false;
-
+                canHover = true;
                 //remove text
                 if (isReading)
                 {
@@ -389,12 +388,12 @@ public class Player : MonoBehaviour
             }
             if (firstJumpActive && coyoteCounter > 0f)
             {
-                secondJumpTimer += Time.deltaTime;
+                secondJumpTimer += Time.fixedDeltaTime;
             }
 
             if (secondJumpActive && coyoteCounter > 0f)
             {
-                thirdJumpTimer += Time.deltaTime;
+                thirdJumpTimer += Time.fixedDeltaTime;
             }
 
             if (moveDirection.y <= 0f && !controller.isGrounded && canHover)
@@ -415,7 +414,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    hoverTimer -= Time.deltaTime;
+                    hoverTimer -= Time.fixedDeltaTime;
                 }
             }
 
@@ -429,7 +428,7 @@ public class Player : MonoBehaviour
 
             if (isWallJumping)
             {
-                wallJumpCounter -= Time.deltaTime;
+                wallJumpCounter -= Time.fixedDeltaTime;
             }
 
             if (wallJumpCounter <= 0)
@@ -442,7 +441,7 @@ public class Player : MonoBehaviour
 
             if (!isClimbing)
             {
-                moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
+                moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
             }
 
             if (bounceStart)
@@ -491,7 +490,7 @@ public class Player : MonoBehaviour
                 maxAirDeceleration = 1f;
                 moveDirection = lastForward * dashSpeed;
                 moveDirection.y = 2f;
-                dashCounter -= Time.deltaTime;
+                dashCounter -= Time.fixedDeltaTime;
                 if (dashReleased || crouchPressed)
                 {
                     dashCounter = 0;
@@ -533,17 +532,12 @@ public class Player : MonoBehaviour
 
             if (!isDashing && !canDash && controller.isGrounded)
             {
-                dashCooldownCount -= Time.deltaTime;
+                dashCooldownCount -= Time.fixedDeltaTime;
                 if (dashCooldownCount <= 0)
                 {
                     canDash = true;
                     dashCooldownCount = dashCooldown;
                 }
-            }
-
-            if (crouchReleased)
-            {
-                jumpFactor = 1f;
             }
 
             if (crouchPressed)
@@ -597,6 +591,7 @@ public class Player : MonoBehaviour
                 controller.height = 2;
                 controller.center = Vector3.zero;
                 controller.slopeLimit = 90;
+                jumpFactor = 1f;
             }
 
             if (isBackflipping)
@@ -615,8 +610,8 @@ public class Player : MonoBehaviour
                 else
                 {
                     moveDirection = Vector3.zero;
-                    playerModel.transform.Rotate(new Vector3(0, 1440, 0) * Time.deltaTime);
-                    groundPoundHangcount -= Time.deltaTime;
+                    playerModel.transform.Rotate(new Vector3(0, 1440, 0) * Time.fixedDeltaTime);
+                    groundPoundHangcount -= Time.fixedDeltaTime;
                 }
             }
 
@@ -631,47 +626,67 @@ public class Player : MonoBehaviour
                 moveDirection.y = yStore;
             }
 
-            if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
+            if (isClimbing)
             {
-                if (controller.isGrounded)
-                {
-                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAcceleration);
-                }
-                else
-                {
-                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration);
-                }
+                velocity = Vector3.MoveTowards(velocity, moveDirection, climbAcceleration);
             }
             else
             {
-                if (controller.isGrounded)
+                yStore = moveDirection.y;
+                moveDirection.y = 0;
+                velocity.y = 0;
+
+                if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
                 {
-                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxDeceleration);
+                    if (controller.isGrounded)
+                    {
+                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAcceleration * Time.fixedDeltaTime);
+                        //velocity = Vector3.SmoothDamp(velocity, velocity + moveDirection, ref refVelocity, maxAcceleration, maxSpeed);
+                    }
+                    else
+                    {
+                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration * Time.fixedDeltaTime);
+                    }
                 }
                 else
                 {
-                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirDeceleration);
+                    if (controller.isGrounded)
+                    {
+                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxDeceleration * Time.fixedDeltaTime);
+                        //velocity = Vector3.SmoothDamp(velocity, moveDirection, ref refVelocity, maxDeceleration, maxSpeed);
+                    }
+                    else
+                    {
+                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirDeceleration * Time.fixedDeltaTime);
+                    }
                 }
-            }
-            velocity.y = moveDirection.y;
+
+                lastMoveDirection = moveDirection;
+
+                if(velocity.magnitude > maxSpeed)
+                {
+                    velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+                }
+                velocity.y = yStore;
 
 
-            if (isSliding)
+                if (isSliding)
             {
                 velocity = slopeSlideVelocity;
                 velocity.y = moveDirection.y;
                 moveDirection = slopeSlideVelocity;
             }
+            }
 
-            controller.Move(velocity * Time.deltaTime);
+            controller.Move(velocity * Time.fixedDeltaTime);
 
         }
         else
         {
             canTurn = false;
-            moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.deltaTime;
-            controller.Move(moveDirection * Time.deltaTime);
-            knockbackCounter -= Time.deltaTime;
+            moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
+            controller.Move(moveDirection * Time.fixedDeltaTime);
+            knockbackCounter -= Time.fixedDeltaTime;
 
         }
         //Move player direction
@@ -740,7 +755,7 @@ public class Player : MonoBehaviour
         }
         if (isSliding)
         {
-            slopeSlideVelocity -= 3 * Time.deltaTime * slopeSlideVelocity;
+            slopeSlideVelocity -= 3 * Time.fixedDeltaTime * slopeSlideVelocity;
 
             if (slopeSlideVelocity.magnitude > 1)
             {
