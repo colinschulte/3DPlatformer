@@ -12,12 +12,13 @@ public class Player : MonoBehaviour
     [SerializeField] private LevelManager levelManager;
     private bool firstUpdate = true;
 
-    [SerializeField] private float maxSpeed;
     [SerializeField] private float moveSpeed;
-    private float maxAcceleration;
-    private float maxAirAcceleration;
-    private float maxDeceleration;
-    private float maxAirDeceleration;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float maxAcceleration;
+    [SerializeField] private float maxAirAcceleration;
+    [SerializeField] private float maxDeceleration;
+    [SerializeField] private float maxAirDeceleration;
+    [SerializeField] private float defaultMaxSpeed;
     [SerializeField] private float defaultMaxAccel;
     [SerializeField] private float defaultMaxAirAccel;
     [SerializeField] private float defaultMaxDecel;
@@ -48,6 +49,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float hoverTimer;
     public bool canHover;
     public bool isHovering;
+    public bool hitHead;
 
     [SerializeField] private float bounceForce;
     public bool bounceStart = false;
@@ -122,6 +124,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private AudioSource jumpSound;
     [SerializeField] private AudioSource dashSound;
+    private Vector3 surfaceNormal;
 
     private void Awake()
     {
@@ -209,7 +212,6 @@ public class Player : MonoBehaviour
 
             if (isClimbing && !controller.isGrounded)
             {
-                //maxAirSpeedChange = 2f;
                 canDash = false;
                 isDashing = false;
                 canGroundPound = false;
@@ -228,14 +230,9 @@ public class Player : MonoBehaviour
                 moveDirection = magnitude * climbSpeed * moveDirection;
                 moveDirection += (playerModel.transform.forward * climbPull);
                 canWallJump = true;
-
-                //toggle for moving sideways when climbing
-                //moveDirection.x = 0;
-
             }
             else
             {
-                //maxAirSpeedChange = 0.3f;
                 if (canMove)
                 {
                     moveDirection = move.ReadValue<Vector2>();
@@ -263,6 +260,7 @@ public class Player : MonoBehaviour
                 isLongJumping = false;
                 isBouncing = false;
                 isHovering = false;
+                maxSpeed = defaultMaxSpeed;
                 maxAcceleration = defaultMaxAccel;
                 maxAirAcceleration = defaultMaxAirAccel;
                 maxDeceleration = defaultMaxDecel;
@@ -290,8 +288,7 @@ public class Player : MonoBehaviour
             //check if Jump is pressed
             if (jumpPressed)
             {
-                canTurn = false;
-                canHover = true;
+
                 //remove text
                 if (isReading)
                 {
@@ -302,6 +299,9 @@ public class Player : MonoBehaviour
                 //if (coyoteCounter > 0f && isSliding == false)
                 if (coyoteCounter > 0f)
                 {
+                    canTurn = false;
+                    canHover = true;
+                    maxSpeed = defaultMaxSpeed;
 
                     if (isCrouching)
                     {
@@ -309,7 +309,7 @@ public class Player : MonoBehaviour
                         {
                             //long jump
                             jumpFactor = 0.6f;
-                            maxAirAcceleration = 1f;
+                            maxAirAcceleration = 50f;
                             isLongJumping = true;
                             canMove = true;
                         }
@@ -458,8 +458,8 @@ public class Player : MonoBehaviour
 
             if (isBouncing)
             {
-                maxAirAcceleration = 1f;
-                maxAirDeceleration = 1f;
+                maxAirAcceleration = 30f;
+                maxAirDeceleration = 30f;
             }
 
             if (enemyStomped)
@@ -486,8 +486,8 @@ public class Player : MonoBehaviour
             {
                 canTurn = false;
                 canMove = false;
-                maxAirAcceleration = 1f;
-                maxAirDeceleration = 1f;
+                maxAirAcceleration = 30f;
+                maxAirDeceleration = 30f;
                 moveDirection = lastForward * dashSpeed;
                 moveDirection.y = 2f;
                 dashCounter -= Time.fixedDeltaTime;
@@ -579,9 +579,13 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        maxAcceleration = 0.15f;
+                        maxSpeed = 1f;
                     }
                     controller.slopeLimit = 50;
+                }
+                else
+                {
+                    maxSpeed = defaultMaxSpeed;
                 }
             }
 
@@ -597,7 +601,7 @@ public class Player : MonoBehaviour
             if (isBackflipping)
             {
                 canMove = true;
-                maxAirAcceleration = 0.5f;
+                maxAirAcceleration = 3f;
             }
 
             if (isGroundPounding)
@@ -619,10 +623,10 @@ public class Player : MonoBehaviour
             {
                 canMove = true;
                 canTurn = false;
-                maxAirAcceleration = 1f;
+                //maxAirAcceleration = 1f;
                 gravityScale = 4f;
                 yStore = moveDirection.y;
-                moveDirection += playerModel.transform.forward * 7;
+                moveDirection += playerModel.transform.forward * 20;
                 moveDirection.y = yStore;
             }
 
@@ -671,11 +675,18 @@ public class Player : MonoBehaviour
 
 
                 if (isSliding)
-            {
-                velocity = slopeSlideVelocity;
-                velocity.y = moveDirection.y;
-                moveDirection = slopeSlideVelocity;
-            }
+                {
+                    velocity = slopeSlideVelocity;
+                    velocity.y = moveDirection.y;
+                    moveDirection = slopeSlideVelocity;
+                }
+
+                if (hitHead)
+                {
+                    velocity = new Vector3(0, -5, 0);
+                    canHover = false;
+                    hitHead = false;
+                }
             }
 
             controller.Move(velocity * Time.fixedDeltaTime);

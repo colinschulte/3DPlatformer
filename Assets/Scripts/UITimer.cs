@@ -10,6 +10,7 @@ public class UITimer : MonoBehaviour
     private bool firstUpdate;
     public bool playing;
     private float Timer;
+
     void Start()
     {
         firstUpdate = true;

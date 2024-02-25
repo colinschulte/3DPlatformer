@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject UI;
     [SerializeField] private GameObject options, controls;
     [SerializeField] private GameObject pauseMenu, hud;
+    [SerializeField] private UITimer UITimer;
+    [SerializeField] private GameObject SpeakingMenu;
+    [SerializeField] private GameObject SpeakerName;
+    [SerializeField] private GameObject Dialogue;
     [SerializeField] private UnityEngine.UI.Slider volumeSlider;
     [SerializeField] private Volume musicVolume;
     [SerializeField] private CameraSensitivty cameraOptions;
@@ -199,11 +204,23 @@ public class LevelManager : MonoBehaviour
     {
         gameManager.AddCheese(id);
         cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
+        if (gameManager.NumCheesesCollected >= 10)
+        {
+            Congratulations();
+        }
     }
     
     public void BrickGet()
     {
         currentBricks += 1;
         brickText.text = "Bricks: " + currentBricks + "/5";
+    }
+
+    public void Congratulations() 
+    {
+        UITimer.playing = false;
+        SpeakerName.GetComponent<TextMeshProUGUI>().text = "Congratulations!";
+        Dialogue.GetComponent<TextMeshProUGUI>().text = "You found all 10 cheeses! Thank you for playing!";
+        SpeakingMenu.SetActive(true);
     }
 }
