@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -61,6 +62,8 @@ public class Player : MonoBehaviour
     [SerializeField] private bool dashReleased;
     [SerializeField] private bool crouchPressed;
     [SerializeField] private bool crouchReleased;
+    [SerializeField] private bool climbPressed;
+    [SerializeField] private bool climbReleased;
 
     [SerializeField] private bool isCrouching;
     [SerializeField] private bool isStopped;
@@ -74,6 +77,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundPoundHangcount;
 
     public bool isClimbing;
+    private bool canClimb;
     public Climb climbObject;
     [SerializeField] private float climbSpeed;
     [SerializeField] private float climbPull;
@@ -118,6 +122,7 @@ public class Player : MonoBehaviour
     private InputAction jump;
     private InputAction crouch;
     private InputAction dash;
+    private InputAction climb;
 
     [SerializeField] private bool isSliding;
     [SerializeField] private Vector3 slopeSlideVelocity;
@@ -151,6 +156,8 @@ public class Player : MonoBehaviour
         crouch.Enable();
         dash = playerControls.Player.Dash;
         dash.Enable();
+        climb = playerControls.Player.Climb;
+        climb.Enable();
     }
 
     private void OnDisable()
@@ -189,6 +196,15 @@ public class Player : MonoBehaviour
         {
             crouchReleased = true;
         }
+
+        if (climb.triggered)
+        {
+            climbPressed = true;
+        }
+        else if (climb.WasReleasedThisFrame())
+        {
+            climbReleased = true;
+        }
     }
 
     private void FixedUpdate()
@@ -209,8 +225,16 @@ public class Player : MonoBehaviour
             //float xStore = velocity.x;
             float yStore = velocity.y;
             //float zStore = velocity.z;
+            if (climbPressed)
+            {
+                canClimb = true;
+            }
+            else if (climbReleased)
+            {
+                canClimb = false;
+            }
 
-            if (isClimbing && !controller.isGrounded)
+            if (canClimb && isClimbing && !controller.isGrounded)
             {
                 canDash = false;
                 isDashing = false;
