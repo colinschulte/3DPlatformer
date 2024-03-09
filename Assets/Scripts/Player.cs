@@ -234,7 +234,7 @@ public class Player : MonoBehaviour
                 canClimb = false;
             }
 
-            if (canClimb && isClimbing && !controller.isGrounded)
+            if (isClimbing && !controller.isGrounded)
             {
                 canDash = false;
                 isDashing = false;
@@ -339,7 +339,7 @@ public class Player : MonoBehaviour
                         }
                         else
                         {
-                            //backflip
+                            //high jump
                             jumpFactor = 1.4f;
                             isBackflipping = true;
                             canMove = true;
@@ -347,7 +347,13 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        if (jumpCounter == 1)
+                        if (Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5)
+                        {
+                            //backflip
+                            jumpFactor = 1.3f;
+                            print("FLIP!");
+                        }
+                        else if (jumpCounter == 1)
                         {
                             jumpFactor = 1f;
                             jumpCounter++;
