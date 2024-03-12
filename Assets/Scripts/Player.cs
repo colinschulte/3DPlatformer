@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float coyoteTime;
     private float coyoteCounter;
 
+    public bool canJump = true;
     [SerializeField] private float jumpTime;
     [SerializeField] private float jumpFactor = 1f;
     [SerializeField] private int jumpCounter = 1;
@@ -75,6 +76,11 @@ public class Player : MonoBehaviour
     public bool isGroundPounding;
     [SerializeField] private float groundPoundHangtime;
     [SerializeField] private float groundPoundHangcount;
+
+    public bool isHanging;
+    public bool canHang;
+    public float hangTime;
+    private float hangCounter;
 
     public bool isClimbing;
     private bool canClimb;
@@ -320,9 +326,25 @@ public class Player : MonoBehaviour
                     readSign.EndRead();
                     isReading = false;
                 }
+
                 //if (coyoteCounter > 0f && isSliding == false)
                 if (coyoteCounter > 0f)
                 {
+                    canJump = true;
+                }
+                else
+                {
+                    canJump = false;
+                }
+
+                if (isHanging)
+                {
+                    hangCounter = hangTime;
+                    canJump = true;
+                    isHanging = false;
+                }
+
+                if (canJump) {
                     canTurn = false;
                     canHover = true;
                     maxSpeed = defaultMaxSpeed;
@@ -446,6 +468,16 @@ public class Player : MonoBehaviour
                 {
                     hoverTimer -= Time.fixedDeltaTime;
                 }
+            }
+
+            if (hangCounter < 0)
+            {
+                
+                canHang = true;
+            }
+            else
+            {
+                hangCounter -= Time.fixedDeltaTime;
             }
 
             //if Jump is let go then start falling
@@ -719,6 +751,13 @@ public class Player : MonoBehaviour
                 }
             }
 
+            LedgeGrab();
+
+            if(isHanging)
+            {
+                velocity = Vector3.zero;
+            }
+
             controller.Move(velocity * Time.fixedDeltaTime);
 
         }
@@ -805,6 +844,44 @@ public class Player : MonoBehaviour
         }
 
         slopeSlideVelocity = Vector3.zero;
+    }
+
+    public void LedgeGrab()
+    {
+        if (velocity.y < 0 && canHang)
+        {
+            {
+                RaycastHit downHit;
+                Vector3 LineDownStart = (transform.position + Vector3.up * 0.75f) + (playerModel.transform.forward * 0.5f);
+                Vector3 LineDownEnd = (transform.position + Vector3.up * 0.35f) + (playerModel.transform.forward * 0.5f);
+                Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default")); 
+                Debug.DrawLine(LineDownStart, LineDownEnd);
+
+                if (downHit.collider != null)
+                {
+                    RaycastHit fwdHit;
+                    Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
+                    Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.5f);
+                    Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default")); 
+                    Debug.DrawLine(LineFwdStart, LineFwdEnd);
+
+                    if (fwdHit.collider != null)
+                    {
+                        Debug.Log("HANG");
+                        velocity = Vector3.zero;
+                        canHang = false;
+                        isHanging = true;
+                        Vector3 hangPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+                        Vector3 offset = transform.forward * -0.05f + transform.up * -0.25f;
+                        hangPos += offset;
+                        transform.position = hangPos;
+                        playerModel.transform.forward = -fwdHit.normal;
+
+                    }
+                }
+            }
+
+        }
     }
 
     public void Knockback(Vector3 direction)
