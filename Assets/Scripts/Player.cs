@@ -81,6 +81,10 @@ public class Player : MonoBehaviour
     public bool canHang;
     public float hangTime;
     private float hangCounter;
+    [SerializeField] private float hangOffsetX;
+    [SerializeField] private float hangOffsetY;
+    [SerializeField] private Vector3 hangPos;
+
 
     public bool isClimbing;
     private bool canClimb;
@@ -801,6 +805,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isDashing", isDashing);
         animator.SetBool("isLongJumping", isLongJumping);
         animator.SetBool("isGroundPounding", isGroundPounding);
+        animator.SetBool("isHanging", isHanging);
 
         jumpPressed = false;
         jumpReleased = false;
@@ -852,27 +857,27 @@ public class Player : MonoBehaviour
         {
             {
                 RaycastHit downHit;
-                Vector3 LineDownStart = (transform.position + Vector3.up * 0.75f) + (playerModel.transform.forward * 0.5f);
-                Vector3 LineDownEnd = (transform.position + Vector3.up * 0.35f) + (playerModel.transform.forward * 0.5f);
+                Vector3 LineDownStart = (transform.position + Vector3.up * 0.6f) + (playerModel.transform.forward * 0.5f);
+                Vector3 LineDownEnd = (transform.position + Vector3.up * 0.4f) + (playerModel.transform.forward * 0.5f);
                 Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default")); 
                 Debug.DrawLine(LineDownStart, LineDownEnd);
 
-                if (downHit.collider != null)
+                if (downHit.collider != null && !downHit.collider.isTrigger)
                 {
                     RaycastHit fwdHit;
                     Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
-                    Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.5f);
+                    Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.6f);
                     Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default")); 
                     Debug.DrawLine(LineFwdStart, LineFwdEnd);
 
-                    if (fwdHit.collider != null)
+                    if (fwdHit.collider != null && !downHit.collider.isTrigger)
                     {
                         Debug.Log("HANG");
                         velocity = Vector3.zero;
                         canHang = false;
                         isHanging = true;
-                        Vector3 hangPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
-                        Vector3 offset = transform.forward * -0.05f + transform.up * -0.25f;
+                        hangPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
+                        Vector3 offset = transform.forward * hangOffsetX + transform.up * hangOffsetY;
                         hangPos += offset;
                         transform.position = hangPos;
                         playerModel.transform.forward = -fwdHit.normal;
