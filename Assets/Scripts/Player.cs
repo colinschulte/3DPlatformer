@@ -377,7 +377,6 @@ public class Player : MonoBehaviour
                         {
                             //backflip
                             jumpFactor = 1.3f;
-                            print("FLIP!");
                         }
                         else if (jumpCounter == 1)
                         {
