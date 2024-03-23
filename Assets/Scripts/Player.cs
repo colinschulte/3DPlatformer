@@ -92,6 +92,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float climbSpeed;
     [SerializeField] private float climbPull;
     [SerializeField] private float climbAcceleration;
+    private RaycastHit fwdHit;
 
     [SerializeField] public bool isNearSign = false;
     private bool isReading = true;
@@ -242,6 +243,22 @@ public class Player : MonoBehaviour
             else if (climbReleased)
             {
                 canClimb = false;
+            }
+
+            Vector3 LineFwdStart = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            Vector3 LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * 0.3f);
+            Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
+
+            if (fwdHit.collider != null && !isWallJumping)
+            {
+                Debug.Log("CLIMB");
+                velocity = Vector3.zero;
+                isClimbing = true;
+                climbObject = fwdHit.collider.GetComponent<Climb>();
+            }
+            else
+            {
+                isClimbing = false;
             }
 
             if (isClimbing && !controller.isGrounded)
@@ -410,7 +427,7 @@ public class Player : MonoBehaviour
                     velocity = Vector3.zero;
                     if (isClimbing)
                     {
-                        wallNormal = -playerModel.transform.forward;
+                        wallNormal = fwdHit.normal;
                     }
                     moveDirection = wallNormal * wallPushback;
                     moveDirection.y = jumpForce * jumpFactor;
@@ -792,11 +809,15 @@ public class Player : MonoBehaviour
 
             if (isClimbing)
             {
-                playerModel.transform.LookAt(climbObject.transform.position);
+                playerModel.transform.forward = -fwdHit.normal;
                 Quaternion g = playerModel.transform.rotation;
                 g.x = 0;
                 g.z = 0;
                 playerModel.transform.rotation = g;
+            }
+            if (isWallJumping)
+            {
+                playerModel.transform.forward = fwdHit.normal;
             }
         }
         animator.SetBool("isGrounded", controller.isGrounded || coyoteCounter > 0);
@@ -864,13 +885,13 @@ public class Player : MonoBehaviour
 
                 if (downHit.collider != null && !downHit.collider.isTrigger)
                 {
-                    RaycastHit fwdHit;
+                    
                     Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
                     Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
                     Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default")); 
                     Debug.DrawLine(LineFwdStart, LineFwdEnd);
 
-                    if (fwdHit.collider != null && !downHit.collider.isTrigger)
+                    if (fwdHit.collider != null && !fwdHit.collider.isTrigger)
                     {
                         Debug.Log("HANG");
                         velocity = Vector3.zero;
