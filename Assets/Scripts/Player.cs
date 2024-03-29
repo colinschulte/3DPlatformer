@@ -249,9 +249,8 @@ public class Player : MonoBehaviour
             Vector3 LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * 0.3f);
             Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
 
-            if (fwdHit.collider != null && !isWallJumping)
+            if (fwdHit.collider != null && !isWallJumping && !isHanging)
             {
-                Debug.Log("CLIMB");
                 velocity = Vector3.zero;
                 isClimbing = true;
                 climbObject = fwdHit.collider.GetComponent<Climb>();
@@ -775,6 +774,7 @@ public class Player : MonoBehaviour
 
             if(isHanging)
             {
+                canTurn = false;
                 velocity = Vector3.zero;
             }
 
@@ -803,6 +803,10 @@ public class Player : MonoBehaviour
                 if (canTurn)
                 {
                     playerModel.transform.rotation = dashModel.transform.rotation;
+                }
+                if (isHanging)
+                {
+                    playerModel.transform.forward = -wallNormal;
                 }
             }
             lastForward = dashModel.transform.forward;
@@ -874,13 +878,13 @@ public class Player : MonoBehaviour
 
     public void LedgeGrab()
     {
-        if (velocity.y < 0 && canHang)
+        if ((velocity.y < 0 || isClimbing) && canHang)
         {
             {
                 RaycastHit downHit;
                 Vector3 LineDownStart = (transform.position + Vector3.up * 0.6f) + (playerModel.transform.forward * 0.3f);
                 Vector3 LineDownEnd = (transform.position + Vector3.up * 0.4f) + (playerModel.transform.forward * 0.3f);
-                Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default")); 
+                Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable")); 
                 Debug.DrawLine(LineDownStart, LineDownEnd);
 
                 if (downHit.collider != null && !downHit.collider.isTrigger)
@@ -888,12 +892,11 @@ public class Player : MonoBehaviour
                     
                     Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
                     Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
-                    Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default")); 
+                    Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable")); 
                     Debug.DrawLine(LineFwdStart, LineFwdEnd);
 
                     if (fwdHit.collider != null && !fwdHit.collider.isTrigger)
                     {
-                        Debug.Log("HANG");
                         velocity = Vector3.zero;
                         canHang = false;
                         isHanging = true;
@@ -901,7 +904,8 @@ public class Player : MonoBehaviour
                         Vector3 offset = transform.forward * hangOffsetX + transform.up * hangOffsetY;
                         hangPos += offset;
                         transform.position = hangPos + offset;
-                        playerModel.transform.forward = -fwdHit.normal;
+                        wallNormal = fwdHit.normal;
+                        playerModel.transform.forward = -wallNormal;
 
                     }
                 }
