@@ -309,6 +309,7 @@ public class Player : MonoBehaviour
                 isBackflipping = false;
                 isLongJumping = false;
                 isBouncing = false;
+                canHover = false;
                 isHovering = false;
                 maxSpeed = defaultMaxSpeed;
                 maxAcceleration = defaultMaxAccel;
@@ -430,6 +431,7 @@ public class Player : MonoBehaviour
                     }
                     moveDirection = wallNormal * wallPushback;
                     moveDirection.y = jumpForce * jumpFactor;
+                    playerModel.transform.forward = wallNormal;
                     jumpSound.Play();
                     wallJumpCounter = wallJumpTime;
                     canWallJump = false;
@@ -821,7 +823,7 @@ public class Player : MonoBehaviour
             }
             if (isWallJumping)
             {
-                playerModel.transform.forward = fwdHit.normal;
+                playerModel.transform.forward = wallNormal;
             }
         }
         animator.SetBool("isGrounded", controller.isGrounded || coyoteCounter > 0);
@@ -831,6 +833,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isLongJumping", isLongJumping);
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
+        animator.SetBool("isClimbing", isClimbing);
 
         jumpPressed = false;
         jumpReleased = false;
