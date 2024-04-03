@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -246,7 +247,16 @@ public class Player : MonoBehaviour
             }
 
             Vector3 LineFwdStart = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            Vector3 LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * 0.3f);
+
+            Vector3 LineFwdEnd = Vector3.zero;
+            if (isClimbing)
+            {
+                LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (Vector3.Normalize(climbObject.transform.position - playerModel.transform.position) * 0.3f);
+            }
+            else
+            {
+                LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * 0.3f);
+            }
             Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
 
             if (fwdHit.collider != null && !isWallJumping && !isHanging)
@@ -255,10 +265,10 @@ public class Player : MonoBehaviour
                 isClimbing = true;
                 climbObject = fwdHit.collider.GetComponent<Climb>();
             }
-            else
-            {
-                isClimbing = false;
-            }
+            //else
+            //{
+            //    isClimbing = false;
+            //}
 
             if (isClimbing && !controller.isGrounded)
             {
@@ -834,6 +844,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
+        animator.SetFloat("climbSpeed", moveDirection.normalized.x + moveDirection.normalized.y);
 
         jumpPressed = false;
         jumpReleased = false;
