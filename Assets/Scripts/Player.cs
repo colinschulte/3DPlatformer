@@ -93,7 +93,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float climbSpeed;
     [SerializeField] private float climbPull;
     [SerializeField] private float climbAcceleration;
-    private RaycastHit fwdHit;
+    [SerializeField] private RaycastHit fwdHit;
+    [SerializeField] private Vector3 lastNormal;
+    [SerializeField] private float climbOffsetX;
+    [SerializeField] private float climbOffsetY;
+    [SerializeField] private Vector3 climbPos;
+    [SerializeField] private float climbReach;
 
     [SerializeField] public bool isNearSign = false;
     private bool isReading = true;
@@ -251,24 +256,38 @@ public class Player : MonoBehaviour
             Vector3 LineFwdEnd = Vector3.zero;
             if (isClimbing)
             {
-                LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (Vector3.Normalize(climbObject.transform.position - playerModel.transform.position) * 0.3f);
+                climbReach = 0.8f;
             }
             else
             {
-                LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * 0.3f);
+                climbReach = 0.3f;
             }
-            Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
+            LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * climbReach);
+            fwdHit = new RaycastHit();
+
+            if(Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable")))
+            {
+                Debug.Log("HIT");
+            }
 
             if (fwdHit.collider != null && !isWallJumping && !isHanging)
             {
                 velocity = Vector3.zero;
                 isClimbing = true;
                 climbObject = fwdHit.collider.GetComponent<Climb>();
+                climbPos = new Vector3(fwdHit.point.x, transform.position.y, fwdHit.point.z);
+                Vector3 offset = transform.forward * climbOffsetX + transform.up * climbOffsetY;
+                climbPos += offset;
+                //transform.position = climbPos;
+                wallNormal = fwdHit.normal;
+                playerModel.transform.forward = -wallNormal;
+                lastNormal = fwdHit.normal;
             }
-            //else
-            //{
-            //    isClimbing = false;
-            //}
+            else
+            {
+                isClimbing = false;
+                //Debug.Log("NOT ON WALL");
+            }
 
             if (isClimbing && !controller.isGrounded)
             {
@@ -437,7 +456,7 @@ public class Player : MonoBehaviour
                     velocity = Vector3.zero;
                     if (isClimbing)
                     {
-                        wallNormal = fwdHit.normal;
+                        wallNormal = lastNormal;
                     }
                     moveDirection = wallNormal * wallPushback;
                     moveDirection.y = jumpForce * jumpFactor;
@@ -619,6 +638,8 @@ public class Player : MonoBehaviour
                     dashSound.Play();
                     isDashing = true;
                     canDash = false;
+                    isGroundPounding = false;
+                    canGroundPound = true;
                     canTurn = true;
                 }
             }
@@ -651,6 +672,7 @@ public class Player : MonoBehaviour
                         groundPoundHangcount = groundPoundHangtime;
                         canMove = false;
                         isGroundPounding = true;
+                        isLongJumping = false;
                     }
                 }
             }
@@ -825,7 +847,10 @@ public class Player : MonoBehaviour
 
             if (isClimbing)
             {
-                playerModel.transform.forward = -fwdHit.normal;
+                if(lastNormal != null)
+                {
+                    playerModel.transform.forward = -lastNormal;
+                }
                 Quaternion g = playerModel.transform.rotation;
                 g.x = 0;
                 g.z = 0;
@@ -914,6 +939,7 @@ public class Player : MonoBehaviour
                         velocity = Vector3.zero;
                         canHang = false;
                         isHanging = true;
+                        isClimbing = false;
                         hangPos = new Vector3(fwdHit.point.x, downHit.point.y, fwdHit.point.z);
                         Vector3 offset = transform.forward * hangOffsetX + transform.up * hangOffsetY;
                         hangPos += offset;
