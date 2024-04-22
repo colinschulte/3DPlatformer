@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using Cinemachine;
 using UnityEngine.UIElements;
 using TMPro;
+using Unity.VisualScripting;
+using Unity.PlasticSCM.Editor.WebApi;
 
 public class LevelManager : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class LevelManager : MonoBehaviour
     public Text cheeseText;
     public Text brickText;
 
+    [SerializeField] private GameObject coinList;
     [SerializeField] private float waitTime = 1;
     [SerializeField] private float startWaitCounter;
     [SerializeField] private float endWaitCounter;
@@ -222,5 +225,24 @@ public class LevelManager : MonoBehaviour
         SpeakerName.GetComponent<TextMeshProUGUI>().text = "Congratulations!";
         Dialogue.GetComponent<TextMeshProUGUI>().text = "You found all 10 cheeses! Thank you for playing!";
         SpeakingMenu.SetActive(true);
+    }
+
+    public Transform FindClosestCracker(Transform playerTransform)
+    {
+        Transform closestCracker = null;
+        float currentDistance = 0;
+        float closestDistance = 0;
+
+
+        foreach (Transform coinTransform in coinList.GetComponentInChildren<Transform>())
+        {
+            currentDistance = Vector3.Distance(playerTransform.position, coinTransform.position);
+            if(currentDistance < closestDistance || closestCracker == null)
+            {
+                closestDistance = currentDistance;
+                closestCracker = coinTransform;
+            }
+        }
+        return closestCracker;
     }
 }

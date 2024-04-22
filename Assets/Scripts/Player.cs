@@ -128,6 +128,7 @@ public class Player : MonoBehaviour
 
     public GameObject playerModel;
     [SerializeField] private GameObject dashModel;
+    [SerializeField] private GameObject arrow;
 
     public float knockbackForce;
     public float knockbackTime;
@@ -811,6 +812,14 @@ public class Player : MonoBehaviour
                 canTurn = false;
                 velocity = Vector3.zero;
             }
+
+            Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
+            if(closesstCracker != null )
+            {
+                arrow.transform.LookAt(closesstCracker);
+                arrow.transform.position = playerModel.transform.position + arrow.transform.forward;
+            }
+
 
             Physics.SyncTransforms();
             controller.Move(velocity * Time.fixedDeltaTime);
