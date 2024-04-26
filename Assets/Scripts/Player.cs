@@ -66,6 +66,8 @@ public class Player : MonoBehaviour
     [SerializeField] private bool crouchReleased;
     [SerializeField] private bool climbPressed;
     [SerializeField] private bool climbReleased;
+    [SerializeField] private bool radarPressed;
+    [SerializeField] private bool radarReleased;
 
     [SerializeField] private bool isCrouching;
     [SerializeField] private bool isStopped;
@@ -121,6 +123,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashCooldown;
     private float dashCooldownCount;
 
+    [SerializeField] private bool canRadar;
+    [SerializeField] private float radarTime;
+    private float radarCounter;
 
     [SerializeField] private Transform cameraTransform;
 
@@ -141,6 +146,7 @@ public class Player : MonoBehaviour
     private InputAction crouch;
     private InputAction dash;
     private InputAction climb;
+    private InputAction radar;
 
     [SerializeField] private bool isSliding;
     [SerializeField] private Vector3 slopeSlideVelocity;
@@ -176,6 +182,8 @@ public class Player : MonoBehaviour
         dash.Enable();
         climb = playerControls.Player.Climb;
         climb.Enable();
+        radar = playerControls.Player.Radar;
+        radar.Enable();
     }
 
     private void OnDisable()
@@ -184,6 +192,8 @@ public class Player : MonoBehaviour
         jump.Disable();
         crouch.Disable();
         dash.Disable();
+        climb.Disable();
+        radar.Disable();
     }
 
     private void Update()
@@ -222,6 +232,15 @@ public class Player : MonoBehaviour
         else if (climb.WasReleasedThisFrame())
         {
             climbReleased = true;
+        }
+
+        if (radar.triggered)
+        {
+            radarPressed = true;
+        }
+        else if (radar.WasReleasedThisFrame())
+        {
+            radarReleased = true;
         }
     }
 
@@ -813,11 +832,26 @@ public class Player : MonoBehaviour
                 velocity = Vector3.zero;
             }
 
-            Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
-            if(closesstCracker != null )
+            if (radarPressed && canRadar)
             {
-                arrow.transform.LookAt(closesstCracker);
-                arrow.transform.position = playerModel.transform.position + arrow.transform.forward;
+                canRadar = false;
+                radarCounter = radarTime;
+                arrow.SetActive(true);
+            }
+            if(radarCounter > 0)
+            {
+                Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
+                if(closesstCracker != null )
+                {
+                    arrow.transform.LookAt(closesstCracker);
+                    arrow.transform.position = new Vector3(playerModel.transform.position.x, playerModel.transform.position.y + 0.5f, playerModel.transform.position.z) + arrow.transform.forward;
+                }
+                radarCounter -= Time.fixedDeltaTime;
+            }
+            else
+            {
+                arrow.SetActive(false);
+                canRadar = true;
             }
 
 
@@ -886,6 +920,8 @@ public class Player : MonoBehaviour
         dashReleased = false;
         crouchPressed = false;
         crouchReleased = false;
+        radarPressed = false;
+        radarReleased = false;
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
