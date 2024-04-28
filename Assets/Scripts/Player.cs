@@ -843,8 +843,9 @@ public class Player : MonoBehaviour
                 Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
                 if(closesstCracker != null )
                 {
+                    arrow.transform.position = new Vector3(playerModel.transform.position.x, playerModel.transform.position.y + 0.5f, playerModel.transform.position.z);
                     arrow.transform.LookAt(closesstCracker);
-                    arrow.transform.position = new Vector3(playerModel.transform.position.x, playerModel.transform.position.y + 0.5f, playerModel.transform.position.z) + arrow.transform.forward;
+                    arrow.transform.position += arrow.transform.forward;
                 }
                 radarCounter -= Time.fixedDeltaTime;
             }
