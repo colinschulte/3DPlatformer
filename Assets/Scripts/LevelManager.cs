@@ -7,7 +7,6 @@ using Cinemachine;
 using UnityEngine.UIElements;
 using TMPro;
 using Unity.VisualScripting;
-using Unity.PlasticSCM.Editor.WebApi;
 
 public class LevelManager : MonoBehaviour
 {
