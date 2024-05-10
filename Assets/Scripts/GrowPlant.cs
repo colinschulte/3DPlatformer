@@ -9,6 +9,7 @@ public class GrowPlant : MonoBehaviour
     [SerializeField] private GameObject shortVine;
     [SerializeField] private GameObject longVine;
     [SerializeField] private float waitTime = 1;
+    [SerializeField] private float growSpeed;
     [SerializeField] private float startWaitCounter;
     [SerializeField] private float endWaitCounter;
     [SerializeField] private GameObject cineCam;
@@ -35,16 +36,17 @@ public class GrowPlant : MonoBehaviour
             
             if (startWaitCounter < 0)
             {
-                shortVine.SetActive(false);
-                longVine.SetActive(true);
+                shortVine.transform.localScale = Vector3.MoveTowards(shortVine.transform.localScale, longVine.transform.localScale, growSpeed);
+                shortVine.transform.localPosition = new Vector3(shortVine.transform.localPosition.x, -(shortVine.transform.localScale.y / 2) + 1, shortVine.transform.localPosition.z);
             }
             else
             {
                 startWaitCounter -= Time.deltaTime;
             }
-            //transform.Rotate(newX, newY, newZ, Space.Self);
-            if (longVine.activeInHierarchy)
+            if(shortVine.transform.localScale == longVine.transform.localScale)
             {
+                shortVine.SetActive(false);
+                longVine.SetActive(true);
                 if (endWaitCounter < 0)
                 {
                     cineCam.SetActive(false);

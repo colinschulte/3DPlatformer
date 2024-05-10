@@ -41,9 +41,9 @@ public class OpenDoor : MonoBehaviour
             
             if (startWaitCounter < 0)
             {
-                while (transform.rotation != newRotation)
+                if (transform.rotation != newRotation)
                 {
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, speed * Time.deltaTime);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, speed);
                 }
             }
             else
