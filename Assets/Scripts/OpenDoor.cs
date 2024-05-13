@@ -13,9 +13,11 @@ public class OpenDoor : MonoBehaviour
     [SerializeField] private float waitTime = 2;
     [SerializeField] private float startWaitCounter;
     [SerializeField] private float endWaitCounter;
+    [SerializeField] private AudioSource openSound;
     [SerializeField] private GameObject cineCam;
     [SerializeField] private GameObject MainCam;
     private bool isOpening = false;
+    private bool soundPlayed = false;
 
 
     // Start is called before the first frame update
@@ -41,6 +43,11 @@ public class OpenDoor : MonoBehaviour
             
             if (startWaitCounter < 0)
             {
+                if (!soundPlayed)
+                {
+                    openSound.Play();
+                    soundPlayed = true;
+                }
                 if (transform.rotation != newRotation)
                 {
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, speed);

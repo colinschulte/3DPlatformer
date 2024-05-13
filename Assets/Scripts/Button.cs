@@ -7,11 +7,13 @@ public class Button : MonoBehaviour
     public bool buttonPressed = false;
     public List<OpenDoor> openDoors;
     public List<GrowPlant> growPlants;
+    [SerializeField] private AudioSource pressSound;
     public CheeseLaunch launch;
 
     public void Press()
     {
         if (!buttonPressed) { 
+            pressSound.Play();
             Vector3 newPosition = transform.position;
             newPosition.y -= 0.24f;
             transform.position = newPosition;

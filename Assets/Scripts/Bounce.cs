@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bounce : MonoBehaviour
 {
     public Player player;
+    [SerializeField] private AudioSource bounceSound;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +19,8 @@ public class Bounce : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             //player = other.GetComponent<Player>();
+            bounceSound.time = 0.1f;
+            bounceSound.Play();
             player.bounceStart = true;
         }
     }
