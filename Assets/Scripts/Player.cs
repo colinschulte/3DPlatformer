@@ -284,11 +284,7 @@ public class Player : MonoBehaviour
             }
             LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * climbReach);
             fwdHit = new RaycastHit();
-
-            if(Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable")))
-            {
-                Debug.Log("HIT");
-            }
+            Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
 
             if (fwdHit.collider != null && !isWallJumping && !isHanging)
             {
@@ -829,6 +825,8 @@ public class Player : MonoBehaviour
             if(isHanging)
             {
                 canTurn = false;
+                canGroundPound = false;
+                isLongJumping = false;
                 velocity = Vector3.zero;
             }
 
@@ -970,17 +968,21 @@ public class Player : MonoBehaviour
                 Vector3 LineDownStart = (transform.position + Vector3.up * 0.6f) + (playerModel.transform.forward * 0.3f);
                 Vector3 LineDownEnd = (transform.position + Vector3.up * 0.4f) + (playerModel.transform.forward * 0.3f);
                 Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable")); 
-                Debug.DrawLine(LineDownStart, LineDownEnd);
+                //Debug.DrawLine(LineDownStart, LineDownEnd);
 
                 if (downHit.collider != null && !downHit.collider.isTrigger)
                 {
-                    
+                    RaycastHit aboveHit;
                     Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
                     Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
-                    Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable")); 
-                    Debug.DrawLine(LineFwdStart, LineFwdEnd);
+                    Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable"));
 
-                    if (fwdHit.collider != null && !fwdHit.collider.isTrigger)
+                    Vector3 AboveFwdStart = new Vector3(transform.position.x, downHit.point.y + 0.1f, transform.position.z);
+                    Vector3 AboveFwdEnd = new Vector3(transform.position.x, downHit.point.y + 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
+                    Physics.Linecast(AboveFwdStart, AboveFwdEnd, out aboveHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable"));
+                    //Debug.DrawLine(LineFwdStart, LineFwdEnd);
+
+                    if (aboveHit.collider == null && fwdHit.collider != null && !fwdHit.collider.isTrigger)
                     {
                         velocity = Vector3.zero;
                         canHang = false;
