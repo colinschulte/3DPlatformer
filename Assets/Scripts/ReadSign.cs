@@ -30,6 +30,8 @@ public class ReadSign : MonoBehaviour
         {
             other.gameObject.GetComponent<Player>().isNearSign = true;
             other.gameObject.GetComponent<Player>().currentSign = this.GameObject();
+            other.gameObject.GetComponent<Player>().interactArrow.gameObject.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
+            other.gameObject.GetComponent<Player>().interactArrow.SetActive(true);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -37,6 +39,7 @@ public class ReadSign : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             other.gameObject.GetComponent<Player>().isNearSign = false;
+            other.gameObject.GetComponent<Player>().interactArrow.SetActive(false);
         }
     }
 }

@@ -134,6 +134,7 @@ public class Player : MonoBehaviour
     public GameObject playerModel;
     [SerializeField] private GameObject dashModel;
     [SerializeField] private GameObject arrow;
+    [SerializeField] public GameObject interactArrow;
 
     public float knockbackForce;
     public float knockbackTime;
