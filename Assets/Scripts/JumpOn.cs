@@ -30,6 +30,7 @@ public class JumpOn : MonoBehaviour
         else if (other.gameObject.CompareTag("Button") && player.isGroundPounding)
         {
             button = other.GetComponent<Button>();
+            player.canMove = false;
             button.Press();
         }
         else if (other.gameObject.CompareTag("KeyPress") && player.isGroundPounding)

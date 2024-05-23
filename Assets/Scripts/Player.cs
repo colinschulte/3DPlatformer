@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool radarReleased;
 
     [SerializeField] private bool isCrouching;
+    [SerializeField] private bool isSkidding;
     [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
@@ -127,6 +128,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float radarTime;
     private float radarCounter;
 
+    [SerializeField] private Camera MainCamera;
     [SerializeField] private Transform cameraTransform;
 
     public float rotateSpeed;
@@ -339,12 +341,21 @@ public class Player : MonoBehaviour
                     moveDirection = magnitude * moveSpeed * moveDirection;
                 }
                 moveDirection.y = yStore;
+
+                if(Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5)
+                {
+                    isSkidding = true;
+                }
+                else
+                {
+                    isSkidding = false;
+                }
             }
 
             //if on the ground, reset y movement and coyote counter
             if (controller.isGrounded)
             {
-                if (!pause.gamePaused)
+                if (!pause.gamePaused && MainCamera.isActiveAndEnabled && !isReading)
                 {
                     canMove = true;
                     canTurn = true;
@@ -385,16 +396,6 @@ public class Player : MonoBehaviour
             //check if Jump is pressed
             if (jumpPressed)
             {
-
-                //remove text
-                if (isReading)
-                {
-                    readSign = currentSign.GetComponent<ReadSign>();
-                    readSign.EndRead();
-                    isReading = false;
-                }
-
-                //if (coyoteCounter > 0f && isSliding == false)
                 if (coyoteCounter > 0f)
                 {
                     canJump = true;
@@ -402,6 +403,15 @@ public class Player : MonoBehaviour
                 else
                 {
                     canJump = false;
+                }
+
+                //remove text
+                if (isReading)
+                {
+                    readSign = currentSign.GetComponent<ReadSign>();
+                    readSign.EndRead();
+                    canJump = false;
+                    isReading = false;
                 }
 
                 if (isHanging)
@@ -429,16 +439,16 @@ public class Player : MonoBehaviour
                         else
                         {
                             //high jump
-                            jumpFactor = 1.4f;
+                            jumpFactor = 1.3f;
                             isBackflipping = true;
                             canMove = true;
                         }
                     }
                     else
                     {
-                        if (Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5)
+                        if (isSkidding)
                         {
-                            //backflip
+                            //somersault
                             jumpFactor = 1.3f;
                         }
                         else if (jumpCounter == 1)
@@ -645,6 +655,7 @@ public class Player : MonoBehaviour
                     {
                         readSign = currentSign.GetComponent<ReadSign>();
                         readSign.Read();
+                        canMove = false;
                         isReading = true;
                     }
                 }
