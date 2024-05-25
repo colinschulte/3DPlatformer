@@ -583,6 +583,11 @@ public class Player : MonoBehaviour
                 moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
             }
 
+            if (isClimbing)
+            {
+                moveDirection += (playerModel.transform.forward * climbPull);
+            }
+
             if (bounceStart)
             {
                 moveDirection.y = bounceForce;
@@ -662,12 +667,14 @@ public class Player : MonoBehaviour
                 else if(canDash)
                 {
                     //maxAirAcceleration = 1f;
+                    maxAirAcceleration = 50f;
+                    maxAirDeceleration = 30f;
                     velocity = lastForward * dashSpeed;
                     dashSound.Play();
                     isDashing = true;
                     canDash = false;
                     isGroundPounding = false;
-                    canGroundPound = true;
+                    //canGroundPound = true;
                     canTurn = true;
                 }
             }
@@ -769,7 +776,7 @@ public class Player : MonoBehaviour
                 //maxAirAcceleration = 1f;
                 gravityScale = 4f;
                 yStore = moveDirection.y;
-                moveDirection += playerModel.transform.forward * 20;
+                velocity += playerModel.transform.forward * 20;
                 moveDirection.y = yStore;
             }
 
@@ -897,7 +904,7 @@ public class Player : MonoBehaviour
                     playerModel.transform.forward = -wallNormal;
                 }
             }
-            lastForward = dashModel.transform.forward;
+            //lastForward = dashModel.transform.forward;
 
             if (isClimbing)
             {
@@ -915,6 +922,9 @@ public class Player : MonoBehaviour
                 playerModel.transform.forward = wallNormal;
             }
         }
+
+        lastForward = dashModel.transform.forward;
+
         animator.SetBool("isGrounded", controller.isGrounded || coyoteCounter > 0);
         animator.SetBool("isRunning", moveDirection.x != 0 || moveDirection.z != 0);
         animator.SetBool("isCrouching", isCrouching);
@@ -923,7 +933,8 @@ public class Player : MonoBehaviour
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
-        animator.SetFloat("climbSpeed", moveDirection.normalized.x + moveDirection.normalized.y);
+        animator.SetFloat("climbSpeed", move.ReadValue<Vector2>().magnitude);
+        animator.SetFloat("runSpeed", move.ReadValue<Vector2>().magnitude);
 
         jumpPressed = false;
         jumpReleased = false;
