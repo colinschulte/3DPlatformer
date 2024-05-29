@@ -56,6 +56,8 @@ public class GoldPickup : MonoBehaviour
                 levelManager.BrickGet();
             }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
+            var main = effect.gameObject.GetComponent<ParticleSystem>().main;
+            main.startColor = this.GetComponent<Renderer>().material.color;
             collectSound.Play();
             Destroy(gameObject);
             Destroy(effect, 1.2f);
