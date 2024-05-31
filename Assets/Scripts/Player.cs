@@ -5,6 +5,7 @@ using System.Threading;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
@@ -31,6 +32,7 @@ public class Player : MonoBehaviour
     public CharacterController controller;
 
     private Vector3 lastForward;
+    private Vector3 lastJumpForward;
     public bool canMove;
     public bool canTurn;
 
@@ -170,6 +172,7 @@ public class Player : MonoBehaviour
         pause = FindObjectOfType<PauseGame>();
         dashCounter = dashTime;
         lastForward = playerModel.transform.forward;
+        lastJumpForward = playerModel.transform.forward;
 
     }
 
@@ -389,7 +392,6 @@ public class Player : MonoBehaviour
             }
             else
             {
-
                 coyoteCounter -= Time.fixedDeltaTime;
             }
 
@@ -422,6 +424,7 @@ public class Player : MonoBehaviour
                 }
 
                 if (canJump) {
+                    lastJumpForward = playerModel.transform.forward;
                     canTurn = false;
                     canHover = true;
                     maxSpeed = defaultMaxSpeed;
@@ -432,7 +435,8 @@ public class Player : MonoBehaviour
                         {
                             //long jump
                             jumpFactor = 0.6f;
-                            maxAirAcceleration = 50f;
+                            //maxAirAcceleration = 50f;
+                            velocity += playerModel.transform.forward * 10;
                             isLongJumping = true;
                             canMove = true;
                         }
@@ -574,7 +578,7 @@ public class Player : MonoBehaviour
             {
                 isWallJumping = false;
                 canWallJump = false;
-                canMove = true;
+                //canMove = true;
                 wallJumpCounter = wallJumpTime;
             }
 
@@ -630,8 +634,8 @@ public class Player : MonoBehaviour
             {
                 canTurn = false;
                 canMove = false;
-                maxAirAcceleration = 30f;
-                maxAirDeceleration = 30f;
+                maxAirAcceleration = 60f;
+                maxAirDeceleration = 60f;
                 moveDirection = lastForward * dashSpeed;
                 moveDirection.y = 2f;
                 dashCounter -= Time.fixedDeltaTime;
@@ -644,6 +648,15 @@ public class Player : MonoBehaviour
                     isDashing = false;
                     dashCounter = dashTime;
                 }
+            }
+
+            if (isLongJumping)
+            {
+                canMove = true;
+                canTurn = false;
+                maxAirAcceleration = 60f;
+                maxAirAcceleration = 60f;
+                gravityScale = 3f;
             }
 
             if (dashPressed)
@@ -670,6 +683,7 @@ public class Player : MonoBehaviour
                     maxAirAcceleration = 50f;
                     maxAirDeceleration = 30f;
                     velocity = lastForward * dashSpeed;
+                    lastJumpForward = lastForward;
                     dashSound.Play();
                     isDashing = true;
                     canDash = false;
@@ -720,7 +734,7 @@ public class Player : MonoBehaviour
                     {
                         canMove = false;
                         yStore = moveDirection.y;
-                        moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.5f);
+                        moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.4f);
                         moveDirection.y = yStore;
                         if (moveDirection.x == 0 && moveDirection.z == 0)
                         {
@@ -769,16 +783,6 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (isLongJumping)
-            {
-                canMove = true;
-                canTurn = false;
-                //maxAirAcceleration = 1f;
-                gravityScale = 4f;
-                yStore = moveDirection.y;
-                velocity += playerModel.transform.forward * 20;
-                moveDirection.y = yStore;
-            }
 
             if (isClimbing)
             {
@@ -899,12 +903,16 @@ public class Player : MonoBehaviour
                 {
                     playerModel.transform.rotation = dashModel.transform.rotation;
                 }
+                else
+                {
+                    playerModel.transform.forward = lastJumpForward;
+                }
+
                 if (isHanging)
                 {
                     playerModel.transform.forward = -wallNormal;
                 }
             }
-            //lastForward = dashModel.transform.forward;
 
             if (isClimbing)
             {
