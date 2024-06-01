@@ -311,7 +311,8 @@ public class Player : MonoBehaviour
                 //Debug.Log("NOT ON WALL");
             }
 
-            if (isClimbing && !controller.isGrounded)
+            //if (isClimbing && !controller.isGrounded)
+            if (isClimbing)
             {
                 canDash = false;
                 isDashing = false;
@@ -356,7 +357,7 @@ public class Player : MonoBehaviour
             }
 
             //if on the ground, reset y movement and coyote counter
-            if (controller.isGrounded)
+            if (controller.isGrounded && !isClimbing)
             {
                 if (!pause.gamePaused && MainCamera.isActiveAndEnabled && !isReading)
                 {
@@ -941,6 +942,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
+        animator.SetBool("isSkidding", isSkidding);
         animator.SetFloat("climbSpeed", move.ReadValue<Vector2>().magnitude);
         animator.SetFloat("runSpeed", move.ReadValue<Vector2>().magnitude);
 
