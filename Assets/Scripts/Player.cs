@@ -73,6 +73,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private bool isCrouching;
     [SerializeField] private bool isSkidding;
+    [SerializeField] private float skidTime;
+    [SerializeField] private float skidCounter;
     [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
@@ -346,13 +348,10 @@ public class Player : MonoBehaviour
                 }
                 moveDirection.y = yStore;
 
-                if(Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5)
+                if(Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5 && !isSkidding)
                 {
                     isSkidding = true;
-                }
-                else
-                {
-                    isSkidding = false;
+                    skidCounter = skidTime;
                 }
             }
 
@@ -761,6 +760,18 @@ public class Player : MonoBehaviour
                 controller.center = Vector3.zero;
                 controller.slopeLimit = 90;
                 jumpFactor = 1f;
+            }
+
+            if (isSkidding)
+            {
+                if (skidCounter < 0f)
+                {
+                    isSkidding = false;
+                }
+                else
+                {
+                    skidCounter -= Time.fixedDeltaTime;
+                }
             }
 
             if (isBackflipping)
