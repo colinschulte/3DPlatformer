@@ -636,7 +636,8 @@ public class Player : MonoBehaviour
                 canMove = false;
                 maxAirAcceleration = 60f;
                 maxAirDeceleration = 60f;
-                moveDirection = lastForward * dashSpeed;
+                moveDirection = lastJumpForward * dashSpeed;
+                
                 moveDirection.y = 2f;
                 dashCounter -= Time.fixedDeltaTime;
                 if (dashReleased || crouchPressed)
@@ -680,15 +681,20 @@ public class Player : MonoBehaviour
                 else if(canDash)
                 {
                     //maxAirAcceleration = 1f;
+                    gravityScale = 5f;
                     maxAirAcceleration = 50f;
                     maxAirDeceleration = 30f;
                     velocity = lastForward * dashSpeed;
                     lastJumpForward = lastForward;
+                    
                     dashSound.Play();
                     isDashing = true;
                     canDash = false;
                     isGroundPounding = false;
                     //canGroundPound = true;
+                    isLongJumping = false;
+                    isBackflipping = false;
+                    isBouncing = false;
                     canTurn = true;
                 }
             }
