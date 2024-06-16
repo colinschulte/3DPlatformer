@@ -562,7 +562,7 @@ public class Player : MonoBehaviour
             }
 
             //if Jump is let go then start falling
-            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping)
+            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isBouncing)
             {
                 moveDirection.y = -5f;
                 canHover = false;
@@ -594,9 +594,11 @@ public class Player : MonoBehaviour
 
             if (bounceStart)
             {
+                gravityScale = 5f;
                 moveDirection.y = bounceForce;
                 coyoteCounter = 0;
                 isGroundPounding = false;
+                isLongJumping = false;
                 canDash = true;
                 canMove = true;
                 canTurn = true;
