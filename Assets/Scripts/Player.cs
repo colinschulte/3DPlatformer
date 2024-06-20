@@ -86,7 +86,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundPoundHangcount;
 
     public bool isHanging;
+    [SerializeField] private bool wasHanging;
     public bool canHang;
+    [SerializeField] private float ledgeClimbFactor;
     public float hangTime;
     private float hangCounter;
     [SerializeField] private float hangOffsetX;
@@ -122,7 +124,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float dashSpeed;
     private bool canDash = true;
-    private bool isDashing = false;
+    [SerializeField] private bool isDashing = false;
     [SerializeField] private float dashTime;
     private float dashCounter;
     [SerializeField] private float dashCooldown;
@@ -371,6 +373,7 @@ public class Player : MonoBehaviour
                 isBouncing = false;
                 canHover = false;
                 isHovering = false;
+                wasHanging = false;
                 maxSpeed = defaultMaxSpeed;
                 maxAcceleration = defaultMaxAccel;
                 maxAirAcceleration = defaultMaxAirAccel;
@@ -419,8 +422,10 @@ public class Player : MonoBehaviour
                 if (isHanging)
                 {
                     hangCounter = hangTime;
+                    canMove = false;
                     canJump = true;
                     isHanging = false;
+                    wasHanging = true;
                 }
 
                 if (canJump) {
@@ -562,7 +567,7 @@ public class Player : MonoBehaviour
             }
 
             //if Jump is let go then start falling
-            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isBouncing)
+            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isBouncing && !wasHanging)
             {
                 moveDirection.y = -5f;
                 canHover = false;
@@ -869,8 +874,17 @@ public class Player : MonoBehaviour
             {
                 canTurn = false;
                 canGroundPound = false;
+                isDashing = false;
+                isBackflipping = false;
                 isLongJumping = false;
+                maxAirAcceleration = defaultMaxAirAccel;
+                maxAirDeceleration = defaultMaxAirAccel;
                 velocity = Vector3.zero;
+            }
+
+            if (wasHanging)
+            {
+                moveDirection = playerModel.transform.forward * ledgeClimbFactor;
             }
 
             if (radarPressed && canRadar)
