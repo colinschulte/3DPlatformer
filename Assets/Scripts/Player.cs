@@ -1070,9 +1070,10 @@ public class Player : MonoBehaviour
 
     public void Knockback(Vector3 direction)
     {
+        canMove = false;
         knockbackCounter = knockbackTime;
 
-        moveDirection = direction * knockbackForce;
+        moveDirection =  -playerModel.transform.forward * knockbackForce;
         moveDirection.y = knockbackForce;
     }
 }

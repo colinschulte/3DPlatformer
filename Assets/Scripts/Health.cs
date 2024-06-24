@@ -136,7 +136,7 @@ public class Health : MonoBehaviour
         charController.enabled = true;
 
         currentHealth = maxHealth;
-        healthText.text = "Health: " + currentHealth;
+        healthText.text = "Health: " + currentHealth + "/" + maxHealth;
         invincibilityCounter = invincibilityLength;
         playerRenderer.enabled = false;
         flashCounter = flashLength;
