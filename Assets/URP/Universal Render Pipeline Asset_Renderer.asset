@@ -58,11 +58,11 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7, type: 3}
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
-  - {fileID: 1503641742575487591}
   - {fileID: 8958010657571492694}
   - {fileID: -113467210152067952}
   - {fileID: 56701624430162859}
-  m_RendererFeatureMap: 674aa9bf3202de145653b6423b3f517c903c3b6d2ce26cfeabf358b6d371c900
+  - {fileID: 1503641742575487591}
+  m_RendererFeatureMap: 5653b6423b3f517c903c3b6d2ce26cfeabf358b6d371c900674aa9bf3202de14
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 8119
+    m_Bits: 4294967295
   m_TransparentLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -155,12 +155,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d613f08f173d4dd895bb07b3230baa9, type: 3}
   m_Name: Outlines
   m_EditorClassIdentifier: 
-  m_Active: 0
-  injectionPoint: 600
+  m_Active: 1
+  injectionPoint: 450
   fetchColorBuffer: 1
-  requirements: 2
+  requirements: -1
   passMaterial: {fileID: 2100000, guid: 501b6d0776e92d64c91b6778699ed9ca, type: 2}
-  passIndex: 1
+  passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
 --- !u!114 &8958010657571492694

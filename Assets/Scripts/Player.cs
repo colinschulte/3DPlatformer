@@ -1073,6 +1073,9 @@ public class Player : MonoBehaviour
         canMove = false;
         knockbackCounter = knockbackTime;
 
+        //velocity = -playerModel.transform.forward * knockbackForce;
+        //velocity.y = knockbackForce;
+
         moveDirection =  -playerModel.transform.forward * knockbackForce;
         moveDirection.y = knockbackForce;
     }
