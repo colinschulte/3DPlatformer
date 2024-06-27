@@ -78,6 +78,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
+    [SerializeField] private bool isSomersaulting;
     public bool enemyStomped;
     [SerializeField] private int groundPoundPower;
     [SerializeField] private bool canGroundPound;
@@ -370,6 +371,7 @@ public class Player : MonoBehaviour
                 canGroundPound = true;
                 isBackflipping = false;
                 isLongJumping = false;
+                isSomersaulting = false;   
                 isBouncing = false;
                 canHover = false;
                 isHovering = false;
@@ -439,7 +441,7 @@ public class Player : MonoBehaviour
                         if (!isStopped)
                         {
                             //long jump
-                            jumpFactor = 0.6f;
+                            jumpFactor = 0.5f;
                             //maxAirAcceleration = 50f;
                             velocity += playerModel.transform.forward * 10;
                             isLongJumping = true;
@@ -459,6 +461,7 @@ public class Player : MonoBehaviour
                         {
                             //somersault
                             jumpFactor = 1.3f;
+                            isSomersaulting = true;
                         }
                         else if (jumpCounter == 1)
                         {
@@ -567,7 +570,7 @@ public class Player : MonoBehaviour
             }
 
             //if Jump is let go then start falling
-            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isBouncing && !wasHanging)
+            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isSomersaulting && !isBouncing && !wasHanging)
             {
                 moveDirection.y = -5f;
                 canHover = false;
@@ -971,7 +974,9 @@ public class Player : MonoBehaviour
         animator.SetBool("isRunning", moveDirection.x != 0 || moveDirection.z != 0);
         animator.SetBool("isCrouching", isCrouching);
         animator.SetBool("isDashing", isDashing);
+        animator.SetBool("isBackflipping", isBackflipping);
         animator.SetBool("isLongJumping", isLongJumping);
+        animator.SetBool("isSomersaulting", isSomersaulting);
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
