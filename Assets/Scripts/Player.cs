@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
     [SerializeField] private int jumpCounter = 1;
     private bool firstJumpActive;
     private bool secondJumpActive;
+    [SerializeField] private bool isDoubleJumping;
+    [SerializeField] private bool isTripleJumping;
     private float secondJumpTimer;
     private float thirdJumpTimer;
     [SerializeField] private float hoverTime;
@@ -78,6 +80,9 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isStopped;
     [SerializeField] private bool isBackflipping;
     [SerializeField] private bool isLongJumping;
+    [SerializeField] private bool canSomersault;
+    [SerializeField] private float somersaultTime;
+    [SerializeField] private float somersaultCounter;
     [SerializeField] private bool isSomersaulting;
     public bool enemyStomped;
     [SerializeField] private int groundPoundPower;
@@ -355,6 +360,8 @@ public class Player : MonoBehaviour
                 {
                     isSkidding = true;
                     skidCounter = skidTime;
+                    canSomersault = true;
+                    somersaultCounter = somersaultTime;
                 }
             }
 
@@ -371,7 +378,9 @@ public class Player : MonoBehaviour
                 canGroundPound = true;
                 isBackflipping = false;
                 isLongJumping = false;
-                isSomersaulting = false;   
+                isSomersaulting = false;
+                isDoubleJumping = false;
+                isTripleJumping = false;
                 isBouncing = false;
                 canHover = false;
                 isHovering = false;
@@ -457,7 +466,7 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        if (isSkidding)
+                        if (canSomersault)
                         {
                             //somersault
                             jumpFactor = 1.3f;
@@ -476,6 +485,7 @@ public class Player : MonoBehaviour
                             secondJumpTimer = 0f;
                             firstJumpActive = false;
                             secondJumpActive = true;
+                            isDoubleJumping = true;
                         }
                         else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
                         {
@@ -484,6 +494,7 @@ public class Player : MonoBehaviour
                             thirdJumpTimer = 0f;
                             firstJumpActive = false;
                             secondJumpActive = false;
+                            isTripleJumping = true;
                         }
                     }
                     moveDirection.y = jumpForce * jumpFactor;
@@ -790,6 +801,18 @@ public class Player : MonoBehaviour
                 }
             }
 
+            if (canSomersault)
+            {
+                if (somersaultCounter < 0f)
+                {
+                    canSomersault = false;
+                }
+                else
+                {
+                    somersaultCounter -= Time.fixedDeltaTime;
+                }
+            }
+
             if (isBackflipping)
             {
                 canMove = true;
@@ -977,6 +1000,8 @@ public class Player : MonoBehaviour
         animator.SetBool("isBackflipping", isBackflipping);
         animator.SetBool("isLongJumping", isLongJumping);
         animator.SetBool("isSomersaulting", isSomersaulting);
+        animator.SetBool("isDoubleJumping", isDoubleJumping);
+        animator.SetBool("isTripleJumping", isTripleJumping);
         animator.SetBool("isGroundPounding", isGroundPounding);
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
