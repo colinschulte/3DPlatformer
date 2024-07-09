@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour
     public Animator animator;
     private PauseGame pause;
     [SerializeField] private LevelManager levelManager;
+    private CinemachineFreeLook freelookCam;
     private bool firstUpdate = true;
 
     [SerializeField] private float moveSpeed;
@@ -161,6 +163,7 @@ public class Player : MonoBehaviour
     private InputAction crouch;
     private InputAction dash;
     private InputAction climb;
+    private InputAction centerCamera;
     private InputAction radar;
 
     [SerializeField] private bool isSliding;
@@ -200,6 +203,8 @@ public class Player : MonoBehaviour
         climb.Enable();
         radar = playerControls.Player.Radar;
         radar.Enable();
+        centerCamera = playerControls.Player.RecenterCamera;
+        centerCamera.Enable();
     }
 
     private void OnDisable()
@@ -210,6 +215,7 @@ public class Player : MonoBehaviour
         dash.Disable();
         climb.Disable();
         radar.Disable();
+        centerCamera.Disable();
     }
 
     private void Update()
@@ -257,6 +263,15 @@ public class Player : MonoBehaviour
         else if (radar.WasReleasedThisFrame())
         {
             radarReleased = true;
+        }
+
+        if (centerCamera.triggered)
+        {
+            FindObjectOfType<CenterCamera>().centerCamera(true);
+        }
+        else if (centerCamera.WasReleasedThisFrame())
+        {
+            FindObjectOfType<CenterCamera>().centerCamera(false);
         }
     }
 
