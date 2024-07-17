@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     public bool canJump = true;
     [SerializeField] private float jumpTime;
     [SerializeField] private float jumpFactor = 1f;
+    [SerializeField] private float fallFactor = 0.4f;
     [SerializeField] private int jumpCounter = 1;
     private bool firstJumpActive;
     private bool secondJumpActive;
@@ -341,6 +342,8 @@ public class Player : MonoBehaviour
             {
                 canDash = false;
                 isDashing = false;
+                isBackflipping = false;
+                isSomersaulting = false;
                 canGroundPound = false;
                 moveDirection = move.ReadValue<Vector2>();
                 if (climbObject.canSideClimb)
@@ -450,6 +453,7 @@ public class Player : MonoBehaviour
                     hangCounter = hangTime;
                     canMove = false;
                     canJump = true;
+                    
                     isHanging = false;
                     wasHanging = true;
                 }
@@ -533,6 +537,10 @@ public class Player : MonoBehaviour
                     isClimbing = false;
                     isWallJumping = true;
                 }
+                if (wasHanging)
+                {
+                    jumpFactor = 0.5f;
+                }
             }
             if (jumpCounter > 3)
             {
@@ -598,7 +606,7 @@ public class Player : MonoBehaviour
             //if Jump is let go then start falling
             if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isSomersaulting && !isBouncing && !wasHanging)
             {
-                moveDirection.y = -5f;
+                moveDirection.y = moveDirection.y  * fallFactor;
                 canHover = false;
                 isHovering = false;
             }
