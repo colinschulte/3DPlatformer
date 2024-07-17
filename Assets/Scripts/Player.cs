@@ -453,7 +453,7 @@ public class Player : MonoBehaviour
                     hangCounter = hangTime;
                     canMove = false;
                     canJump = true;
-                    
+                    jumpFactor = 0.5f;
                     isHanging = false;
                     wasHanging = true;
                 }
@@ -464,58 +464,62 @@ public class Player : MonoBehaviour
                     canHover = true;
                     maxSpeed = defaultMaxSpeed;
 
-                    if (isCrouching)
+                    if (!wasHanging)
                     {
-                        if (!isStopped)
+                        if (isCrouching)
                         {
-                            //long jump
-                            jumpFactor = 0.5f;
-                            //maxAirAcceleration = 50f;
-                            velocity += playerModel.transform.forward * 10;
-                            isLongJumping = true;
-                            canMove = true;
+                            if (!isStopped)
+                            {
+                                //long jump
+                                jumpFactor = 0.5f;
+                                //maxAirAcceleration = 50f;
+                                velocity += playerModel.transform.forward * 10;
+                                isLongJumping = true;
+                                canMove = true;
+                            }
+                            else
+                            {
+                                //high jump
+                                jumpFactor = 1.3f;
+                                isBackflipping = true;
+                                canMove = true;
+                            }
                         }
                         else
                         {
-                            //high jump
-                            jumpFactor = 1.3f;
-                            isBackflipping = true;
-                            canMove = true;
+                            if (canSomersault)
+                            {
+                                //somersault
+                                jumpFactor = 1.3f;
+                                isSomersaulting = true;
+                            }
+                            else if (jumpCounter == 1)
+                            {
+                                jumpFactor = 1f;
+                                jumpCounter++;
+                                firstJumpActive = true;
+                            }
+                            else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                            {
+                                jumpFactor = 1f;
+                                jumpCounter++;
+                                secondJumpTimer = 0f;
+                                firstJumpActive = false;
+                                secondJumpActive = true;
+                                isDoubleJumping = true;
+                            }
+                            else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                            {
+                                jumpFactor = 1.3f;
+                                jumpCounter++;
+                                thirdJumpTimer = 0f;
+                                firstJumpActive = false;
+                                secondJumpActive = false;
+                                isTripleJumping = true;
+                            }
                         }
                     }
-                    else
-                    {
-                        if (canSomersault)
-                        {
-                            //somersault
-                            jumpFactor = 1.3f;
-                            isSomersaulting = true;
-                        }
-                        else if (jumpCounter == 1)
-                        {
-                            jumpFactor = 1f;
-                            jumpCounter++;
-                            firstJumpActive = true;
-                        }
-                        else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
-                        {
-                            jumpFactor = 1f;
-                            jumpCounter++;
-                            secondJumpTimer = 0f;
-                            firstJumpActive = false;
-                            secondJumpActive = true;
-                            isDoubleJumping = true;
-                        }
-                        else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                        {
-                            jumpFactor = 1.3f;
-                            jumpCounter++;
-                            thirdJumpTimer = 0f;
-                            firstJumpActive = false;
-                            secondJumpActive = false;
-                            isTripleJumping = true;
-                        }
-                    }
+                    
                     moveDirection.y = jumpForce * jumpFactor;
                     jumpSound.Play();
                     coyoteCounter = 0f;
@@ -536,10 +540,6 @@ public class Player : MonoBehaviour
                     canMove = false;
                     isClimbing = false;
                     isWallJumping = true;
-                }
-                if (wasHanging)
-                {
-                    jumpFactor = 0.5f;
                 }
             }
             if (jumpCounter > 3)
