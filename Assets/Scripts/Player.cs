@@ -12,6 +12,7 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public Animator animator;
+    [SerializeField] private UIMovement uiMovement;
     private PauseGame pause;
     [SerializeField] private LevelManager levelManager;
     private CinemachineFreeLook freelookCam;
@@ -941,6 +942,7 @@ public class Player : MonoBehaviour
                 canRadar = false;
                 radarCounter = radarTime;
                 arrow.SetActive(true);
+                uiMovement.UIToggle(true);
             }
             if(radarCounter > 0)
             {
@@ -956,6 +958,7 @@ public class Player : MonoBehaviour
             else
             {
                 arrow.SetActive(false);
+                uiMovement.UIToggle(false);
                 canRadar = true;
             }
 

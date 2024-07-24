@@ -139,16 +139,5 @@ public class PauseGame : MonoBehaviour
         pauseMenu.SetActive(false);
         SceneManager.LoadScene(1);
     }
-    public void Fullscreen(bool isFullscreen)
-    {
-        //if (Screen.fullScreenMode != FullScreenMode.ExclusiveFullScreen)
-        //{
-        //    Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-        //}
-        //else
-        //{
-        //    Screen.fullScreenMode = FullScreenMode.Windowed;
-        //}
-        Screen.fullScreen = isFullscreen;
-    }
+    
 }
