@@ -43,17 +43,21 @@ public class GoldPickup : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
+            Player player = other.GetComponent<Player>();
             if (gameObject.CompareTag("Coin"))
             {
                 levelManager.AddCoins(value);
+                player.crackerTimer = player.UIWait;
             }
             else if(gameObject.CompareTag("Cheese"))
             {
                 levelManager.CheeseGet(id);
+                player.cheeseTimer = player.UIWait;
             }
             else if (gameObject.CompareTag("Brick"))
             {
                 levelManager.BrickGet();
+                player.brickTimer = player.UIWait;
             }
             GameObject effect = Instantiate(pickupEffect, transform.position, transform.rotation);
             var main = effect.gameObject.GetComponent<ParticleSystem>().main;

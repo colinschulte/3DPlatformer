@@ -15,6 +15,7 @@ public class PauseGame : MonoBehaviour
     public AudioSource pauseOpen;
     public AudioSource pauseClose;
     public AudioSource buttonPress;
+    [SerializeField] private UIMovement uiMovement;
 
     PlayerControls playerControls;
 
@@ -54,6 +55,7 @@ public class PauseGame : MonoBehaviour
                     gamePaused = true;
                     player.canMove = false;
                     player.canTurn = false;
+                    uiMovement.UIToggle(true);
                     Cursor.lockState = CursorLockMode.None;
                     levelMusic.Pause();
                     pauseOpen.Play();
@@ -67,6 +69,7 @@ public class PauseGame : MonoBehaviour
                     gamePaused = false;
                     player.canMove = true;
                     player.canTurn = true;
+                    uiMovement.UIToggle(false);
                     Cursor.lockState = CursorLockMode.Locked;
                     pauseClose.Play();
                     levelMusic.UnPause();

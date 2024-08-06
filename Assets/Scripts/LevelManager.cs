@@ -45,6 +45,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private CameraSensitivty cameraOptions;
     [SerializeField] public CinemachineFreeLook freeLook;
     [SerializeField] private UnityEngine.UI.Slider cameraSlider;
+    [SerializeField] private UIMovement uiMovement;
     private bool xInvertOption;
     private bool yInvertOption;
     private bool FirstUpdate;
@@ -198,12 +199,14 @@ public class LevelManager : MonoBehaviour
 
     public void AddCoins(int coinsToAdd)
     {
+        uiMovement.CoinToggle(true);
         currentCoins += coinsToAdd;
         coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
     }
 
     public void CheeseGet(string id)
     {
+        uiMovement.CheeseToggle(true);
         gameManager.AddCheese(id);
         cheeseText.text = "Cheeses: " + gameManager.NumCheesesCollected;
         if (gameManager.NumCheesesCollected >= 10)
@@ -214,6 +217,7 @@ public class LevelManager : MonoBehaviour
     
     public void BrickGet()
     {
+        uiMovement.BrickToggle(true);
         currentBricks += 1;
         brickText.text = "Bricks: " + currentBricks + "/5";
     }

@@ -105,6 +105,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float hangOffsetY;
     [SerializeField] private Vector3 hangPos;
 
+    [SerializeField] public float UIWait;
+    public float cheeseTimer;
+    public float brickTimer;
+    public float crackerTimer;
+    public float healthTimer;
 
     public bool isClimbing;
     private bool canClimb;
@@ -957,8 +962,11 @@ public class Player : MonoBehaviour
             }
             else
             {
-                arrow.SetActive(false);
-                uiMovement.UIToggle(false);
+                if (arrow.activeSelf)
+                {
+                    arrow.SetActive(false);
+                    uiMovement.UIToggle(false);
+                }
                 canRadar = true;
             }
 
@@ -1034,6 +1042,33 @@ public class Player : MonoBehaviour
         animator.SetBool("isSkidding", isSkidding);
         animator.SetFloat("climbSpeed", move.ReadValue<Vector2>().magnitude);
         animator.SetFloat("runSpeed", move.ReadValue<Vector2>().magnitude);
+
+        if(cheeseTimer < 0)
+        {
+            uiMovement.CheeseToggle(false);
+        }
+        else
+        {
+            cheeseTimer -= Time.fixedDeltaTime;
+        }
+
+        if (crackerTimer < 0)
+        {
+            uiMovement.CoinToggle(false);
+        }
+        else
+        {
+            crackerTimer -= Time.fixedDeltaTime;
+        }
+
+        if (brickTimer < 0)
+        {
+            uiMovement.BrickToggle(false);
+        }
+        else
+        {
+            brickTimer -= Time.fixedDeltaTime;
+        }
 
         jumpPressed = false;
         jumpReleased = false;
