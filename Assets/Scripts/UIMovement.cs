@@ -14,11 +14,12 @@ public class UIMovement : MonoBehaviour
     public Vector3 cheeseDestination;
     public Vector3 healthDestination;
     public Vector3 brickDestination;
+    public Vector3 timerDestination;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        timerDestination = timer.transform.position;
     }
 
     // Update is called once per frame
@@ -40,17 +41,21 @@ public class UIMovement : MonoBehaviour
         {
             brick.transform.position = Vector3.MoveTowards(brick.transform.position, brickDestination, 60);
         }
+        if (timer.transform.position != timerDestination)
+        {
+            timer.transform.position = Vector3.MoveTowards(timer.transform.position, timerDestination, 60);
+        }
     }
 
     public void TimerToggle(bool isVisible)
     {
         if (isVisible)
         {
-            timer.anchoredPosition = new Vector2(timer.anchoredPosition.x, -30);
+            timerDestination = new Vector3(timer.transform.position.x, 30, 0);
         }
         else
         {
-            timer.anchoredPosition = new Vector2(timer.anchoredPosition.x, 400);
+            timerDestination = new Vector3(timer.transform.position.x, -50, 0);
         }
     }
 
@@ -62,6 +67,7 @@ public class UIMovement : MonoBehaviour
             CheeseToggle(true);
             HealthToggle(true);
             BrickToggle(true);
+            //TimerToggle(true);
         }
         else
         {
@@ -69,6 +75,7 @@ public class UIMovement : MonoBehaviour
             CheeseToggle(false);
             HealthToggle(false);
             BrickToggle(false);
+            //TimerToggle(false);
         }
     }
     public void CoinToggle(bool isOn)

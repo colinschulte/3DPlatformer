@@ -200,6 +200,7 @@ public class LevelManager : MonoBehaviour
     public void AddCoins(int coinsToAdd)
     {
         uiMovement.CoinToggle(true);
+        
         currentCoins += coinsToAdd;
         coinText.text = "Crackers: " + currentCoins + "/" + maxCoins;
     }
