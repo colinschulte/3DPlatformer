@@ -947,6 +947,9 @@ public class Player : MonoBehaviour
                 canRadar = false;
                 radarCounter = radarTime;
                 arrow.SetActive(true);
+                cheeseTimer = UIWait;
+                crackerTimer = UIWait;
+                brickTimer = UIWait;
                 uiMovement.UIToggle(true);
             }
             if(radarCounter > 0)

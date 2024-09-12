@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIMovement : MonoBehaviour
 {
+    //public Player player;
     public RectTransform timer;
     public RectTransform coin;
     public RectTransform health;
