@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] private UIMovement uiMovement;
     private PauseGame pause;
     [SerializeField] private LevelManager levelManager;
+    [SerializeField] private ParticleSystem StompCloud;
     private CinemachineFreeLook freelookCam;
     private bool firstUpdate = true;
 
@@ -398,6 +399,10 @@ public class Player : MonoBehaviour
                     canTurn = true;
                 }
                 canWallJump = false;
+                if (isGroundPounding)
+                {
+                    StompCloud.Play();
+                }
                 isGroundPounding = false;
                 canGroundPound = true;
                 isBackflipping = false;
