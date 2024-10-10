@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] private UIMovement uiMovement;
     private PauseGame pause;
     [SerializeField] private LevelManager levelManager;
+    [SerializeField] private ParticleSystem StepCloud;
     [SerializeField] private ParticleSystem StompCloud;
     private CinemachineFreeLook freelookCam;
     private bool firstUpdate = true;
@@ -399,6 +400,10 @@ public class Player : MonoBehaviour
                     canTurn = true;
                 }
                 canWallJump = false;
+                if (StepCloud.isStopped)
+                {
+                    StepCloud.Play();
+                }
                 if (isGroundPounding)
                 {
                     StompCloud.Play();
@@ -437,7 +442,10 @@ public class Player : MonoBehaviour
             {
                 coyoteCounter -= Time.fixedDeltaTime;
             }
-
+            if (!controller.isGrounded)
+            {
+                StepCloud.Stop();
+            }
             //check if Jump is pressed
             if (jumpPressed)
             {
