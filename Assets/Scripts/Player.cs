@@ -887,6 +887,8 @@ public class Player : MonoBehaviour
                 moveDirection.y = 0;
                 velocity.y = 0;
 
+                moveDirection = AdjustSlopeVelocity(moveDirection);
+
                 if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
                 {
                     if (controller.isGrounded)
@@ -920,6 +922,10 @@ public class Player : MonoBehaviour
                 }
                 velocity.y = yStore;
 
+                if (controller.isGrounded)
+                {
+                    velocity.y -= 2f;
+                }
 
                 if (isSliding)
                 {
@@ -1106,6 +1112,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    private Vector3 AdjustSlopeVelocity(Vector3 velocity)
+    {
+        var ray = new Ray(transform.position, Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hitinfo, 2f))
+        {
+            Debug.Log(hitinfo.normal.y.ToString());
+            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitinfo.normal);
+            var adjustedVelocity = slopeRotation * velocity;
+
+            if(adjustedVelocity.y != 0)
+            {
+                return adjustedVelocity;
+            }
+        }
+        return velocity;
+    }
     private void SetSlopeSlideVelocity()
     {
         int layerMask = LayerMask.GetMask("Default");

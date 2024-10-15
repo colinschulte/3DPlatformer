@@ -9,7 +9,9 @@ public class PlatformMovement : MonoBehaviour
     private float speed;
 
     private Vector3 StartPosition;
-    private Vector3 EndPosition;
+    [SerializeField] private Vector3 EndPosition;
+    [SerializeField] private float waitTime;
+    private float waitCounter;
     private Vector3 NextPosition;
     private Vector3 PlatformPosition;
 
@@ -21,7 +23,7 @@ public class PlatformMovement : MonoBehaviour
     void Start()
     {
         StartPosition = transform.localPosition;
-        EndPosition = new Vector3 (0, transform.localPosition.y, 0);
+        //EndPosition = new Vector3 (0, transform.localPosition.y, 0);
         if (positionCounter == true)
         {
             NextPosition = EndPosition;
@@ -29,6 +31,7 @@ public class PlatformMovement : MonoBehaviour
             transform.localPosition = EndPosition;
             NextPosition = StartPosition;
         }
+        waitCounter = waitTime;
     }
 
     // Update is called once per frame
@@ -40,14 +43,22 @@ public class PlatformMovement : MonoBehaviour
 
         if(transform.localPosition == NextPosition)
         {
-            if (positionCounter == true)
+            if(waitCounter <= 0)
             {
-                NextPosition = StartPosition;
-                positionCounter = false;
-            } else
+                if (positionCounter == true)
+                {
+                    NextPosition = StartPosition;
+                    positionCounter = false;
+                } else
+                {
+                    NextPosition = EndPosition;
+                    positionCounter = true;
+                }
+                waitCounter = waitTime;
+            }
+            else
             {
-                NextPosition = EndPosition;
-                positionCounter = true;
+                waitCounter -= Time.fixedDeltaTime;
             }
         }
     }
