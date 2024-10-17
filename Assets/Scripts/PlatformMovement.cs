@@ -5,55 +5,41 @@ using UnityEngine;
 public class PlatformMovement : MonoBehaviour
 {
 
-    [SerializeField]
-    private float speed;
-
-    private Vector3 StartPosition;
-    [SerializeField] private Vector3 EndPosition;
+    [SerializeField] private float speed;
     [SerializeField] private float waitTime;
     private float waitCounter;
     private Vector3 NextPosition;
-    private Vector3 PlatformPosition;
-
-    [SerializeField]
-    private bool positionCounter;
+    [SerializeField] private Vector3[] PlatformPositions;
+    [SerializeField] private int positionCounter;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        StartPosition = transform.localPosition;
-        //EndPosition = new Vector3 (0, transform.localPosition.y, 0);
-        if (positionCounter == true)
-        {
-            NextPosition = EndPosition;
-        } else {
-            transform.localPosition = EndPosition;
-            NextPosition = StartPosition;
-        }
+        NextPosition = PlatformPositions[positionCounter];
         waitCounter = waitTime;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //PlatformPosition.x = Mathf.MoveTowards(PlatformPosition.x, NextPosition.x, speed);
-        //PlatformPosition.z = Mathf.MoveTowards(PlatformPosition.z, NextPosition.z, speed);
         transform.localPosition = Vector3.MoveTowards(transform.localPosition, NextPosition, speed * Time.deltaTime);
 
         if(transform.localPosition == NextPosition)
         {
             if(waitCounter <= 0)
             {
-                if (positionCounter == true)
+                if (positionCounter < PlatformPositions.Length - 1)
                 {
-                    NextPosition = StartPosition;
-                    positionCounter = false;
-                } else
-                {
-                    NextPosition = EndPosition;
-                    positionCounter = true;
+                    positionCounter++;
                 }
+                else
+                {
+                    positionCounter = 0;
+                }
+
+                NextPosition = PlatformPositions[positionCounter];
+
                 waitCounter = waitTime;
             }
             else
