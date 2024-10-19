@@ -59,6 +59,7 @@ public class Enemy : MonoBehaviour
     {
         canMove = false;
         canHurt = false;
+        this.
         defeated = true;
         this.transform.localScale += new Vector3(0f, -0.25f, 0f);
         this.transform.localPosition += new Vector3(0f, -0.3f, 0f);

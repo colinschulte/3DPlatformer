@@ -803,7 +803,7 @@ public class Player : MonoBehaviour
                     {
                         canMove = false;
                         yStore = moveDirection.y;
-                        moveDirection = Vector3.MoveTowards(velocity, new Vector3(0, moveDirection.y, 0), 0.4f);
+                        moveDirection = Vector3.MoveTowards(moveDirection, new Vector3(0, moveDirection.y, 0), 0.5f);
                         moveDirection.y = yStore;
                         if (moveDirection.x == 0 && moveDirection.z == 0)
                         {

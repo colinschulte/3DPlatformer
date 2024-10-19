@@ -86,6 +86,7 @@ public class PauseGame : MonoBehaviour
         buttonPress.Play();
         Time.timeScale = 1;
         gamePaused = false;
+        uiMovement.UIToggle(false);
         Cursor.lockState = CursorLockMode.Locked;
         levelMusic.UnPause();
         pauseMenu.SetActive(false);

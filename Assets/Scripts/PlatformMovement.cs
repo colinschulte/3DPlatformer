@@ -17,7 +17,7 @@ public class PlatformMovement : MonoBehaviour
     void Start()
     {
         NextPosition = PlatformPositions[positionCounter];
-        waitCounter = waitTime;
+        //waitCounter = waitTime;
     }
 
     // Update is called once per frame

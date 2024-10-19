@@ -9,6 +9,7 @@ public class Button : MonoBehaviour
     public List<GrowPlant> growPlants;
     [SerializeField] private AudioSource pressSound;
     public CheeseLaunch launch;
+    public PlatformActivate platform;
 
     public void Press()
     {
@@ -31,6 +32,11 @@ public class Button : MonoBehaviour
             if(launch != null)
             {
                 launch.Punch();
+            }
+
+            if(platform != null)
+            {
+                platform.Activate();
             }
 
             buttonPressed = true;
