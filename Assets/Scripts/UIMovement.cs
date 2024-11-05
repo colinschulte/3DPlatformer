@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Device;
 using UnityEngine.UI;
 
 public class UIMovement : MonoBehaviour
 {
     //public Player player;
+    public Canvas UI;
+    public RectTransform hud;
     public RectTransform timer;
     public RectTransform coin;
     public RectTransform health;
@@ -52,11 +55,11 @@ public class UIMovement : MonoBehaviour
     {
         if (isVisible)
         {
-            timerDestination = new Vector3(timer.transform.position.x, 30, 0);
+            timerDestination = new Vector3(UnityEngine.Screen.width/2, 30, 0);
         }
         else
         {
-            timerDestination = new Vector3(timer.transform.position.x, -50, 0);
+            timerDestination = new Vector3(UnityEngine.Screen.width/2, -50, 0);
         }
     }
 
@@ -83,45 +86,45 @@ public class UIMovement : MonoBehaviour
     {
         if (isOn)
         {
-            coinDestination = new Vector3(150, coin.transform.position.y, 0);
+            coinDestination = new Vector3(coin.rect.width, UnityEngine.Screen.height - coin.rect.height, 0);
         }
         else
         {
-            coinDestination = new Vector3(-300, coin.transform.position.y, 0);
+            coinDestination = new Vector3(-coin.rect.width, UnityEngine.Screen.height - coin.rect.height, 0);
         }
     }
     public void CheeseToggle(bool isOn)
     {
         if (isOn)
         {
-            cheeseDestination = new Vector3(885, cheese.transform.position.y, 0);
+            cheeseDestination = new Vector3(UnityEngine.Screen.width - (cheese.rect.width), cheese.rect.height, 0);
         }
         else
         {
-            cheeseDestination = new Vector3(1300, cheese.transform.position.y, 0);
+            cheeseDestination = new Vector3(UnityEngine.Screen.width + (cheese.rect.width), cheese.rect.height, 0);
         }
     }
     public void HealthToggle(bool isOn)
     {
         if (isOn)
         {
-            healthDestination = new Vector3(885, health.transform.position.y, 0);
+            healthDestination = new Vector3(UnityEngine.Screen.width - (health.rect.width), UnityEngine.Screen.height - health.rect.height, 0);
 
         }
         else
         {
-            healthDestination = new Vector3(1300, health.transform.position.y, 0);
+            healthDestination = new Vector3(UnityEngine.Screen.width + (health.rect.width), UnityEngine.Screen.height - health.rect.height, 0);
         }
     }
     public void BrickToggle(bool isOn)
     {
         if (isOn)
         {
-            brickDestination = new Vector3(150, brick.transform.position.y, 0);
+            brickDestination = new Vector3(brick.rect.width, brick.rect.height, 0);
         }
         else
         {
-           brickDestination = new Vector3(-250, brick.transform.position.y, 0);
+           brickDestination = new Vector3(-brick.rect.width, brick.rect.height, 0);
         }
     }
 }

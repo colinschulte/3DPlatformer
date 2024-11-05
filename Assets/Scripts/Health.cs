@@ -14,6 +14,8 @@ public class Health : MonoBehaviour
     private bool isFadingUp;
     public float fadeSpeed;
 
+    //public LevelManager levelManager;
+    public UIMovement uiMovement;
     public Player player;
 
     public float invincibilityLength;
@@ -95,7 +97,8 @@ public class Health : MonoBehaviour
             {
 
                 player.Knockback(direction);
-
+                uiMovement.HealthToggle(true);
+                player.healthTimer = player.UIWait;
                 invincibilityCounter = invincibilityLength;
                 playerRenderer.enabled = false;
                 flashCounter = flashLength;

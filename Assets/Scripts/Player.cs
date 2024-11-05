@@ -1092,6 +1092,15 @@ public class Player : MonoBehaviour
             brickTimer -= Time.fixedDeltaTime;
         }
 
+        if (healthTimer < 0)
+        {
+            uiMovement.HealthToggle(false);
+        }
+        else
+        {
+            healthTimer -= Time.fixedDeltaTime;
+        }
+
         jumpPressed = false;
         jumpReleased = false;
         dashPressed = false;
