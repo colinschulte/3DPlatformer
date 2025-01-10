@@ -37,7 +37,7 @@ public class GrowPlant : MonoBehaviour
             if (startWaitCounter < 0)
             {
                 shortVine.transform.localScale = Vector3.MoveTowards(shortVine.transform.localScale, longVine.transform.localScale, growSpeed);
-                shortVine.transform.localPosition = new Vector3(shortVine.transform.localPosition.x, -(shortVine.transform.localScale.y / 2) + 1, shortVine.transform.localPosition.z);
+                shortVine.transform.localPosition = new Vector3(shortVine.transform.localPosition.x, -(shortVine.transform.localScale.y / 2) + 1.5f, shortVine.transform.localPosition.z);
             }
             else
             {
