@@ -660,11 +660,14 @@ public class Player : MonoBehaviour
                 coyoteCounter = 0;
                 isGroundPounding = false;
                 isLongJumping = false;
+                isBackflipping = false;
+                isDashing = false;
+                isSomersaulting = false;
+                isBouncing = true;
                 canDash = true;
                 canMove = true;
                 canTurn = true;
                 bounceStart = false;
-                isBouncing = true;
             }
 
             if (isBouncing)
@@ -1062,6 +1065,7 @@ public class Player : MonoBehaviour
         animator.SetBool("isHanging", isHanging);
         animator.SetBool("isClimbing", isClimbing);
         animator.SetBool("isSkidding", isSkidding);
+        animator.SetBool("isBouncing", isBouncing);
         animator.SetFloat("climbSpeed", move.ReadValue<Vector2>().magnitude);
         animator.SetFloat("runSpeed", move.ReadValue<Vector2>().magnitude);
 
@@ -1167,10 +1171,11 @@ public class Player : MonoBehaviour
     {
         if ((velocity.y < 0 || isClimbing) && canHang)
         {
+            //if()
             {
                 RaycastHit downHit;
-                Vector3 LineDownStart = (transform.position + Vector3.up * 0.6f) + (playerModel.transform.forward * 0.3f);
-                Vector3 LineDownEnd = (transform.position + Vector3.up * 0.4f) + (playerModel.transform.forward * 0.3f);
+                Vector3 LineDownStart = (transform.position + Vector3.up * 0.6f) + (transform.forward * 0.3f);
+                Vector3 LineDownEnd = (transform.position + Vector3.up * 0.4f) + (transform.forward * 0.3f);
                 Physics.Linecast(LineDownStart, LineDownEnd, out downHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable")); 
                 //Debug.DrawLine(LineDownStart, LineDownEnd);
 
@@ -1178,11 +1183,11 @@ public class Player : MonoBehaviour
                 {
                     RaycastHit aboveHit;
                     Vector3 LineFwdStart = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z);
-                    Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
+                    Vector3 LineFwdEnd = new Vector3(transform.position.x, downHit.point.y - 0.1f, transform.position.z) + (transform.forward * 0.3f);
                     Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable"));
 
                     Vector3 AboveFwdStart = new Vector3(transform.position.x, downHit.point.y + 0.1f, transform.position.z);
-                    Vector3 AboveFwdEnd = new Vector3(transform.position.x, downHit.point.y + 0.1f, transform.position.z) + (playerModel.transform.forward * 0.3f);
+                    Vector3 AboveFwdEnd = new Vector3(transform.position.x, downHit.point.y + 0.1f, transform.position.z) + (transform.forward * 0.3f);
                     Physics.Linecast(AboveFwdStart, AboveFwdEnd, out aboveHit, LayerMask.GetMask("Default") | LayerMask.GetMask("Climbable"));
                     //Debug.DrawLine(LineFwdStart, LineFwdEnd);
 
