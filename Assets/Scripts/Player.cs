@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float hangOffsetX;
     [SerializeField] private float hangOffsetY;
     [SerializeField] private Vector3 hangPos;
+    [SerializeField] private Vector3 pullUpEnd;
 
     [SerializeField] public float UIWait;
     public float cheeseTimer;
@@ -299,706 +300,721 @@ public class Player : MonoBehaviour
         }
         if (knockbackCounter <= 0)
         {
-            //float xStore = velocity.x;
-            float yStore = velocity.y;
-            //float zStore = velocity.z;
-            if (climbPressed)
+            if (!wasHanging)
             {
-                canClimb = true;
-            }
-            else if (climbReleased)
-            {
-                canClimb = false;
-            }
-
-            Vector3 LineFwdStart = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-
-            Vector3 LineFwdEnd = Vector3.zero;
-            if (isClimbing)
-            {
-                climbReach = 0.8f;
-            }
-            else
-            {
-                climbReach = 0.3f;
-            }
-            LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * climbReach);
-            fwdHit = new RaycastHit();
-            Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
-
-            if (fwdHit.collider != null && !isWallJumping && !isHanging)
-            {
-                velocity = Vector3.zero;
-                isClimbing = true;
-                climbObject = fwdHit.collider.GetComponent<Climb>();
-                climbPos = new Vector3(fwdHit.point.x, transform.position.y, fwdHit.point.z);
-                Vector3 offset = transform.forward * climbOffsetX + transform.up * climbOffsetY;
-                climbPos += offset;
-                //transform.position = climbPos;
-                wallNormal = fwdHit.normal;
-                playerModel.transform.forward = -wallNormal;
-                lastNormal = fwdHit.normal;
-            }
-            else
-            {
-                isClimbing = false;
-                //Debug.Log("NOT ON WALL");
-            }
-
-            //if (isClimbing && !controller.isGrounded)
-            if (isClimbing)
-            {
-                canDash = false;
-                isDashing = false;
-                isBackflipping = false;
-                isSomersaulting = false;
-                canGroundPound = false;
-                moveDirection = move.ReadValue<Vector2>();
-                if (climbObject.canSideClimb)
+                //float xStore = velocity.x;
+                float yStore = velocity.y;
+                //float zStore = velocity.z;
+                if (climbPressed)
                 {
-                    moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                    canClimb = true;
+                }
+                else if (climbReleased)
+                {
+                    canClimb = false;
+                }
+
+                Vector3 LineFwdStart = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
+                Vector3 LineFwdEnd = Vector3.zero;
+                if (isClimbing)
+                {
+                    climbReach = 0.8f;
                 }
                 else
                 {
-                    moveDirection = (transform.up * moveDirection.y);
+                    climbReach = 0.3f;
                 }
-                float magnitude = moveDirection.magnitude;
-                magnitude = Mathf.Clamp01(magnitude);
-                moveDirection = moveDirection.normalized;
-                moveDirection = magnitude * climbSpeed * moveDirection;
-                moveDirection += (playerModel.transform.forward * climbPull);
-                canWallJump = true;
-            }
-            else
-            {
-                if (canMove)
+                LineFwdEnd = new Vector3(transform.position.x, transform.position.y, transform.position.z) + (playerModel.transform.forward * climbReach);
+                fwdHit = new RaycastHit();
+                Physics.Linecast(LineFwdStart, LineFwdEnd, out fwdHit, LayerMask.GetMask("Climbable"));
+
+                if (fwdHit.collider != null && !isWallJumping && !isHanging)
                 {
+                    velocity = Vector3.zero;
+                    isClimbing = true;
+                    climbObject = fwdHit.collider.GetComponent<Climb>();
+                    climbPos = new Vector3(fwdHit.point.x, transform.position.y, fwdHit.point.z);
+                    Vector3 offset = transform.forward * climbOffsetX + transform.up * climbOffsetY;
+                    climbPos += offset;
+                    //transform.position = climbPos;
+                    wallNormal = fwdHit.normal;
+                    playerModel.transform.forward = -wallNormal;
+                    lastNormal = fwdHit.normal;
+                }
+                else
+                {
+                    isClimbing = false;
+                    //Debug.Log("NOT ON WALL");
+                }
+
+                //if (isClimbing && !controller.isGrounded)
+                if (isClimbing)
+                {
+                    canDash = false;
+                    isDashing = false;
+                    isBackflipping = false;
+                    isSomersaulting = false;
+                    canGroundPound = false;
                     moveDirection = move.ReadValue<Vector2>();
-                    moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+                    if (climbObject.canSideClimb)
+                    {
+                        moveDirection = (transform.up * moveDirection.y) + (playerModel.transform.right * moveDirection.x);
+                    }
+                    else
+                    {
+                        moveDirection = (transform.up * moveDirection.y);
+                    }
                     float magnitude = moveDirection.magnitude;
                     magnitude = Mathf.Clamp01(magnitude);
                     moveDirection = moveDirection.normalized;
-                    moveDirection = magnitude * moveSpeed * moveDirection;
-                }
-                moveDirection.y = yStore;
-
-                if(Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5 && !isSkidding)
-                {
-                    isSkidding = true;
-                    skidCounter = skidTime;
-                    canSomersault = true;
-                    somersaultCounter = somersaultTime;
-                }
-            }
-
-            //if on the ground, reset y movement and coyote counter
-            if (controller.isGrounded && !isClimbing)
-            {
-                if (!pause.gamePaused && MainCamera.isActiveAndEnabled && !isReading)
-                {
-                    canMove = true;
-                    canTurn = true;
-                }
-                canWallJump = false;
-                if (StepCloud.isStopped)
-                {
-                    StepCloud.Play();
-                }
-                if (isGroundPounding)
-                {
-                    StompCloud.Play();
-                }
-                isGroundPounding = false;
-                canGroundPound = true;
-                isBackflipping = false;
-                isLongJumping = false;
-                isSomersaulting = false;
-                isDoubleJumping = false;
-                isTripleJumping = false;
-                isBouncing = false;
-                canHover = false;
-                isHovering = false;
-                wasHanging = false;
-                maxSpeed = defaultMaxSpeed;
-                maxAcceleration = defaultMaxAccel;
-                maxAirAcceleration = defaultMaxAirAccel;
-                maxDeceleration = defaultMaxDecel;
-                maxAirDeceleration = defaultMaxAirDecel;
-                gravityScale = 5f;
-
-                if (slopeSlideVelocity != Vector3.zero)
-                {
-                    isSliding = true;
-                }
-                if (isSliding == false)
-                {
-                    moveDirection.y = -2f;
-                }
-
-                coyoteCounter = coyoteTime;
-
-            }
-            else
-            {
-                coyoteCounter -= Time.fixedDeltaTime;
-            }
-            if (!controller.isGrounded)
-            {
-                StepCloud.Stop();
-            }
-            //check if Jump is pressed
-            if (jumpPressed)
-            {
-                if (coyoteCounter > 0f)
-                {
-                    canJump = true;
+                    moveDirection = magnitude * climbSpeed * moveDirection;
+                    moveDirection += (playerModel.transform.forward * climbPull);
+                    canWallJump = true;
                 }
                 else
                 {
-                    canJump = false;
-                }
-
-                //remove text
-                if (isReading)
-                {
-                    readSign = currentSign.GetComponent<ReadSign>();
-                    readSign.EndRead();
-                    canJump = false;
-                    isReading = false;
-                }
-
-                if (isHanging)
-                {
-                    hangCounter = hangTime;
-                    canMove = false;
-                    canJump = true;
-                    jumpFactor = 0.5f;
-                    isHanging = false;
-                    wasHanging = true;
-                }
-
-                if (canJump) {
-                    lastJumpForward = playerModel.transform.forward;
-                    canTurn = false;
-                    canHover = true;
-                    maxSpeed = defaultMaxSpeed;
-
-                    if (!wasHanging)
+                    if (canMove)
                     {
-                        if (isCrouching)
+                        moveDirection = move.ReadValue<Vector2>();
+                        moveDirection = (transform.forward * moveDirection.y) + (transform.right * moveDirection.x);
+                        float magnitude = moveDirection.magnitude;
+                        magnitude = Mathf.Clamp01(magnitude);
+                        moveDirection = moveDirection.normalized;
+                        moveDirection = magnitude * moveSpeed * moveDirection;
+                    }
+                    moveDirection.y = yStore;
+
+                    if (Vector3.Dot(new Vector3(velocity.x, 0, velocity.z), new Vector3(moveDirection.x, 0, moveDirection.z)) < -0.5 && !isSkidding)
+                    {
+                        isSkidding = true;
+                        skidCounter = skidTime;
+                        somersaultCounter = 0;
+                    }
+                }
+
+                //if on the ground, reset y movement and coyote counter
+                if (controller.isGrounded && !isClimbing)
+                {
+                    if (!pause.gamePaused && MainCamera.isActiveAndEnabled && !isReading)
+                    {
+                        canMove = true;
+                        canTurn = true;
+                    }
+                    canWallJump = false;
+                    if (StepCloud.isStopped)
+                    {
+                        StepCloud.Play();
+                    }
+                    if (isGroundPounding)
+                    {
+                        StompCloud.Play();
+                    }
+                    isGroundPounding = false;
+                    canGroundPound = true;
+                    isBackflipping = false;
+                    isLongJumping = false;
+                    isSomersaulting = false;
+                    isDoubleJumping = false;
+                    isTripleJumping = false;
+                    isBouncing = false;
+                    canHover = false;
+                    isHovering = false;
+                    wasHanging = false;
+                    maxSpeed = defaultMaxSpeed;
+                    maxAcceleration = defaultMaxAccel;
+                    maxAirAcceleration = defaultMaxAirAccel;
+                    maxDeceleration = defaultMaxDecel;
+                    maxAirDeceleration = defaultMaxAirDecel;
+                    gravityScale = 5f;
+
+                    if (slopeSlideVelocity != Vector3.zero)
+                    {
+                        isSliding = true;
+                    }
+                    if (isSliding == false)
+                    {
+                        moveDirection.y = -2f;
+                    }
+
+                    coyoteCounter = coyoteTime;
+
+                }
+                else
+                {
+                    coyoteCounter -= Time.fixedDeltaTime;
+                }
+                if (!controller.isGrounded)
+                {
+                    StepCloud.Stop();
+                }
+                //check if Jump is pressed
+                if (jumpPressed)
+                {
+                    if (coyoteCounter > 0f)
+                    {
+                        canJump = true;
+                    }
+                    else
+                    {
+                        canJump = false;
+                    }
+
+                    //remove text
+                    if (isReading)
+                    {
+                        readSign = currentSign.GetComponent<ReadSign>();
+                        readSign.EndRead();
+                        canJump = false;
+                        isReading = false;
+                    }
+
+                    if (isHanging)
+                    {
+                        hangCounter = hangTime;
+                        canMove = false;
+                        canJump = true;
+                        jumpFactor = 0.5f;
+                        isHanging = false;
+                        pullUpEnd = transform.position + (playerModel.transform.forward * 0.5f) + (transform.up * 1f);
+                        wasHanging = true;
+                    }
+
+                    if (canJump)
+                    {
+                        lastJumpForward = playerModel.transform.forward;
+                        canTurn = false;
+                        canHover = true;
+                        maxSpeed = defaultMaxSpeed;
+
+                        if (!wasHanging)
                         {
-                            if (!isStopped)
+                            if (isCrouching)
                             {
-                                //long jump
-                                jumpFactor = 0.5f;
-                                //maxAirAcceleration = 50f;
-                                velocity += playerModel.transform.forward * 10;
-                                isLongJumping = true;
-                                canMove = true;
+                                if (!isStopped)
+                                {
+                                    //long jump
+                                    jumpFactor = 0.5f;
+                                    //maxAirAcceleration = 50f;
+                                    velocity += playerModel.transform.forward * 10;
+                                    isLongJumping = true;
+                                    canMove = true;
+                                }
+                                else
+                                {
+                                    //high jump
+                                    jumpFactor = 1.3f;
+                                    isBackflipping = true;
+                                    canMove = true;
+                                }
                             }
                             else
                             {
-                                //high jump
-                                jumpFactor = 1.3f;
-                                isBackflipping = true;
-                                canMove = true;
+                                if (canSomersault)
+                                {
+                                    //somersault
+                                    jumpFactor = 1.3f;
+                                    isSomersaulting = true;
+                                }
+                                else if (jumpCounter == 1)
+                                {
+                                    jumpFactor = 1f;
+                                    jumpCounter++;
+                                    firstJumpActive = true;
+                                }
+                                else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
+                                {
+                                    jumpFactor = 1f;
+                                    jumpCounter++;
+                                    secondJumpTimer = 0f;
+                                    firstJumpActive = false;
+                                    secondJumpActive = true;
+                                    isDoubleJumping = true;
+                                }
+                                else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
+                                {
+                                    jumpFactor = 1.3f;
+                                    jumpCounter++;
+                                    thirdJumpTimer = 0f;
+                                    firstJumpActive = false;
+                                    secondJumpActive = false;
+                                    isTripleJumping = true;
+                                }
+                            }
+                        }
+
+                        moveDirection.y = jumpForce * jumpFactor;
+                        jumpSound.Play();
+                        coyoteCounter = 0f;
+                    }
+                    else if (canWallJump)
+                    {
+                        velocity = Vector3.zero;
+                        if (isClimbing)
+                        {
+                            wallNormal = lastNormal;
+                        }
+                        moveDirection = wallNormal * wallPushback;
+                        moveDirection.y = jumpForce * jumpFactor;
+                        playerModel.transform.forward = wallNormal;
+                        jumpSound.Play();
+                        wallJumpCounter = wallJumpTime;
+                        canWallJump = false;
+                        canMove = false;
+                        isClimbing = false;
+                        isWallJumping = true;
+                    }
+                }
+                if (jumpCounter > 3)
+                {
+                    jumpCounter = 1;
+                }
+                if (secondJumpTimer >= jumpTime)
+                {
+                    jumpFactor = 1f;
+                    jumpCounter = 1;
+                    secondJumpTimer = 0f;
+                    firstJumpActive = false;
+                }
+
+                if (thirdJumpTimer >= jumpTime)
+                {
+                    jumpFactor = 1f;
+                    jumpCounter = 1;
+                    thirdJumpTimer = 0f;
+                    secondJumpActive = false;
+                }
+                if (firstJumpActive && coyoteCounter > 0f)
+                {
+                    secondJumpTimer += Time.fixedDeltaTime;
+                }
+
+                if (secondJumpActive && coyoteCounter > 0f)
+                {
+                    thirdJumpTimer += Time.fixedDeltaTime;
+                }
+
+                if (moveDirection.y <= 0f && !controller.isGrounded && canHover)
+                {
+                    canHover = false;
+                    isHovering = true;
+                    hoverTimer = hoverTime;
+                }
+
+                if (isHovering)
+                {
+                    moveDirection.y = 1f;
+
+                    if (hoverTimer <= 0)
+                    {
+                        moveDirection.y = -5f;
+                        isHovering = false;
+                    }
+                    else
+                    {
+                        hoverTimer -= Time.fixedDeltaTime;
+                    }
+                }
+
+                if (hangCounter < 0)
+                {
+
+                    canHang = true;
+                }
+                else
+                {
+                    hangCounter -= Time.fixedDeltaTime;
+                }
+
+                //if Jump is let go then start falling
+                if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isSomersaulting && !isBouncing && !wasHanging)
+                {
+                    moveDirection.y = moveDirection.y * fallFactor;
+                    canHover = false;
+                    isHovering = false;
+                }
+
+                if (isWallJumping)
+                {
+                    wallJumpCounter -= Time.fixedDeltaTime;
+                }
+
+                if (wallJumpCounter <= 0)
+                {
+                    isWallJumping = false;
+                    canWallJump = false;
+                    //canMove = true;
+                    wallJumpCounter = wallJumpTime;
+                }
+
+                if (!isClimbing)
+                {
+                    moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
+                }
+
+                if (isClimbing)
+                {
+                    moveDirection += (playerModel.transform.forward * climbPull);
+                }
+
+                if (bounceStart)
+                {
+                    gravityScale = 5f;
+                    moveDirection.y = bounceForce;
+                    coyoteCounter = 0;
+                    isGroundPounding = false;
+                    isLongJumping = false;
+                    isBackflipping = false;
+                    isDashing = false;
+                    isSomersaulting = false;
+                    isBouncing = true;
+                    canDash = true;
+                    canMove = true;
+                    canTurn = true;
+                    bounceStart = false;
+                }
+
+                if (isBouncing)
+                {
+                    maxAirAcceleration = 30f;
+                    maxAirDeceleration = 30f;
+                }
+
+                if (enemyStomped)
+                {
+                    if (jumpPressed)
+                    {
+                        moveDirection.y += jumpForce;
+                    }
+                    else
+                    {
+                        moveDirection.y += 10f;
+                    }
+                    enemyStomped = false;
+                }
+
+                SetSlopeSlideVelocity();
+
+                if (slopeSlideVelocity == Vector3.zero)
+                {
+                    isSliding = false;
+                }
+
+                if (isDashing)
+                {
+                    canTurn = false;
+                    canMove = false;
+                    maxAirAcceleration = 60f;
+                    maxAirDeceleration = 60f;
+                    moveDirection = lastJumpForward * dashSpeed;
+
+                    moveDirection.y = 2f;
+                    dashCounter -= Time.fixedDeltaTime;
+                    if (dashReleased || crouchPressed)
+                    {
+                        dashCounter = 0;
+                    }
+                    if (dashCounter <= 0)
+                    {
+                        isDashing = false;
+                        dashCounter = dashTime;
+                    }
+                }
+
+                if (isLongJumping)
+                {
+                    canMove = true;
+                    canTurn = false;
+                    maxAirAcceleration = 60f;
+                    maxAirAcceleration = 60f;
+                    gravityScale = 3f;
+                }
+
+                if (dashPressed)
+                {
+                    if (isReading)
+                    {
+                        readSign = currentSign.GetComponent<ReadSign>();
+                        readSign.EndRead();
+                        isReading = false;
+                    }
+                    else if (controller.isGrounded)
+                    {
+                        if (isNearSign)
+                        {
+                            readSign = currentSign.GetComponent<ReadSign>();
+                            readSign.Read();
+                            canMove = false;
+                            isReading = true;
+                        }
+                    }
+                    else if (canDash)
+                    {
+                        //maxAirAcceleration = 1f;
+                        gravityScale = 5f;
+                        maxAirAcceleration = 50f;
+                        maxAirDeceleration = 30f;
+                        velocity = lastForward * dashSpeed;
+                        lastJumpForward = lastForward;
+
+                        dashSound.Play();
+                        isDashing = true;
+                        canDash = false;
+                        isGroundPounding = false;
+                        //canGroundPound = true;
+                        isLongJumping = false;
+                        isBackflipping = false;
+                        isBouncing = false;
+                        canTurn = true;
+                    }
+                }
+
+                if (!isDashing && !canDash && controller.isGrounded)
+                {
+                    dashCooldownCount -= Time.fixedDeltaTime;
+                    if (dashCooldownCount <= 0)
+                    {
+                        canDash = true;
+                        dashCooldownCount = dashCooldown;
+                    }
+                }
+
+                if (crouchPressed)
+                {
+                    if (coyoteCounter > 0)
+                    {
+                        isCrouching = true;
+                        controller.height = 1;
+                        controller.center = new Vector3(0f, -0.5f, 0f);
+                        isStopped = false;
+                        controller.slopeLimit = 90;
+                    }
+                    else
+                    {
+                        if (canGroundPound)
+                        {
+                            velocity = Vector3.zero;
+                            groundPoundHangcount = groundPoundHangtime;
+                            canMove = false;
+                            isGroundPounding = true;
+                            isLongJumping = false;
+                        }
+                    }
+                }
+
+                if (isCrouching)
+                {
+                    if (controller.isGrounded)
+                    {
+                        if (!isStopped)
+                        {
+                            canMove = false;
+                            yStore = moveDirection.y;
+                            moveDirection = Vector3.MoveTowards(moveDirection, new Vector3(0, moveDirection.y, 0), 0.5f);
+                            moveDirection.y = yStore;
+                            if (moveDirection.x == 0 && moveDirection.z == 0)
+                            {
+                                isStopped = true;
                             }
                         }
                         else
                         {
-                            if (canSomersault)
-                            {
-                                //somersault
-                                jumpFactor = 1.3f;
-                                isSomersaulting = true;
-                            }
-                            else if (jumpCounter == 1)
-                            {
-                                jumpFactor = 1f;
-                                jumpCounter++;
-                                firstJumpActive = true;
-                            }
-                            else if (jumpCounter == 2 && firstJumpActive && secondJumpTimer > 0f)
-                            {
-                                jumpFactor = 1f;
-                                jumpCounter++;
-                                secondJumpTimer = 0f;
-                                firstJumpActive = false;
-                                secondJumpActive = true;
-                                isDoubleJumping = true;
-                            }
-                            else if (jumpCounter == 3 && secondJumpActive && thirdJumpTimer > 0f)
-                            {
-                                jumpFactor = 1.3f;
-                                jumpCounter++;
-                                thirdJumpTimer = 0f;
-                                firstJumpActive = false;
-                                secondJumpActive = false;
-                                isTripleJumping = true;
-                            }
+                            maxSpeed = 1f;
                         }
-                    }
-                    
-                    moveDirection.y = jumpForce * jumpFactor;
-                    jumpSound.Play();
-                    coyoteCounter = 0f;
-                }
-                else if (canWallJump)
-                {
-                    velocity = Vector3.zero;
-                    if (isClimbing)
-                    {
-                        wallNormal = lastNormal;
-                    }
-                    moveDirection = wallNormal * wallPushback;
-                    moveDirection.y = jumpForce * jumpFactor;
-                    playerModel.transform.forward = wallNormal;
-                    jumpSound.Play();
-                    wallJumpCounter = wallJumpTime;
-                    canWallJump = false;
-                    canMove = false;
-                    isClimbing = false;
-                    isWallJumping = true;
-                }
-            }
-            if (jumpCounter > 3)
-            {
-                jumpCounter = 1;
-            }
-            if (secondJumpTimer >= jumpTime)
-            {
-                jumpFactor = 1f;
-                jumpCounter = 1;
-                secondJumpTimer = 0f;
-                firstJumpActive = false;
-            }
-
-            if (thirdJumpTimer >= jumpTime)
-            {
-                jumpFactor = 1f;
-                jumpCounter = 1;
-                thirdJumpTimer = 0f;
-                secondJumpActive = false;
-            }
-            if (firstJumpActive && coyoteCounter > 0f)
-            {
-                secondJumpTimer += Time.fixedDeltaTime;
-            }
-
-            if (secondJumpActive && coyoteCounter > 0f)
-            {
-                thirdJumpTimer += Time.fixedDeltaTime;
-            }
-
-            if (moveDirection.y <= 0f && !controller.isGrounded && canHover)
-            {
-                canHover = false;
-                isHovering = true;
-                hoverTimer = hoverTime;
-            }
-
-            if (isHovering)
-            {
-                moveDirection.y = 1f;
-
-                if (hoverTimer <= 0)
-                {
-                    moveDirection.y = -5f;
-                    isHovering = false;
-                }
-                else
-                {
-                    hoverTimer -= Time.fixedDeltaTime;
-                }
-            }
-
-            if (hangCounter < 0)
-            {
-                
-                canHang = true;
-            }
-            else
-            {
-                hangCounter -= Time.fixedDeltaTime;
-            }
-
-            //if Jump is let go then start falling
-            if (jumpReleased && moveDirection.y > 0 && !isBackflipping && !isLongJumping && !isSomersaulting && !isBouncing && !wasHanging)
-            {
-                moveDirection.y = moveDirection.y  * fallFactor;
-                canHover = false;
-                isHovering = false;
-            }
-
-            if (isWallJumping)
-            {
-                wallJumpCounter -= Time.fixedDeltaTime;
-            }
-
-            if (wallJumpCounter <= 0)
-            {
-                isWallJumping = false;
-                canWallJump = false;
-                //canMove = true;
-                wallJumpCounter = wallJumpTime;
-            }
-
-            if (!isClimbing)
-            {
-                moveDirection.y += Physics.gravity.y * (gravityScale - 1) * Time.fixedDeltaTime;
-            }
-
-            if (isClimbing)
-            {
-                moveDirection += (playerModel.transform.forward * climbPull);
-            }
-
-            if (bounceStart)
-            {
-                gravityScale = 5f;
-                moveDirection.y = bounceForce;
-                coyoteCounter = 0;
-                isGroundPounding = false;
-                isLongJumping = false;
-                isBackflipping = false;
-                isDashing = false;
-                isSomersaulting = false;
-                isBouncing = true;
-                canDash = true;
-                canMove = true;
-                canTurn = true;
-                bounceStart = false;
-            }
-
-            if (isBouncing)
-            {
-                maxAirAcceleration = 30f;
-                maxAirDeceleration = 30f;
-            }
-
-            if (enemyStomped)
-            {
-                if (jumpPressed)
-                {
-                    moveDirection.y += jumpForce;
-                }
-                else
-                {
-                    moveDirection.y += 10f;
-                }
-                enemyStomped = false;
-            }
-
-            SetSlopeSlideVelocity();
-
-            if (slopeSlideVelocity == Vector3.zero)
-            {
-                isSliding = false;
-            }
-
-            if (isDashing)
-            {
-                canTurn = false;
-                canMove = false;
-                maxAirAcceleration = 60f;
-                maxAirDeceleration = 60f;
-                moveDirection = lastJumpForward * dashSpeed;
-                
-                moveDirection.y = 2f;
-                dashCounter -= Time.fixedDeltaTime;
-                if (dashReleased || crouchPressed)
-                {
-                    dashCounter = 0;
-                }
-                if (dashCounter <= 0)
-                {
-                    isDashing = false;
-                    dashCounter = dashTime;
-                }
-            }
-
-            if (isLongJumping)
-            {
-                canMove = true;
-                canTurn = false;
-                maxAirAcceleration = 60f;
-                maxAirAcceleration = 60f;
-                gravityScale = 3f;
-            }
-
-            if (dashPressed)
-            {
-                if (isReading)
-                {
-                    readSign = currentSign.GetComponent<ReadSign>();
-                    readSign.EndRead();
-                    isReading = false;
-                }
-                else if (controller.isGrounded)
-                {
-                    if(isNearSign)
-                    {
-                        readSign = currentSign.GetComponent<ReadSign>();
-                        readSign.Read();
-                        canMove = false;
-                        isReading = true;
-                    }
-                }
-                else if(canDash)
-                {
-                    //maxAirAcceleration = 1f;
-                    gravityScale = 5f;
-                    maxAirAcceleration = 50f;
-                    maxAirDeceleration = 30f;
-                    velocity = lastForward * dashSpeed;
-                    lastJumpForward = lastForward;
-                    
-                    dashSound.Play();
-                    isDashing = true;
-                    canDash = false;
-                    isGroundPounding = false;
-                    //canGroundPound = true;
-                    isLongJumping = false;
-                    isBackflipping = false;
-                    isBouncing = false;
-                    canTurn = true;
-                }
-            }
-
-            if (!isDashing && !canDash && controller.isGrounded)
-            {
-                dashCooldownCount -= Time.fixedDeltaTime;
-                if (dashCooldownCount <= 0)
-                {
-                    canDash = true;
-                    dashCooldownCount = dashCooldown;
-                }
-            }
-
-            if (crouchPressed)
-            {
-                if (coyoteCounter > 0)
-                {
-                    isCrouching = true;
-                    controller.height = 1;
-                    controller.center = new Vector3(0f, -0.5f, 0f);
-                    isStopped = false;
-                    controller.slopeLimit = 90;
-                }
-                else
-                {
-                    if (canGroundPound)
-                    {
-                        velocity = Vector3.zero;
-                        groundPoundHangcount = groundPoundHangtime;
-                        canMove = false;
-                        isGroundPounding = true;
-                        isLongJumping = false;
-                    }
-                }
-            }
-
-            if (isCrouching)
-            {
-                if (controller.isGrounded)
-                {
-                    if (!isStopped)
-                    {
-                        canMove = false;
-                        yStore = moveDirection.y;
-                        moveDirection = Vector3.MoveTowards(moveDirection, new Vector3(0, moveDirection.y, 0), 0.5f);
-                        moveDirection.y = yStore;
-                        if (moveDirection.x == 0 && moveDirection.z == 0)
-                        {
-                            isStopped = true;
-                        }
+                        controller.slopeLimit = 50;
                     }
                     else
                     {
-                        maxSpeed = 1f;
+                        maxSpeed = defaultMaxSpeed;
                     }
-                    controller.slopeLimit = 50;
+                }
+
+                if (crouchReleased)
+                {
+                    isCrouching = false;
+                    controller.height = 2;
+                    controller.center = Vector3.zero;
+                    controller.slopeLimit = 90;
+                    jumpFactor = 1f;
+                }
+
+                if (isSkidding)
+                {
+                    if (skidCounter < 0f)
+                    {
+                        isSkidding = false;
+                    }
+                    else
+                    {
+                        skidCounter -= Time.fixedDeltaTime;
+                    }
+                }
+
+                if (somersaultCounter > 0.1f && somersaultCounter < somersaultTime)
+                {
+                    canSomersault = true;
                 }
                 else
-                {
-                    maxSpeed = defaultMaxSpeed;
-                }
-            }
-
-            if (crouchReleased)
-            {
-                isCrouching = false;
-                controller.height = 2;
-                controller.center = Vector3.zero;
-                controller.slopeLimit = 90;
-                jumpFactor = 1f;
-            }
-
-            if (isSkidding)
-            {
-                if (skidCounter < 0f)
-                {
-                    isSkidding = false;
-                }
-                else
-                {
-                    skidCounter -= Time.fixedDeltaTime;
-                }
-            }
-
-            if (canSomersault)
-            {
-                if (somersaultCounter < 0f)
                 {
                     canSomersault = false;
                 }
-                else
+
+                somersaultCounter += Time.fixedDeltaTime;
+
+                if (isBackflipping)
                 {
-                    somersaultCounter -= Time.fixedDeltaTime;
+                    canMove = true;
+                    maxAirAcceleration = 3f;
                 }
-            }
 
-            if (isBackflipping)
-            {
-                canMove = true;
-                maxAirAcceleration = 3f;
-            }
-
-            if (isGroundPounding)
-            {
-                canGroundPound = false;
-                if (groundPoundHangcount <= 0)
+                if (isGroundPounding)
                 {
-                    moveDirection = (Vector3.down * groundPoundPower);
-                }
-                else
-                {
-                    moveDirection = Vector3.zero;
-                    playerModel.transform.Rotate(new Vector3(0, 1440, 0) * Time.fixedDeltaTime);
-                    groundPoundHangcount -= Time.fixedDeltaTime;
-                }
-            }
-
-
-            if (isClimbing)
-            {
-                velocity = Vector3.MoveTowards(velocity, moveDirection, climbAcceleration);
-            }
-            else
-            {
-                yStore = moveDirection.y;
-                moveDirection.y = 0;
-                velocity.y = 0;
-
-                moveDirection = AdjustSlopeVelocity(moveDirection);
-
-                if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
-                {
-                    if (controller.isGrounded)
+                    canGroundPound = false;
+                    if (groundPoundHangcount <= 0)
                     {
-                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAcceleration * Time.fixedDeltaTime);
-                        //velocity = Vector3.SmoothDamp(velocity, velocity + moveDirection, ref refVelocity, maxAcceleration, maxSpeed);
+                        moveDirection = (Vector3.down * groundPoundPower);
                     }
                     else
                     {
-                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration * Time.fixedDeltaTime);
+                        moveDirection = Vector3.zero;
+                        playerModel.transform.Rotate(new Vector3(0, 1440, 0) * Time.fixedDeltaTime);
+                        groundPoundHangcount -= Time.fixedDeltaTime;
                     }
+                }
+
+                if (isClimbing)
+                {
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, climbAcceleration);
                 }
                 else
                 {
-                    if (controller.isGrounded)
+                    yStore = moveDirection.y;
+                    moveDirection.y = 0;
+                    velocity.y = 0;
+
+                    moveDirection = AdjustSlopeVelocity(moveDirection);
+
+                    if (Math.Abs(Vector3.Distance(Vector3.zero, moveDirection)) >= Math.Abs(Vector3.Distance(Vector3.zero, velocity)))
                     {
-                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxDeceleration * Time.fixedDeltaTime);
-                        //velocity = Vector3.SmoothDamp(velocity, moveDirection, ref refVelocity, maxDeceleration, maxSpeed);
+                        if (controller.isGrounded)
+                        {
+                            velocity = Vector3.MoveTowards(velocity, moveDirection, maxAcceleration * Time.fixedDeltaTime);
+                            //velocity = Vector3.SmoothDamp(velocity, velocity + moveDirection, ref refVelocity, maxAcceleration, maxSpeed);
+                        }
+                        else
+                        {
+                            velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration * Time.fixedDeltaTime);
+                        }
                     }
                     else
                     {
-                        velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirDeceleration * Time.fixedDeltaTime);
+                        if (controller.isGrounded)
+                        {
+                            velocity = Vector3.MoveTowards(velocity, moveDirection, maxDeceleration * Time.fixedDeltaTime);
+                            //velocity = Vector3.SmoothDamp(velocity, moveDirection, ref refVelocity, maxDeceleration, maxSpeed);
+                        }
+                        else
+                        {
+                            velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirDeceleration * Time.fixedDeltaTime);
+                        }
+                    }
+
+                    lastMoveDirection = moveDirection;
+
+                    if (velocity.magnitude > maxSpeed)
+                    {
+                        velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+                    }
+                    velocity.y = yStore;
+
+                    if (controller.isGrounded)
+                    {
+                        velocity.y -= 2f;
+                    }
+
+                    if (isSliding)
+                    {
+                        velocity = slopeSlideVelocity;
+                        velocity.y = moveDirection.y;
+                        moveDirection = slopeSlideVelocity;
+                    }
+
+                    if (hitHead)
+                    {
+                        velocity = new Vector3(0, -5, 0);
+                        canHover = false;
+                        hitHead = false;
                     }
                 }
 
-                lastMoveDirection = moveDirection;
+                LedgeGrab();
 
-                if(velocity.magnitude > maxSpeed)
+                if (isHanging)
                 {
-                    velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
-                }
-                velocity.y = yStore;
-
-                if (controller.isGrounded)
-                {
-                    velocity.y -= 2f;
-                }
-
-                if (isSliding)
-                {
-                    velocity = slopeSlideVelocity;
-                    velocity.y = moveDirection.y;
-                    moveDirection = slopeSlideVelocity;
+                    canTurn = false;
+                    canGroundPound = false;
+                    isDashing = false;
+                    isBackflipping = false;
+                    isLongJumping = false;
+                    maxAirAcceleration = defaultMaxAirAccel;
+                    maxAirDeceleration = defaultMaxAirAccel;
+                    velocity = Vector3.zero;
                 }
 
-                if (hitHead)
+                if (wasHanging)
                 {
-                    velocity = new Vector3(0, -5, 0);
-                    canHover = false;
-                    hitHead = false;
+                    yStore = moveDirection.y;
+                    moveDirection = playerModel.transform.forward * ledgeClimbFactor;
+                    moveDirection.y = yStore;
+                    velocity = Vector3.MoveTowards(velocity, moveDirection, maxAirAcceleration * Time.fixedDeltaTime);
                 }
-            }
 
-            LedgeGrab();
-
-            if(isHanging)
-            {
-                canTurn = false;
-                canGroundPound = false;
-                isDashing = false;
-                isBackflipping = false;
-                isLongJumping = false;
-                maxAirAcceleration = defaultMaxAirAccel;
-                maxAirDeceleration = defaultMaxAirAccel;
-                velocity = Vector3.zero;
-            }
-
-            if (wasHanging)
-            {
-                moveDirection = playerModel.transform.forward * ledgeClimbFactor;
-            }
-
-            if (radarPressed && canRadar)
-            {
-                canRadar = false;
-                radarCounter = radarTime;
-                arrow.SetActive(true);
-                cheeseTimer = UIWait;
-                crackerTimer = UIWait;
-                brickTimer = UIWait;
-                uiMovement.UIToggle(true);
-            }
-            if(radarCounter > 0)
-            {
-                Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
-                if(closesstCracker != null )
+                if (radarPressed && canRadar)
                 {
-                    arrow.transform.position = new Vector3(playerModel.transform.position.x, playerModel.transform.position.y + 0.5f, playerModel.transform.position.z);
-                    arrow.transform.LookAt(closesstCracker);
-                    arrow.transform.position += arrow.transform.forward;
+                    canRadar = false;
+                    radarCounter = radarTime;
+                    arrow.SetActive(true);
+                    cheeseTimer = UIWait;
+                    crackerTimer = UIWait;
+                    brickTimer = UIWait;
+                    uiMovement.UIToggle(true);
                 }
-                radarCounter -= Time.fixedDeltaTime;
+                if (radarCounter > 0)
+                {
+                    Transform closesstCracker = levelManager.FindClosestCracker(playerModel.transform);
+                    if (closesstCracker != null)
+                    {
+                        arrow.transform.position = new Vector3(playerModel.transform.position.x, playerModel.transform.position.y + 0.5f, playerModel.transform.position.z);
+                        arrow.transform.LookAt(closesstCracker);
+                        arrow.transform.position += arrow.transform.forward;
+                    }
+                    radarCounter -= Time.fixedDeltaTime;
+                }
+                else
+                {
+                    if (arrow.activeSelf)
+                    {
+                        arrow.SetActive(false);
+                        uiMovement.UIToggle(false);
+                    }
+                    canRadar = true;
+                }
+
+
+                Physics.SyncTransforms();
+                controller.Move(velocity * Time.fixedDeltaTime);
             }
             else
             {
-                if (arrow.activeSelf)
+                if (transform.position != pullUpEnd)
                 {
-                    arrow.SetActive(false);
-                    uiMovement.UIToggle(false);
+                    transform.position = pullUpEnd;
                 }
-                canRadar = true;
+                else
+                {
+                    wasHanging = false;
+                }
             }
-
-
-            Physics.SyncTransforms();
-            controller.Move(velocity * Time.fixedDeltaTime);
-
         }
         else
         {
@@ -1141,6 +1157,7 @@ public class Player : MonoBehaviour
         }
         return velocity;
     }
+
     private void SetSlopeSlideVelocity()
     {
         int layerMask = LayerMask.GetMask("Default");
