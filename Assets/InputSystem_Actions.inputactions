@@ -226,7 +226,7 @@
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -237,7 +237,7 @@
                     "path": "<Pointer>/delta",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
+                    "groups": ";Keyboard&Mouse;Touch;Gamepad;Joystick;XR",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -248,7 +248,7 @@
                     "path": "<Joystick>/{Hatswitch}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "Joystick;Keyboard&Mouse;Touch;Gamepad;XR",
                     "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -501,7 +501,7 @@
                     "name": "Cancel",
                     "type": "Button",
                     "id": "15cef263-9014-4fd5-94d9-4e4a6234a6ef",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -588,7 +588,7 @@
                     "path": "<Gamepad>/leftStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -599,7 +599,7 @@
                     "path": "<Gamepad>/rightStick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -610,7 +610,7 @@
                     "path": "<Gamepad>/leftStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -621,7 +621,7 @@
                     "path": "<Gamepad>/rightStick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -632,7 +632,7 @@
                     "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Joystick;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -643,7 +643,7 @@
                     "path": "<Gamepad>/rightStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -654,7 +654,7 @@
                     "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -665,7 +665,7 @@
                     "path": "<Gamepad>/rightStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -676,7 +676,7 @@
                     "path": "<Gamepad>/dpad",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Gamepad",
+                    "groups": ";Gamepad;Keyboard&Mouse;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -698,7 +698,7 @@
                     "path": "<Joystick>/stick/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "Joystick;Keyboard&Mouse;Gamepad;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -709,7 +709,7 @@
                     "path": "<Joystick>/stick/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "Joystick;Keyboard&Mouse;Gamepad;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -720,7 +720,7 @@
                     "path": "<Joystick>/stick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "Joystick;Keyboard&Mouse;Gamepad;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -731,7 +731,7 @@
                     "path": "<Joystick>/stick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Joystick",
+                    "groups": "Joystick;Keyboard&Mouse;Gamepad;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -753,7 +753,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Joystick;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -764,7 +764,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;XR;Joystick",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -775,7 +775,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -786,7 +786,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Joystick;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -797,7 +797,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Touch;Gamepad;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -808,7 +808,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -819,7 +819,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Joystick;Touch;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -830,10 +830,21 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "0eeca751-cbc0-4ffa-a6d0-b69f7b3d8de3",
+                    "path": "<Joystick>/stick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
