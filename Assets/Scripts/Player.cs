@@ -47,6 +47,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float coyoteTime;
     private float coyoteCounter;
 
+    [SerializeField] private float landingTime;
+    private float landingCounter;
+
     public bool canJump = true;
     [SerializeField] private float jumpTime;
     [SerializeField] private float jumpFactor = 1f;
@@ -410,6 +413,10 @@ public class Player : MonoBehaviour
                     {
                         StompCloud.Play();
                     }
+                    if (landingCounter > 0)
+                    {
+                        landingCounter -= Time.deltaTime;
+                    }
                     isGroundPounding = false;
                     canGroundPound = true;
                     isBackflipping = false;
@@ -515,6 +522,11 @@ public class Player : MonoBehaviour
                                     //somersault
                                     jumpFactor = 1.3f;
                                     isSomersaulting = true;
+                                }
+                                else if (landingCounter > 0)
+                                {
+                                    jumpFactor = 1.3f;
+                                    landingCounter = 0f;
                                 }
                                 else if (jumpCounter == 1)
                                 {
@@ -798,6 +810,7 @@ public class Player : MonoBehaviour
                             canMove = false;
                             isGroundPounding = true;
                             isLongJumping = false;
+                            landingCounter = landingTime;
                         }
                     }
                 }

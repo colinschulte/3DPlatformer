@@ -508,7 +508,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9cbce13c-cce9-4c25-8ddb-5005855aa4c4"",
+                    ""id"": ""c1a911a6-099c-42bb-9a08-c2033e9c07cb"",
+                    ""path"": ""<HID:: USB Gamepad          >/button2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8e558a3-e39e-4711-b3b8-fb24f012048e"",
                     ""path"": ""<HID:: USB Gamepad          >/button3"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -519,8 +530,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c1a911a6-099c-42bb-9a08-c2033e9c07cb"",
-                    ""path"": ""<HID:: USB Gamepad          >/button2"",
+                    ""id"": ""3a6df0bd-87fb-4dc7-8965-59f9825fded3"",
+                    ""path"": """",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
