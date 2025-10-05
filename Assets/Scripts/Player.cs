@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool climbPressed;
     [SerializeField] private bool climbReleased;
     [SerializeField] private bool radarPressed;
-    [SerializeField] private bool radarReleased;
+    //[SerializeField] private bool radarReleased;
 
     [SerializeField] private bool isCrouching;
     [SerializeField] private bool isSkidding;
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
     public float healthTimer;
 
     public bool isClimbing;
-    private bool canClimb;
+    //private bool canClimb;
     public Climb climbObject;
     [SerializeField] private float climbSpeed;
     [SerializeField] private float climbPull;
@@ -275,7 +275,7 @@ public class Player : MonoBehaviour
         }
         else if (radar.WasReleasedThisFrame())
         {
-            radarReleased = true;
+            //radarReleased = true;
         }
 
         if (centerCamera.triggered)
@@ -310,11 +310,11 @@ public class Player : MonoBehaviour
                 //float zStore = velocity.z;
                 if (climbPressed)
                 {
-                    canClimb = true;
+                    //canClimb = true;
                 }
                 else if (climbReleased)
                 {
-                    canClimb = false;
+                    //canClimb = false;
                 }
 
                 Vector3 LineFwdStart = new Vector3(transform.position.x, transform.position.y, transform.position.z);
@@ -1141,7 +1141,7 @@ public class Player : MonoBehaviour
         crouchPressed = false;
         crouchReleased = false;
         radarPressed = false;
-        radarReleased = false;
+        //radarReleased = false;
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

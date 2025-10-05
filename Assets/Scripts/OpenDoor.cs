@@ -16,6 +16,7 @@ public class OpenDoor : MonoBehaviour
     [SerializeField] private AudioSource openSound;
     [SerializeField] private GameObject cineCam;
     [SerializeField] private GameObject MainCam;
+    [SerializeField] private Player Player;
     private bool isOpening = false;
     private bool soundPlayed = false;
 
@@ -25,6 +26,7 @@ public class OpenDoor : MonoBehaviour
     {
         cineCam.SetActive(false);
         MainCam = FindObjectOfType<CinemachineBrain>().GameObject();
+        Player = FindObjectOfType<Player>();
         startWaitCounter = waitTime;
         endWaitCounter = waitTime * 1.5f;
     }
@@ -36,6 +38,7 @@ public class OpenDoor : MonoBehaviour
         {
             cineCam.SetActive(true);
             MainCam.SetActive(false);
+            Player.canMove = false;
             //Quaternion newRotation = transform.rotation;
             //newRotation.y = 90f;
             //transform.rotation = newRotation;
