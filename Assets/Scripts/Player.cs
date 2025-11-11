@@ -71,6 +71,8 @@ public class Player : MonoBehaviour
     public bool bounceStart = false;
     public bool isBouncing = false;
 
+    [SerializeField] private float climbFixCounter;
+
     [SerializeField] private bool jumpPressed;
     [SerializeField] private bool jumpReleased;
     [SerializeField] private bool dashPressed;
@@ -485,6 +487,7 @@ public class Player : MonoBehaviour
                         isHanging = false;
                         pullUpEnd = transform.position + (playerModel.transform.forward * 0.5f) + (transform.up * 1f);
                         wasHanging = true;
+                        climbFixCounter = 0.05f;
                     }
 
                     if (canJump)
@@ -1019,9 +1022,11 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if (transform.position != pullUpEnd)
+                if (transform.position != pullUpEnd && climbFixCounter >= 0)
                 {
-                    transform.position = pullUpEnd;
+                    //transform.position = pullUpEnd;
+                    Vector3.MoveTowards(transform.position, pullUpEnd, 5);
+                    climbFixCounter -= Time.fixedDeltaTime;
                 }
                 else
                 {
