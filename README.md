@@ -1,5 +1,6 @@
 # The Road Jess Traveled
- 3D Collectathon Platformer
+A 3D Collectathon Platformer
+Made in Unity
 
-play here:
+Play here:
 https://miniscule.itch.io/the-road-jess-traveled
